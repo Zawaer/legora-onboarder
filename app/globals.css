@@ -199,6 +199,79 @@
   transform: none;
 }
 
+/* ── the hero visualiser ──────────────────────────────────────────────────
+   An 11-second loop that plays the product's argument rather than describing
+   it: a real quote from the corpus appears, the agent says it is reading, and
+   then the plan writes itself out a line at a time. Someone who watches it
+   once and reads nothing has still seen what this does.
+
+   CSS only, like the scroll reveal, and for the same reason — it is the first
+   thing on the page and must not depend on a script that might not run. The
+   loop is `infinite`, so there is no end state to get stuck in and no
+   restart to coordinate.
+
+   Percentages are of the 11s cycle: evidence lands at 4%, the deriving line
+   holds 24-36%, the output starts at 42%, and the three plan lines arrive at
+   50 / 58 / 70. The last one holds until 96 so the finished state is legible
+   for a full second before it loops. */
+@media (prefers-reduced-motion: no-preference) {
+  .viz [data-viz] {
+    animation-duration: 11s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+  }
+  .viz [data-viz="evidence"] { animation-name: viz-in; }
+  .viz [data-viz="status"] { animation-name: viz-status; }
+  .viz [data-viz="output"] { animation-name: viz-late; }
+  .viz [data-viz="l1"] { animation-name: viz-line-1; }
+  .viz [data-viz="l2"] { animation-name: viz-line-2; }
+  .viz [data-viz="l3"] { animation-name: viz-line-3; }
+  .viz [data-viz="dot"] {
+    animation: viz-blink 0.9s ease-in-out infinite;
+  }
+  .viz-card { animation: viz-breathe 11s ease-in-out infinite; }
+}
+
+/* Without the animation the card must still read as finished, not half-built:
+   everything visible, the "deriving" line hidden, since it describes work that
+   is not happening. */
+.viz [data-viz="status"] { opacity: 0; }
+
+@keyframes viz-in {
+  0% { opacity: 0; transform: translateY(4px); }
+  4%, 100% { opacity: 1; transform: none; }
+}
+@keyframes viz-status {
+  0%, 20% { opacity: 0; }
+  24%, 36% { opacity: 1; }
+  40%, 100% { opacity: 0; }
+}
+@keyframes viz-late {
+  0%, 38% { opacity: 0; }
+  42%, 100% { opacity: 1; }
+}
+@keyframes viz-line-1 {
+  0%, 44% { opacity: 0; transform: translateY(3px); }
+  50%, 100% { opacity: 1; transform: none; }
+}
+@keyframes viz-line-2 {
+  0%, 52% { opacity: 0; transform: translateY(3px); }
+  58%, 100% { opacity: 1; transform: none; }
+}
+@keyframes viz-line-3 {
+  0%, 64% { opacity: 0; transform: translateY(3px); }
+  70%, 100% { opacity: 1; transform: none; }
+}
+@keyframes viz-blink {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+@keyframes viz-breathe {
+  0%, 100% { box-shadow: 0 20px 48px rgb(23 36 32 / 0.07); }
+  40% { box-shadow: 0 24px 56px rgb(23 36 32 / 0.1); }
+}
+
 @keyframes reveal {
   from {
     opacity: 0;

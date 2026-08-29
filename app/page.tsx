@@ -181,9 +181,20 @@ export default async function Home() {
           </div>
 
           {/* the artefact preview — sets expectations for what the CTA produces */}
-          <aside className="lg:pt-2">
+          {/* The visualiser. Plays the argument rather than describing it:
+              a real quote out of the corpus lands, the agent says it is
+              reading, and then the plan writes itself a line at a time.
+              Someone who watches one loop and reads nothing has still seen
+              what this does.
+
+              CSS-only and infinite — it is the first thing on the page, so it
+              must not wait on a script, and an infinite loop has no end state
+              to get stuck in. Everything is legible with the animation off;
+              only the "deriving" line hides, because it describes work that
+              is not happening. */}
+          <aside className="viz lg:pt-2">
             <div
-              className="overflow-hidden rounded-xl border border-line bg-surface"
+              className="viz-card overflow-hidden rounded-xl border border-line bg-surface"
               style={{ boxShadow: "var(--shadow)" }}
             >
               <div className="flex items-center gap-2 border-b border-line bg-surface-2/70 px-4 py-2.5">
@@ -194,8 +205,9 @@ export default async function Home() {
                   derived-role · legal-engineer
                 </span>
               </div>
+
               <div className="flex flex-col gap-4 px-5 py-5">
-                <div>
+                <div data-viz="evidence">
                   <Label>Evidence</Label>
                   <blockquote className="mt-2.5 border-l-2 border-accent pl-3.5 text-[14.5px] leading-[1.55] font-medium">
                     &ldquo;the person starting sept 1 is ex-M&amp;A, 6 years,
@@ -206,13 +218,38 @@ export default async function Home() {
                     #legal-eng · Elin Sandberg · 27 Aug
                   </p>
                 </div>
-                <div className="border-t border-line pt-4">
-                  <Label>Day 1 · first task</Label>
-                  <p className="mt-2 text-[14.5px] leading-snug font-medium">
+
+                {/* Absolutely positioned so its exit does not move the card:
+                    a panel that changes height every eleven seconds is the
+                    thing you notice instead of the content. */}
+                <div className="relative min-h-[18px]">
+                  <p
+                    data-viz="status"
+                    className="absolute inset-0 flex items-center gap-2 font-mono text-[11.5px] text-faint"
+                  >
+                    <span
+                      data-viz="dot"
+                      className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                    />
+                    deriving role from Slack, docs, tickets…
+                  </p>
+                </div>
+
+                <div data-viz="output" className="border-t border-line pt-4">
+                  <div data-viz="l1">
+                    <Label>Day 1 · first task</Label>
+                  </div>
+                  <p
+                    data-viz="l2"
+                    className="mt-2 text-[14.5px] leading-snug font-medium"
+                  >
                     Write the list of every place we are wrong on three Nordkap
                     SPAs
                   </p>
-                  <p className="mt-2 border-l-2 border-ok/50 pl-3 text-[13px] leading-[1.55] text-muted">
+                  <p
+                    data-viz="l3"
+                    className="mt-2 border-l-2 border-ok/50 pl-3 text-[13px] leading-[1.55] text-muted"
+                  >
                     <span className="text-ink">Done when</span> a doc exists in
                     the Legal Engineering space with one numbered row per
                     divergence, each citing the clause it came from.
