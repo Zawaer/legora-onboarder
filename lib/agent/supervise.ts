@@ -38,10 +38,12 @@ import { z } from "zod/v4";
 import { generate } from "@/lib/anthropic";
 import { resolveOwner } from "@/lib/agent/plan";
 import { renderCorpus } from "@/lib/agent/derive";
+import { detectDrift, driftBlocker, renderDriftNote } from "@/lib/agent/drift";
 import type {
   Blocker,
   ChatMessage,
   Company,
+  DriftNote,
   HireState,
   RampPlan,
   RampTask,
@@ -79,6 +81,12 @@ const ResponseSchema = z.object({
     .describe("Honest minutes of that person's time this would cost. 0 if needsHuman is false."),
 });
 
+/**
+ * Handed to the drift check verbatim as its system prompt too, which is why it
+ * is passed rather than re-declared there: byte-identical means the two
+ * concurrent calls share one cached prefix instead of writing two. If you edit
+ * this string, edit it here and nowhere else.
+ */
 const SYSTEM = `You are supervising someone through their first two days in a role that has never existed at their company before. You have the company's entire internal corpus — Slack, docs, tickets, meeting notes — the role you derived from it, and their ramp plan.
 
 YOUR DEFAULT IS TO ANSWER
@@ -113,6 +121,22 @@ export type SuperviseResult = {
   reply: string;
   blocker?: Blocker;
   taskStatus?: TaskStatus;
+  /**
+   * A divergence the agent volunteered — see `lib/agent/drift.ts`. Optional and
+   * usually absent: the drift check is tuned to say nothing, and when it says
+   * nothing this whole path is byte-for-byte what it was before.
+   */
+  drift?: DriftNote;
+  /**
+   * Set only when a drift note is consequential AND the hire cannot settle it
+   * alone. A plain `Blocker`, so the manager screen and the Slack formatter
+   * render it with no knowledge that drift detection exists.
+   *
+   * Kept separate from `blocker` rather than overwriting it: a turn can produce
+   * both an escalation and a divergence, and collapsing them would silently
+   * drop whichever arrived second.
+   */
+  driftBlocker?: Blocker;
 };
 
 /**
@@ -172,17 +196,44 @@ export async function respond(
 ): Promise<SuperviseResult> {
   const task = currentTask(hire);
 
-  const raw = await generate({
-    system: SYSTEM,
-    corpus: renderCorpus(company),
-    user: buildTurnPrompt(hire, task, userText),
-    schema: ResponseSchema,
-    label: `supervision turn for ${hire.name}`,
-    history: recentHistory(hire),
-    maxTokens: 16000,
-  });
+  // Two calls, issued together rather than one after the other.
+  //
+  // The reply is the product and it already takes 20-37 seconds; a serial drift
+  // check would add its whole duration to that, and a demo that got twice as
+  // slow to gain a feature has lost more than it gained. Concurrently, the cost
+  // is max(reply, drift) — and the drift call is much the shorter of the two,
+  // because it emits a couple of hundred output tokens against the reply's few
+  // thousand and shares the same cached corpus prefix. The measured difference
+  // is inside the turn-to-turn noise.
+  //
+  // `detectDrift` is documented never to throw, and the extra `.catch` here is
+  // the belt to that braces: if this rejected it would take the reply down with
+  // it through `Promise.all`, which is the one thing the addition must not do.
+  const [raw, drift] = await Promise.all([
+    generate({
+      system: SYSTEM,
+      corpus: renderCorpus(company),
+      user: buildTurnPrompt(hire, task, userText),
+      schema: ResponseSchema,
+      label: `supervision turn for ${hire.name}`,
+      history: recentHistory(hire),
+      maxTokens: 16000,
+    }),
+    detectDrift(hire, company, task, userText, SYSTEM).catch(() => null),
+  ]);
 
   const result: SuperviseResult = { reply: raw.reply };
+
+  // Appended in code rather than folded into the model's reply, so the quote the
+  // hire reads is the exact string that passed verification. It also keeps the
+  // divergence visually separable from the answer — it is a different kind of
+  // thing and should not be smuggled into a paragraph as if the agent had been
+  // asked about it.
+  if (drift) {
+    result.drift = drift;
+    result.reply = `${raw.reply}\n\n${renderDriftNote(drift, company)}`;
+    if (drift.needsHuman) result.driftBlocker = driftBlocker(drift);
+  }
 
   if (raw.taskStatus !== "unchanged" && task) {
     result.taskStatus = raw.taskStatus;

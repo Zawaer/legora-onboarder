@@ -86,12 +86,25 @@ export async function POST(request: Request) {
       // other's blocker.
       const isNew = result.blocker != null && !isDuplicateBlocker(h.blockers, result.blocker);
 
+      let blockers = isNew && result.blocker ? [...h.blockers, result.blocker] : h.blockers;
+
+      // A drift note that needed a human arrives as an ordinary Blocker, so it
+      // goes through the SAME dedupe — against the list including anything this
+      // turn just added, not the snapshot before it. Nothing downstream has to
+      // know where it came from.
+      if (result.driftBlocker && !isDuplicateBlocker(blockers, result.driftBlocker)) {
+        blockers = [...blockers, result.driftBlocker];
+      }
+
       return {
         ...h,
         messages: [...h.messages, hireMessage, agentMessage],
         taskStatus:
           result.taskStatus && task ? { ...h.taskStatus, [task.id]: result.taskStatus } : h.taskStatus,
-        blockers: isNew && result.blocker ? [...h.blockers, result.blocker] : h.blockers,
+        blockers,
+        // Kept so the next turn's drift check can see what has already been said
+        // to this person and not say it again.
+        driftNotes: result.drift ? [...(h.driftNotes ?? []), result.drift] : h.driftNotes,
       };
     });
 
@@ -106,7 +119,10 @@ export async function POST(request: Request) {
         : null;
 
     return NextResponse.json(
-      { hire: updated, reply: result.reply, blocker: raised },
+      // `drift` is additive and usually absent. The hire has already read it —
+      // it is appended to `reply` — so this is for callers that want it as data
+      // rather than prose.
+      { hire: updated, reply: result.reply, blocker: raised, drift: result.drift ?? null },
       { status: 200 },
     );
   } catch (err) {

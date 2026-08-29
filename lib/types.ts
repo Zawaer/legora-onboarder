@@ -152,6 +152,45 @@ export type Blocker = {
   resolved: boolean;
 };
 
+/**
+ * A divergence between what the hire says they are doing and how the corpus
+ * shows this work is actually done here.
+ *
+ * This is the one thing in the product that the agent volunteers rather than
+ * being asked for, so it carries a heavier evidence burden than anything else:
+ * `evidence` is verified through the same `ground.ts` check as everything else
+ * and a note with an empty `evidence` array is never constructed, let alone
+ * shown. An unevidenced "you might be doing this wrong" on day two costs a new
+ * hire their confidence in exchange for nothing.
+ *
+ * `observation` describes the corpus, never the person. It is the same rule as
+ * `Blocker.summary`: "the team stopped doing it that way in June", never "the
+ * hire is doing it wrong". There is no score, no severity number and no
+ * accuracy rating here, and there must never be one — this field is the most
+ * obvious place in the product to smuggle one in.
+ */
+export type DriftNote = {
+  id: string;
+  hireId: string;
+  taskId?: string;
+  /** What the corpus shows, in one or two sentences. Information, not verdict. */
+  observation: string;
+  /** Why that matters for the work in front of them, and what to do instead. */
+  whyItMatters: string;
+  /** Verified verbatim citations. Never empty — the note is dropped otherwise. */
+  evidence: Evidence[];
+  /** ISO 8601. */
+  raisedAt: string;
+  /**
+   * True only when the divergence is consequential AND the hire cannot settle
+   * it themselves. When true this is also promoted to a `Blocker`, so the
+   * manager surface and the Slack formatter need no knowledge of this type.
+   */
+  needsHuman: boolean;
+  suggestedPerson?: string;
+  resolved: boolean;
+};
+
 export type HireState = {
   id: string;
   name: string;
@@ -164,6 +203,11 @@ export type HireState = {
   taskStatus: Record<string, TaskStatus>;
   messages: ChatMessage[];
   blockers: Blocker[];
+  /**
+   * Divergences the agent surfaced without being asked. Optional so every
+   * hire record written before this existed still parses.
+   */
+  driftNotes?: DriftNote[];
 };
 
 // ────────────────────────────────────────────────────── traction capture
