@@ -114,16 +114,6 @@ export default async function Home() {
         {/* ── hero ── */}
         <section className="grid gap-12 border-b border-line py-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16 lg:py-24">
           <div className="flex flex-col gap-7">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] text-muted">
-                <span className="h-1.5 w-1.5 rounded-full bg-ok" />
-                Live demo · Lexhav, Stockholm
-              </span>
-              <span className="text-[12px] text-faint">
-                ~100 new starts a month
-              </span>
-            </div>
-
             <h1 className="max-w-[19ch] text-[40px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[62px]">
               Onboarding for a job that has never existed.
             </h1>
