@@ -51,7 +51,14 @@ import {
 
 /** A message we want sent, described as data so it can be asserted on. */
 export type Outbound =
-  | { kind: "dm"; text: string; blocks: Block[] }
+  /**
+   * `system: true` marks plumbing: a nudge telling somebody which word to
+   * type, an error, a status line. Those bypass the review queue. What a
+   * customer asked to review is what the agent says about the work, and
+   * filling the queue with "type start" is how a review queue becomes noise
+   * that nobody reads, which costs more than it protects.
+   */
+  | { kind: "dm"; text: string; blocks: Block[]; system?: boolean }
   | { kind: "channel"; channel: string; text: string; blocks: Block[] }
   | { kind: "thread"; channel: string; threadTs: string; text: string; blocks: Block[] };
 
@@ -206,6 +213,12 @@ export async function handleUserMessage(deps: SlackDeps, input: MessageInput): P
     return [
       {
         kind: "dm",
+        // Not reviewable. This is the bot telling somebody which word to type,
+        // not the agent saying anything about their work. Queueing it asks an
+        // admin to authorise the sentence "type start", which is both absurd
+        // and the fastest way to make a review queue feel like noise, at which
+        // point people stop reading the queue that actually matters.
+        system: true,
         text: fallback("Say `start` and I'll derive your role and hand you your first task."),
         blocks: [
           section(

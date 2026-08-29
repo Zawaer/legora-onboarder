@@ -201,7 +201,7 @@ async function send(client, action, dmChannel, replace) {
   // through here, because those are the messages addressed to a person. The
   // manager channel is a different audience with a different consent.
   const { reviewBeforeSend, isReviewConfigured } = await import("@/lib/slack/review.ts");
-  if (isReviewConfigured()) {
+  if (isReviewConfigured() && !action.system) {
     const outcome = await reviewBeforeSend({
       hireRef: dmChannel,
       kind: "message",
