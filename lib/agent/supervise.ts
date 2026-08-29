@@ -39,6 +39,8 @@ import { generate } from "@/lib/anthropic";
 import { resolveOwner } from "@/lib/agent/plan";
 import { renderCorpus } from "@/lib/agent/derive";
 import { detectDrift, driftBlocker, renderDriftNote } from "@/lib/agent/drift";
+import { classifierContext, webRung } from "@/lib/agent/web-answer";
+import type { QuestionClass, ResolutionRecord } from "@/lib/web/contract";
 import type {
   Blocker,
   ChatMessage,
@@ -139,6 +141,20 @@ export type SuperviseResult = {
    * drop whichever arrived second.
    */
   driftBlocker?: Blocker;
+  /**
+   * How this turn got resolved, for the counters in `lib/agent/resolutions.ts`.
+   *
+   * Bookkeeping, never shown to the hire — `reason` in particular is a note
+   * about the classifier and would read as the agent second-guessing itself.
+   * The route turns this into a `ResolutionRecord`, because the ids and the
+   * end-to-end latency are its to know, not this function's.
+   */
+  resolution: {
+    /** Written only on a corpus miss. `null` here IS the marker for a hit. */
+    classification: QuestionClass | null;
+    confidence: number | null;
+    resolvedBy: ResolutionRecord["resolvedBy"];
+  };
 };
 
 /**
@@ -224,7 +240,53 @@ export async function respond(
     detectDrift(hire, company, task, userText, SYSTEM).catch(() => null),
   ]);
 
-  const result: SuperviseResult = { reply: raw.reply };
+  const result: SuperviseResult = {
+    reply: raw.reply,
+    // The default is the common case and the cheap one: the corpus answered,
+    // nobody was interrupted. Everything below only narrows it.
+    resolution: { classification: null, confidence: null, resolvedBy: "corpus" },
+  };
+
+  /*
+   * ── the web rung ──────────────────────────────────────────────────────────
+   *
+   * Only on a corpus miss, and only after the corpus has already had its turn —
+   * the company's own answer always wins, and this cannot run before that is
+   * settled because `answeredFromCorpus` is the thing being branched on.
+   *
+   * The classifier runs on every miss, not only the ones that reach the web.
+   * It is the denominator of the "% of corpus misses that were GENERAL" number,
+   * and it is also the field that separates a hit from a miss in the store, so
+   * sampling it would make both wrong.
+   *
+   * The trigger is the miss itself rather than `needsHuman`. `lib/web/contract.ts`
+   * states the flow as "corpus miss + GENERAL -> answered from the web", and
+   * gating additionally on the model having chosen to escalate would mean the
+   * same general question gets a sourced answer or a shrug depending on a
+   * verdict that has nothing to do with whether it is general. The escalation
+   * ladder itself is not touched: an INTERNAL classification, a low-confidence
+   * one, or any failure at all leaves every line below running exactly as it
+   * did before this block existed.
+   *
+   * On success this returns early and the model's own reply is discarded rather
+   * than appended to. That is the structural half of "never blend internal and
+   * web content in one answer block" — including the drift note, which quotes a
+   * named colleague verbatim and must never share a message with web prose.
+   * Dropping it here is also cheap: it is not persisted, so a real divergence
+   * simply surfaces on the next turn instead.
+   */
+  if (!raw.answeredFromCorpus) {
+    const outcome = await webRung(userText, classifierContext(task));
+    result.resolution.classification = outcome.classification?.class ?? null;
+    result.resolution.confidence = outcome.classification?.confidence ?? null;
+
+    if (outcome.kind === "answered") {
+      result.reply = outcome.reply;
+      result.resolution.resolvedBy = "web";
+      if (raw.taskStatus !== "unchanged" && task) result.taskStatus = raw.taskStatus;
+      return result;
+    }
+  }
 
   // Appended in code rather than folded into the model's reply, so the quote the
   // hire reads is the exact string that passed verification. It also keeps the
@@ -267,7 +329,30 @@ export async function respond(
     };
   }
 
+  // Read off the blockers this turn actually produced rather than off the
+  // model's `needsHuman` flag, so the counter says what happened and not what
+  // was intended. A drift note that needed a human counts too — it spends a
+  // colleague exactly like an escalation does, and a number that quietly
+  // excluded it would flatter us.
+  result.resolution.resolvedBy = resolverFor(result.blocker, result.driftBlocker);
+
   return result;
+}
+
+/**
+ * Which rung of the ladder this turn came to rest on.
+ *
+ * `expert` is an escalation that named someone off the roster; `peer` is one
+ * that needed a person but could not name a specific owner, so it lands on
+ * whoever picks it up. `corpus` covers everything with no human in it — both
+ * the ordinary corpus hit and the miss the agent handled honestly on its own
+ * ("nobody has written this down, here is what to try"), because the only
+ * thing this field reports is whether somebody's time was spent.
+ */
+function resolverFor(...candidates: (Blocker | undefined)[]): ResolutionRecord["resolvedBy"] {
+  const human = candidates.filter((b): b is Blocker => b?.needsHuman === true);
+  if (human.length === 0) return "corpus";
+  return human.some((b) => Boolean(b.suggestedPerson)) ? "expert" : "peer";
 }
 
 /**

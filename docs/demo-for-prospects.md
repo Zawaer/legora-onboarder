@@ -123,3 +123,80 @@ Worth more than the demo. Ask at least one.
    company before?"*
 3. *"Which budget would this come out of?"* (People vs engineering — the answer
    settles a strategy question we cannot settle ourselves.)
+
+---
+
+## The 15-second beat: two questions that resolve differently
+
+The strongest thing to do with the chat is not to ask it one good question. It
+is to ask it two, back to back, and let the prospect watch the agent decide
+which one is worth a colleague's time.
+
+Open `/hire/demo-legal-engineer` and paste these in order. Do not paraphrase
+them — both are verified on this corpus, and both are load-bearing.
+
+**1 · Answered from the web. Nobody contacted.**
+
+```
+What's the difference between a git rebase and a git merge, and which should I use before opening a PR?
+```
+
+Comes back in about 14 seconds in a **dashed grey card headed "From the web ·
+not from your team"**, with three real links and a closing line: *"If this is
+actually about how we do it, say so and I'll ask someone."* Nothing appears on
+`/manager`. Nobody at the company was interrupted.
+
+The line to say over it:
+
+> "It didn't guess, and it didn't go ask anyone. It worked out that this has
+> nothing to do with this company — and then it told her where the answer came
+> from, in a box that deliberately looks nothing like a quote from her team."
+
+**2 · Escalated to a named person.**
+
+```
+I can't see the Nordkap change-of-control workspace under my SSO login — the three SPAs won't open.
+```
+
+Routes to **Johan Lindqvist**, who owns Nordkap technically. Open `/manager` in
+a second tab: the blocker is there with his name on it and an honest five
+minutes.
+
+> "Same agent, same corpus, thirty seconds apart. That one it could not answer
+> and would not fake, so it spent a person — and it told her which person and
+> how long it would cost him."
+
+**Why these two and not others.** The corpus always wins, so a demo question has
+to be one the corpus genuinely cannot settle. Git conventions appear nowhere in
+this workspace, which is why the first one reaches the web; and the classifier
+is tuned to assume INTERNAL unless it is sure, so a question that merely *sounds*
+general (*"what's the difference between precision and recall?"*) gets answered
+from the corpus instead — Johan's review checklist covers it. Do not swap these
+out without checking the replacement first.
+
+**One honest note if a prospect is watching closely.** The Nordkap blocker is
+already open on the demo hire, so on question 2 the agent routes to Johan
+rather than opening a second row. That is deliberate — one obstacle is one row,
+and re-raising it every turn is how a manager's queue becomes noise. Say so if
+asked; it is a better answer than the one they were expecting.
+
+### The number to show afterwards
+
+`/manager` now carries two figures above the roster, both about the agent and
+neither about a person:
+
+- **questions resolved without interrupting anyone**
+- **the share of questions the corpus could not answer that turned out to be
+  general knowledge** — the ones that would otherwise have cost a colleague
+  something for nothing
+
+The second one is queryable, not just drawn, so it can go in a write-up with a
+date on it:
+
+```
+curl https://legora-onboarder.vercel.app/api/resolutions
+curl 'https://legora-onboarder.vercel.app/api/resolutions?company=legora&records=1'
+```
+
+Filters: `company`, `hire`, `since` (ISO 8601), and `records=1` for the rows
+each number was computed from.

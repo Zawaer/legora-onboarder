@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Blocker, HireState } from "@/lib/types";
+import { findAdjoiningScope } from "@/lib/agent/cohort";
+import AdjoiningScopeList from "./adjoining-scope";
 import BlockerList, { type HireRef } from "./blocker-list";
 import { fetchHires } from "./client-api";
+import ResolutionCounters from "./resolution-counters";
 import SiteHeader, { NavLink } from "./site-header";
 import { Label, SyntheticNote, initials, type SyntheticCorpus } from "./ui";
 
@@ -55,6 +58,11 @@ export default function ManagerView({
     list.map((h) => [h.id, { name: h.name, roleTitle: h.roleTitle }]),
   );
 
+  // Read straight off the plans that are already on screen. No extra fetch, no
+  // model call, and nothing to show unless a planner actually wrote the
+  // sentence — see lib/agent/cohort.ts.
+  const adjoining = findAdjoiningScope(list);
+
   return (
     <div className="min-h-dvh">
       <SiteHeader
@@ -98,6 +106,12 @@ export default function ManagerView({
             <span>{list.length} {list.length === 1 ? "hire" : "hires"} ramping</span>
           </div>
         </header>
+
+        {/* ── what never reached a person ──
+            Two numbers about the agent, deliberately not about anybody on the
+            roster. See resolution-counters.tsx for why they do not violate the
+            no-metrics rule this page is built on. */}
+        <ResolutionCounters />
 
         {/* ── roster ── */}
         {list.length > 0 && (
@@ -170,6 +184,15 @@ export default function ManagerView({
             </div>
           ) : (
             <BlockerList blockers={blockers} people={people} now={now || undefined} />
+          )}
+
+          {/* Below the blockers, never above them: the page's promise is that
+              what needs a human comes first. This needs nobody — it is two
+              plans saying out loud that they run alongside each other. */}
+          {hires !== null && adjoining.length > 0 && (
+            <div className="mt-10">
+              <AdjoiningScopeList items={adjoining} />
+            </div>
           )}
         </section>
 

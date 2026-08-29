@@ -14,6 +14,7 @@ import { randomUUID } from "node:crypto";
 import { loadCompany } from "@/lib/agent/knowledge";
 import { currentTask, isDuplicateBlocker, respond } from "@/lib/agent/supervise";
 import { getHire, updateHire } from "@/lib/agent/hires";
+import { recordResolution } from "@/lib/agent/resolutions";
 import { toApiError } from "@/lib/anthropic";
 import type { ChatMessage } from "@/lib/types";
 
@@ -68,15 +69,24 @@ export async function POST(request: Request) {
     );
   }
 
+  // Started before the model call, not inside it: the number that matters to a
+  // hire is how long they sat there, which includes the web rung's classifier
+  // and search hop when those run.
+  const startedAt = Date.now();
+
   try {
     // The model sees the state as it was when the hire spoke, so the incoming
     // message is not folded into history before the call.
     const result = await respond(hire, company, text);
     const task = currentTask(hire);
 
+    // The hire's own message id is the question id, so a record can always be
+    // traced back to the exact words that produced it.
+    const questionId = randomUUID();
+
     const updated = await updateHire(hireId, (h) => {
       const hireMessage: ChatMessage = {
-        id: randomUUID(),
+        id: questionId,
         role: "hire",
         text,
         at: new Date().toISOString(),
@@ -119,6 +129,22 @@ export async function POST(request: Request) {
     });
 
     if (!updated) return NextResponse.json({ error: "Unknown hire." }, { status: 404 });
+
+    // Counted after the turn is safely stored, and awaited rather than
+    // fire-and-forget: on a serverless runtime the response ends the instance,
+    // and a record written into a dead process is a number that is quietly
+    // wrong. `recordResolution` is documented never to throw, so this cannot
+    // cost the hire their answer.
+    await recordResolution({
+      questionId,
+      hireId,
+      companySlug: hire.companySlug,
+      classification: result.resolution.classification,
+      confidence: result.resolution.confidence,
+      resolvedBy: result.resolution.resolvedBy,
+      latencyMs: Date.now() - startedAt,
+      at: new Date().toISOString(),
+    });
 
     // Only report a blocker the caller can actually find on the hire — saying we
     // raised one that was deduped away is the same class of lie as a spinner

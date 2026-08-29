@@ -20,6 +20,16 @@ import { z } from "zod/v4";
  */
 export const MODEL = "claude-opus-5" as const;
 
+/**
+ * The small, fast model. Same rule about date suffixes.
+ *
+ * For the one-shot classifications that sit on the latency path of a live chat
+ * turn (see `lib/agent/classify.ts`) — a decision between two labels does not
+ * need a frontier model, and paying opus latency for it would be felt by the
+ * person waiting. Everything that reasons over the corpus stays on `MODEL`.
+ */
+export const FAST_MODEL = "claude-haiku-4-5" as const;
+
 /** Thrown before any network call when the developer has not set a key. */
 export class MissingApiKeyError extends Error {
   constructor() {
@@ -79,6 +89,13 @@ export type GenerateOptions<S extends z.ZodType> = {
   maxTokens?: number;
   /** Prior conversation, oldest first. Used by the supervision loop. */
   history?: Anthropic.MessageParam[];
+  /**
+   * Defaults to `MODEL`. Only set this for a step that has a reason to be
+   * cheaper or faster than the rest of the agent — `FAST_MODEL` for a
+   * latency-path classification. Everything that reasons over the corpus and
+   * produces something a human reads stays on the default.
+   */
+  model?: string;
 };
 
 /** What the last `generate` call actually cost, for latency/caching diagnostics. */
@@ -105,6 +122,7 @@ export async function generate<S extends z.ZodType>({
   label,
   maxTokens = 32000,
   history = [],
+  model = MODEL,
 }: GenerateOptions<S>): Promise<z.infer<S>> {
   const client = getClient();
 
@@ -128,7 +146,7 @@ export async function generate<S extends z.ZodType>({
   messages.push(...history, { role: "user", content: user });
 
   const stream = client.messages.stream({
-    model: MODEL,
+    model,
     max_tokens: maxTokens,
     system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
     messages,
