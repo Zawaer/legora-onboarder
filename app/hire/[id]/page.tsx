@@ -17,8 +17,16 @@ async function corpus(): Promise<Corpus> {
     // Imported lazily so a seed module that fails to load degrades the citations
     // to bare artifact ids rather than taking the whole page down.
     const { listCompanies } = await import("@/lib/seed");
+    // Ingested corpora too, otherwise a hire derived from a customer's own
+    // Slack renders its citations as bare artifact ids — and the citations are
+    // the entire proof that the role was not invented.
+    const { listIngestedCompanies } = await import("@/lib/ingest/store");
+    const companies = [
+      ...listCompanies(),
+      ...(await listIngestedCompanies()).map((c) => c.company),
+    ];
     return Object.fromEntries(
-      listCompanies().map((c) => [
+      companies.map((c) => [
         c.slug,
         { name: c.name, artifacts: c.artifacts ?? [] },
       ]),

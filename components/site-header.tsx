@@ -24,6 +24,12 @@ export default function SiteHeader({
         <div className="ml-auto flex items-center gap-1.5">
           {right ?? (
             <>
+              {/* The bring-your-own-corpus entry point. Hidden on the narrowest
+                  screens only because the bar has no room, not because it is
+                  secondary — it is the difference between a demo and a pilot. */}
+              <span className="hidden sm:contents">
+                <NavLink href="/ingest">Your own data</NavLink>
+              </span>
               <NavLink href="/manager">Manager view</NavLink>
               <NavLink href="/loi">Letter of intent</NavLink>
               <NavLink href="/pay" emphasis>

@@ -12,6 +12,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { randomUUID } from "node:crypto";
 import { getCompany } from "@/lib/seed";
+import { getIngestedCompany } from "@/lib/ingest/store";
 import { currentTask, isDuplicateBlocker, respond } from "@/lib/agent/supervise";
 import { getHire, updateHire } from "@/lib/agent/hires";
 import { toApiError } from "@/lib/anthropic";
@@ -47,10 +48,12 @@ export async function POST(request: Request) {
   const hire = await getHire(hireId);
   if (!hire) return NextResponse.json({ error: "Unknown hire." }, { status: 404 });
 
-  const company = getCompany(hire.companySlug);
+  // Same fallback as /api/derive: a hire created from an ingested corpus has
+  // to be supervisable, or ingest produces a workspace whose chat is dead.
+  const company = getCompany(hire.companySlug) ?? (await getIngestedCompany(hire.companySlug));
   if (!company) {
     return NextResponse.json(
-      { error: `Hire references company "${hire.companySlug}", which is not seeded.` },
+      { error: `Hire references company "${hire.companySlug}", which is neither seeded nor ingested.` },
       { status: 409 },
     );
   }

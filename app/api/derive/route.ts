@@ -23,6 +23,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { getCompany } from "@/lib/seed";
+import { getIngestedCompany } from "@/lib/ingest/store";
 import { deriveRoleWithGrounding } from "@/lib/agent/derive";
 import { buildRampPlan } from "@/lib/agent/plan";
 import { openingMessage } from "@/lib/agent/supervise";
@@ -74,9 +75,16 @@ export async function POST(request: Request) {
   const freshParam = new URL(request.url).searchParams.get("fresh");
   const fresh = parsed.data.fresh === true || freshParam === "1" || freshParam === "true";
 
-  const company = getCompany(companySlug);
+  // Seeded corpora first, then anything a customer ingested at /ingest. An
+  // ingested company is the same `Company` shape, so everything below this
+  // line is identical either way — which is the point: the pilot path and the
+  // demo path must not be two different code paths.
+  const company = getCompany(companySlug) ?? (await getIngestedCompany(companySlug));
   if (!company) {
-    return NextResponse.json({ error: `No company seeded for "${companySlug}".` }, { status: 404 });
+    return NextResponse.json(
+      { error: `No company seeded or ingested for "${companySlug}".` },
+      { status: 404 },
+    );
   }
 
   try {
