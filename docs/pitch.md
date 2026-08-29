@@ -1,160 +1,183 @@
 # The pitch — 3 minutes, then 2 minutes of questions
 
-Top 10 teams pitch Sunday 13:00. Three minutes is roughly 400 words spoken
-well. Cut anything that isn't below.
+**Track: AI Agents.** Re-cut Saturday ~12:00 for that rubric — see `docs/track.md`.
+
+Three minutes is roughly 400 words spoken well. Time is allocated by where the
+points are, not by what is most fun to show:
+
+| | Points | Airtime |
+| --- | --- | --- |
+| Problem & validation | **14** | 0:00–1:00 |
+| Business potential | **16** | 2:20–3:00 |
+| Traction | 12 | 2:00–2:20 |
+| Originality | 8 | woven through the demo |
+
+Note what that means: **business potential is the second-biggest number and it
+is the thing teams always run out of time for.** Do not let the demo eat it.
 
 ---
 
-## 0:00–0:35 — The story (do not rush this; it is the strongest asset we have)
+## 0:00–0:30 — Where the problem came from
 
 > Friday night we didn't have an idea. So we went out onto the street and asked
 > people what was broken at their work.
 >
 > The first two people we spoke to worked at Legora.
 >
-> They told us three things. They hire tens of people every week. Most of those
+> They told us three things. They hire tens of people every month. Most of those
 > roles have never existed at the company before. And nobody has time to look
 > after the new people, so they have to be independent from day one.
 
-Say it in that order. It is a real conversation, not a market analysis, and the
+Say it in that order. This is not a warm-up — on this track it is **validation**,
+the 14-point criterion. It is a real conversation, not a market analysis, and the
 judges will know the difference.
 
-## 0:35–1:05 — The forced conclusion
+## 0:30–1:00 — Why an agent is the only thing left
 
-> We checked the numbers. Legora went from three million to a hundred and fifty
-> million ARR in eighteen months. They're going from seven hundred people to
-> fifteen hundred by December. They crossed a hundred hires in a single month
-> for the first time in July, and onboarded ninety-seven people in one cohort.
+**The load-bearing thirty seconds.** The 14-point band reads *"painful, frequent
+and validated problem where an AI agent is clearly the right solution."* This is
+you satisfying that sentence.
+
+> You can't write documentation, because the role is being invented while they
+> hire for it.
 >
-> So: you can't write documentation, because the role is being invented while
-> they hire for it. You can't use Glean, because retrieval needs the answer to
-> already exist and needs the new person to know what to ask. You can't assign a
-> mentor, because there is no spare senior person — that's the whole constraint.
+> You can't use enterprise search, because retrieval needs the answer to already
+> exist, and the new person doesn't know what to search for. They don't know what
+> they don't know.
 >
-> Volume, no docs, no humans. The only thing left that scales is an agent.
-
-**This is the load-bearing thirty seconds of the pitch.** You are closing three
-doors so the fourth is the only one open. Do not soften it.
-
-### If you get a follow-up, these two lines are the sharpest we have
-
-Credit to Viia for both. Use them in Q&A, or swap them in above if the room
-looks unconvinced.
-
-> **"Documentation existing doesn't help, because they don't know what to search
-> for. They don't know what they don't know."**
-
-That is the single cleanest reason enterprise search loses here. Retrieval needs
-a query, and a query needs you to already know the shape of the answer.
-
-> **"Normally 'how we do things here' passes from the people who've been there to
-> the people who haven't. When everyone started last week, there's nobody to
-> absorb it from."**
-
-This is the one that makes hypergrowth *qualitatively* different rather than
-just more of the same. The mechanism that normally transmits tacit knowledge
-requires a ratio of veterans to newcomers, and at that pace the ratio
-inverts. It isn't that onboarding got harder — it's that the thing that used to
-do the job silently no longer exists.
-
-Two more worth having in your pocket:
-
-- **Nobody sequences the work.** Twenty things land at once and no one says in
-  what order, because the manager is running twenty other new people.
-- **Mistakes surface late.** Someone can do a thing wrong for weeks before
-  anyone notices. That's normally caught by a manager reviewing work — which
-  works at five to eight reports and not at a hundred a month.
-
-## 1:05–2:05 — Demo (one minute, rehearsed, no live derivation)
-
-Onboarding an ex-M&A lawyer into a **Legal Engineer** role — a job that did not
-exist in the legal industry three years ago and that Legora invented.
-
-Show exactly three things:
-
-1. **The derived role**, with citations. "Nobody wrote this. It read their Slack
-   and worked it out — and every line points at the message it came from."
-2. **The first task**, with context attached. "Not a reading list. Real work,
-   day one, with everything needed to do it without interrupting anyone."
-3. **The manager screen.** "Blockers. Not scores. We deliberately show no
-   productivity metrics — they hire for ownership, and a surveillance dashboard
-   gets killed by the culture it's sold into."
-
-> **Pre-record the derivation.** It takes 20–60 seconds live. That is a third of
-> the pitch spent watching a spinner. Have the result already on screen.
-
-## 2:05–2:35 — Traction
-
-Read the actual numbers off the screen. Whatever is true on Sunday morning:
-paying customers, signed LOIs, the Legora conversation, other companies spoken
-to. Be specific and be honest — the judges open the GitHub and the Stripe
-dashboard is real.
-
-## 2:35–3:00 — Why this is a company
-
-> Our market isn't "companies that onboard people". That's Rippling's market and
-> it's crowded. Ours is **companies whose org chart changes faster than their
-> documentation can** — which is the defining condition of an AI-era company,
-> and there are more of them every quarter.
+> You can't assign a mentor, because the absence of a spare senior person *is*
+> the constraint.
 >
-> Workday paid about a billion dollars for Sana, from this city, serving
-> companies that already knew what their roles were. We're going after the ones
-> that don't.
+> Volume, no docs, no humans. An agent isn't a choice we made. It's what's left.
+
+Do not soften it. You are closing three doors so the fourth is the only one open.
+
+Two lines to have in your pocket if the room looks unconvinced (credit Viia):
+
+> **"They don't know what to search for. They don't know what they don't know."**
+> — the cleanest reason retrieval loses here.
+
+> **"'How we do things' normally passes from the people who've been there to the
+> people who haven't. When everyone started last week, there's nobody to absorb
+> it from."** — why hypergrowth is *qualitatively* different, not just more.
+
+## 1:00–2:00 — Demo: prove it isn't a chat wrapper
+
+The rubric scores *"generic chatbot or basic AI wrapper"* at **zero** originality.
+The field will be full of them. Every second here exists to separate you.
+
+**Show two things. Not five.**
+
+**1 · It speaks without being asked.** The hire says they'll fix the Italian miss
+with a keyword list. Unprompted, the agent surfaces the message where that was
+already ruled out:
+
+> *"NOT shipping: a keyword list. If anyone adds 'cessione' to a keyword list I
+> will find you."* — Marta Nowak, 19 Aug
+
+> **"Nobody asked it to check. A chatbot answers questions. This noticed
+> something no one reported."**
+
+That line is the whole track in one sentence.
+
+**2 · It refuses to make things up.** Every citation verified word-for-word
+against the source; anything failing is dropped. Then show the coverage panel:
+
+> **"It also tells you what it can't see. Four artifacts, three people, one day —
+> it says the corpus is thin before you read a word of what it derived."**
+
+Third beat if time allows: the manager screen, *"blockers, not scores —
+deliberately."* Cut this before you cut business potential.
+
+> **Never derive live.** Cached at 1.3s on the deployed site; a cold run is three
+> minutes. Have the result on screen already.
+
+## 2:00–2:20 — Traction, briefly and honestly
+
+Read the real numbers. Whatever is true Sunday morning: pilots agreed, LOIs,
+payments, companies spoken to. Twenty seconds, no padding, no spin — the judges
+open the GitHub and the Stripe dashboard is real.
+
+Traction is 12 here, not 18. Don't spend business-potential time on it.
+
+## 2:20–3:00 — Why this is a company
+
+**16 points. The biggest number after validation. Give it the airtime.**
+
+> Our market isn't "companies that onboard people" — that's Rippling's, and it's
+> crowded. It's **companies whose org chart changes faster than their
+> documentation can.**
+>
+> The buyer is engineering, not HR. HR software budget is around $250 per
+> employee per year and shrinking. Engineering spends $500 to $3,000 per head on
+> AI tooling alone, ring-fenced and growing. Same motion, same product:
+> Enboarder's median contract is $17,000; Glean's is $99,000.
+>
+> Bottom-up: roughly 16,000 companies in the US and Western Europe with 200-plus
+> engineers. At $25 per engineer per month that's a $1.7 billion market and a
+> $105,000 average contract. **Thirty-three customers clears a Series A.**
+>
+> And it compounds — every question the agent takes to a human becomes corpus the
+> next hire never has to ask about.
 
 ---
 
 # The 2 minutes of questions
 
-## "Isn't this just Glean?" — this is coming, have it word-perfect
+## "Is this actually an agent, or a loop with a prompt?" — Charles Maddock will ask this
+
+> It derives a role nobody wrote down, decides what's worth a human's attention,
+> declines to escalate what it can answer itself, and speaks unprompted when it
+> spots a conflict nobody reported. The *judgment about when not to act* is the
+> product. A wrapper can't decline.
+
+## "Isn't this just Glean?"
 
 > Glean is retrieval. It answers questions you already know to ask, and only if
-> someone already wrote the answer down. For a role nobody has ever held,
-> neither of those is true. We don't retrieve the role, we derive it from what
-> the team is actually doing. And we don't wait to be asked — we drive the first
-> two days.
+> someone already wrote the answer down. For a role nobody has held, neither is
+> true. And when the answer exists nowhere, we get it from the person who'd know —
+> that's corpus that exists in no connector.
 
-## "Why doesn't Slack or Glean just ship this?"
+## "What stops it inventing quotes?"
 
-The derivation compounds. Every ramp we run tells us which parts of a role were
-real and which the company hadn't decided yet — that's a dataset about how roles
-form inside a company, and it isn't a prompt anyone can copy in a sprint.
+> `lib/agent/ground.ts` — every citation verified verbatim, unverifiable ones
+> dropped. And we found a subtler failure ourselves: a quote can be completely
+> genuine and still mislead if it stops one sentence early. So citations expand
+> forward to show what the person said next. Open the file.
 
-## "Isn't onboarding a nice-to-have? HR budgets are slow."
-
-Our buyer isn't HR, it's the hiring manager — and at ten to forty hires a month it isn't
-episodic, it's continuous. We're not selling a document tool, we're selling back
-supervision capacity that doesn't exist at any price.
-
-## "What happens when your customer stops hypergrowing?"
-
-Internal mobility hits the identical wall — someone moving into a role nobody
-has held inside that company has exactly the same problem. Same product.
+That admission scores better than the claim it replaces. Use it.
 
 ## "How do you know ramp actually got faster?"
 
-Honest answer: time-to-first-shipped-task, and the count of interruptions the
-agent absorbed that would otherwise have hit a senior. We instrument both. We
-are not going to claim a 40% number we can't defend.
+> Time to tenth merged PR — never satisfaction. And be careful with satisfaction:
+> active-learning research finds it moves *down* while actual learning moves up.
+> We're not going to claim a 40% number we can't defend.
 
-## "What stops it hallucinating a job description?"
+## "Who actually answers when the agent asks a human?"
 
-`lib/agent/ground.ts`. Every citation is verified to actually appear in the
-source message; anything that doesn't is dropped. Open the file. Showing a
-hiring manager invented quotes from their own Slack is worse than showing them
-nothing — and they'd catch it instantly.
+> Honestly, unproven. Published expert-response rates sit near 25% within 24
+> hours, so we route to peers first, cap it at one or two asks per person per
+> week, and make refusing free. Completion rate per expert is what we'd
+> instrument on day one.
+
+## "What happens when your customer stops hypergrowing?"
+
+> Internal mobility hits the identical wall — someone moving into a role nobody
+> inside the company has held has exactly the same problem.
 
 ---
 
 ## Rules for the room
 
-- **Never say "fastest growing company in history."** Say "$3M to $150M ARR in
-  eighteen months, 700 to 1,500 people by December." Numbers can't be argued
-  with; a superlative invites a judge to spend your time debating Cursor.
+- **Never say "fastest growing company in history."** Say the numbers: $3M to
+  $150M ARR in eighteen months, 700 to 1,500 people by December.
+- **Say "tens of hires a month", not "fifty a week."** Fifty a week is 2,600 a
+  year, implying a 6,000-person company — above our stated ICP, and a judge with
+  a calculator will check.
+- **The corpus is synthetic.** Never imply it read Legora's real Slack. The seed
+  file is in the repo; the argument doesn't need the overclaim.
 - **Ask the Legora contacts before naming them or putting them on a slide.**
-  "We met two people from Legora on the street" is a great line and completely
-  fine. Their names and anything said in confidence are not ours to use, and a
-  contact who feels exposed does not sign anything.
-- **Do not overclaim proactive escalation as novel.** Moveworks and the
-  enterprise HR-agent vendors already advertise it. Ours is about the *work*
-  ("stuck on the data model, here's who fixes it in five minutes"), not task
-  completion ("IT hasn't provisioned the laptop"). Say the specific version.
+- **Don't claim proactive escalation is novel** — Moveworks advertises it. Ours
+  is about the work, not task completion. Say the specific version.
+- **Don't say "Pyn died."** It isn't dead. Use Almanac, or better, Microsoft Viva
+  Topics: perfect distribution, zero acquisition cost, dead in under four years.
