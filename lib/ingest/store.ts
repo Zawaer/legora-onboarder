@@ -21,6 +21,7 @@ import path from "node:path";
 import { COMPANIES } from "@/lib/seed";
 import type { Company } from "@/lib/types";
 import { slugify } from "./parse";
+import { isKvConfigured, kvGet, kvSet } from "@/lib/kv";
 
 const FILE =
   process.env.INGESTED_COMPANIES_PATH ?? path.join(process.cwd(), "data", "companies.json");
@@ -64,7 +65,21 @@ function serialise<T>(work: () => Promise<T>): Promise<T> {
   return next;
 }
 
+const KV_KEY = "store:companies";
+
 async function readAll(): Promise<Map<string, IngestedCompany>> {
+  // The durable store is the record on serverless, where the disk never was.
+  if (isKvConfigured()) {
+    const rows = (await kvGet<IngestedCompany[]>(KV_KEY)) ?? [];
+    const map = new Map(
+      rows
+        .filter((row) => row && row.company && typeof row.company.slug === "string")
+        .map((row) => [row.company.slug, row] as const),
+    );
+    // Anything written this instance but not yet flushed still counts.
+    for (const [slug, row] of memory) if (!map.has(slug)) map.set(slug, row);
+    if (map.size) return map;
+  }
   if (!diskWritable) return memory;
   try {
     const raw = await fs.readFile(FILE, "utf8");
@@ -86,6 +101,11 @@ async function readAll(): Promise<Map<string, IngestedCompany>> {
 
 async function writeAll(map: Map<string, IngestedCompany>): Promise<void> {
   for (const [slug, row] of map) memory.set(slug, row);
+
+  // A corpus somebody pasted has to survive the request that created it, or
+  // the derivation they are shown belongs to a company that no longer exists.
+  if (isKvConfigured()) await kvSet(KV_KEY, [...map.values()]);
+
   if (!diskWritable) return;
   try {
     await fs.mkdir(path.dirname(FILE), { recursive: true });

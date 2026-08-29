@@ -17,6 +17,7 @@
  */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { isKvConfigured, kvList, kvSet } from "@/lib/kv";
 import path from "node:path";
 import type { Loi, Payment } from "@/lib/types";
 
@@ -43,7 +44,23 @@ function serialise<T>(file: string, work: () => Promise<T>): Promise<T> {
   return next;
 }
 
+/**
+ * The KV key for a file-backed collection. Keyed off the filename so the two
+ * backends hold the same shape and a local file can be lifted straight into
+ * the store.
+ */
+function kvKey(file: string): string {
+  return `store:${file.split("/").pop()?.replace(/\.json$/, "") ?? "rows"}`;
+}
+
 async function readAll<T>(file: string): Promise<T[]> {
+  // Durable store first. On serverless it is the only one that exists.
+  if (isKvConfigured()) {
+    const rows = await kvList<T>(kvKey(file));
+    if (rows.length) return rows;
+    // Empty is a legitimate answer, but so is "KV is configured and the read
+    // failed" — falling through to disk costs nothing and is right locally.
+  }
   try {
     const raw = await readFile(file, "utf8");
     const parsed: unknown = JSON.parse(raw);
@@ -56,8 +73,15 @@ async function readAll<T>(file: string): Promise<T[]> {
 }
 
 async function writeAll<T>(file: string, rows: T[]): Promise<void> {
-  await mkdir(DIR, { recursive: true });
-  await writeFile(file, `${JSON.stringify(rows, null, 2)}\n`, "utf8");
+  // If a durable store took it, the local file is a convenience, not the
+  // record — so a read-only filesystem underneath is no longer a failure.
+  const durable = isKvConfigured() && (await kvSet(kvKey(file), rows));
+  try {
+    await mkdir(DIR, { recursive: true });
+    await writeFile(file, `${JSON.stringify(rows, null, 2)}\n`, "utf8");
+  } catch (err) {
+    if (!durable) throw err;
+  }
 }
 
 export async function listLois(): Promise<Loi[]> {
