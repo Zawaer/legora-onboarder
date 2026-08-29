@@ -29,6 +29,9 @@ export default function SiteHeader({
                   secondary — it is the difference between a demo and a pilot. */}
               <span className="hidden sm:contents">
                 <NavLink href="/ingest">Your own data</NavLink>
+                {/* The falsifiable claim: what the traces say about the
+                    posting, including where they say nothing. */}
+                <NavLink href="/jd">JD check</NavLink>
               </span>
               <NavLink href="/manager">Manager view</NavLink>
               <NavLink href="/loi">Letter of intent</NavLink>

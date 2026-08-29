@@ -225,14 +225,30 @@ const ADJUDICATE_SYSTEM = `You are given a company's complete internal corpus �
 
 You are not judging the posting. You are reporting what the company's own material shows. Those are different jobs and only the second one is yours.
 
+HOW TO WORK A CLAIM — DISCONFIRMATION FIRST
+
+For each claim, in this order:
+
+  1. Go looking for what would make it false. Does anyone with standing say otherwise? Does the thing it assumes exists — an owner, a process, a decision — turn out not to exist? Is this the exact question two people are still arguing about?
+  2. Only then look for what supports it.
+  3. Decide, having read both.
+
+This order is not a hint that you should find something. It is there because looking for corroboration first is how a reader ends up with a page of ticks over a corpus that was arguing with the posting the whole time. Most claims will still come back silent or supported. Do step 1 anyway, on every single claim.
+
 THE THREE VERDICTS
 
 supported — the corpus shows this actually happening, specifically, and you can point at it. Not "this is plausible", not "this is consistent with". Someone did this thing, or is visibly on the hook for it, in a passage you can quote.
 
+A claim is NOT supported if the same corpus shows the company openly arguing about that same thing. Work being done and the question of whose work it is are two different things, and a posting that states the second one while the company is still fighting about it is not corroborated by the first. If the argument is quotable, that is contradicted; if it is not quotable, it is silent.
+
 contradicted — the corpus shows something incompatible with the claim AS WRITTEN. Three shapes count, and nothing else does:
   (a) somebody with standing over that area states the opposite in writing;
-  (b) the work is visibly done in a way the claim rules out, or a thing the claim presupposes is visibly absent — the claim assumes an owner and the corpus shows nobody owns it, the claim assumes a process and the corpus shows it happens when somebody happens to notice;
-  (c) the claim presents as settled something the corpus shows is openly unresolved: two named people disagreeing in writing, carried across meetings, with no decision recorded. A posting that states a boundary the company is still arguing about is contradicted by the argument, and the argument is quotable.
+  (b) the work is visibly done in a way the claim rules out, or a thing the claim presupposes is visibly absent — the claim assumes an owner and the corpus shows nobody owns it, the claim assumes a process and the corpus shows it happens when somebody happens to notice, the claim assumes a body of work and the corpus shows the ticket for it sitting unassigned;
+  (c) the claim presents as settled something the corpus shows is openly unresolved: two named people disagreeing in writing, carried across meetings, with no decision recorded. A posting that states a boundary the company is still arguing about is contradicted by the argument, and the argument is quotable. This is the most valuable finding you can return and also the easiest to overreach on, so the test is strict: the disagreement must be about THIS claim, not about a neighbouring topic, and the people disagreeing must be named in the corpus rather than inferred.
+
+ONE PASSAGE, ONE CLAIM
+
+If you find yourself citing the same passage against three different claims, it genuinely bears on at most one of them and you are stretching it over the other two. Pick the claim the passage actually addresses. The others are silent or supported on their own evidence, not on that one.
 
 silent — everything else, and it is the correct answer far more often than either of the others. The corpus does not touch it. Or it touches the topic but does not settle this claim. Or you can construct a reading under which it is contradicted, which means you are reasoning rather than reading.
 
@@ -247,6 +263,14 @@ THE QUOTE IS THE VERDICT
 Every citation must be a verbatim contiguous substring of the artifact you attribute it to, and it must be the passage that actually does the work — the sentence where the disagreement happens, the line where the owner turns out not to exist. A quote that merely mentions the topic is not evidence of anything. Use '...' only to elide the middle of a long passage.
 
 A downstream check verifies every quote against the real artifact text and silently discards any that does not match. If nothing survives, your verdict is replaced with silent. You cannot get an invented quote past it; you can only lose the finding it was carrying. If you cannot find a real sentence, there is no finding.
+
+DO NOT STOP A QUOTE BEFORE THE CLAUSE THAT QUALIFIES IT
+
+The verification is verbatim, so it cannot catch a true fragment lifted out of a sentence that goes on to say the opposite. That check is yours and it is not optional.
+
+If the passage continues with a qualification — "but", "however", "although", "I would not describe that as", "which is obviously wrong", "no decision", "still open", "we did not resolve it" — the qualification is part of what that person said and it goes in the quote. Ending "my team maintains the M&A ones and the diligence ones" one clause before "I would not describe any of that as ownership" produces a citation that passes every check and misrepresents the speaker, which is worse than inventing one, because nothing downstream can catch it.
+
+Read the whole artifact before you choose the fragment. If the fragment supports you and the paragraph around it does not, you have found evidence against your verdict, not for it.
 
 Prefer two citations from different artifacts for a contradiction where the corpus offers them, and especially for shape (c), where the evidence is that two people said different things: quote both of them.
 
