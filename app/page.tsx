@@ -44,21 +44,21 @@ const BEATS = [
     stat: "700 → 1,500",
     statNote: "people this year",
     head: "Hiring outruns documentation.",
-    body: "Legora roughly doubled headcount in a year — about fifty starts a week. The handbook describes a company a third the size, and the people who could update it are the same people shipping the product.",
+    body: "The handbook describes a company a third the size, and the people who could update it are the ones shipping the product.",
   },
   {
     n: "02",
     stat: "0",
     statNote: "playbooks that exist",
     head: "The role has never existed.",
-    body: "“Legal Engineer” was invented a week before the req opened — a lawyer who builds. There is nothing to hand the new hire, because nobody has written it yet, and nobody will until someone has done the job.",
+    body: "“Legal Engineer” was invented a week before the req opened. Nobody has written it down, because nobody has done it yet.",
   },
   {
     n: "03",
     stat: "Day 1",
     statNote: "independent, or not at all",
     head: "Nobody has time to supervise.",
-    body: "Everyone senior enough to onboard this hire is the reason the company is growing. Realistically the new hire gets a laptop, a Slack invite and a calendar with one coffee on it.",
+    body: "Everyone senior enough to onboard this hire is the reason the company is growing.",
   },
 ];
 
@@ -113,7 +113,7 @@ export default async function Home() {
                 Live demo · Legora, Stockholm
               </span>
               <span className="text-[12px] text-faint">
-                ~50 new starts a week
+                ~100 new starts a month
               </span>
             </div>
 
@@ -122,10 +122,9 @@ export default async function Home() {
             </h1>
 
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              Onboarder reads a company&rsquo;s real Slack, docs and tickets,
-              derives what a brand-new role actually is, and drives the new hire
-              through their first two days of real work — escalating to a human
-              only when it genuinely can&rsquo;t unblock them.
+              It reads a company&rsquo;s real Slack, docs and tickets, works out
+              what a brand-new role actually is, and drives the new hire through
+              their first two days of real work.
             </p>
 
             <StartDemo feed={feed} />
@@ -186,11 +185,6 @@ export default async function Home() {
                     divergence, each citing the clause it came from.
                   </p>
                 </div>
-                <div className="flex items-center gap-2 border-t border-line pt-4 text-[12px] text-faint">
-                  <span className="h-1.5 w-1.5 rounded-full bg-ok" />
-                  Every quote carries its source. Open questions are the ones
-                  the company never settled &mdash; flagged, not invented.
-                </div>
               </div>
             </div>
           </aside>
@@ -198,7 +192,7 @@ export default async function Home() {
 
         {/* ── the three facts ── */}
         <section className="border-b border-line py-14 lg:py-20">
-          <Label>Why this is a real problem and not a feature</Label>
+          <Label>Why this happens</Label>
           <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-3">
             {BEATS.map((b) => (
               <article key={b.n} className="flex flex-col gap-4 bg-surface p-6 lg:p-8">
@@ -244,10 +238,9 @@ export default async function Home() {
                   </span>
                 </div>
                 <p className="mt-2.5 text-[14px] leading-[1.62] text-muted">
-                  A handbook is stale the day it merges. At fifty starts a week
-                  it is stale <em>before</em> it merges — and the roles it would
-                  need to describe are being invented faster than anyone can
-                  write them down.
+                  A handbook is stale the day it merges. At this pace it is
+                  stale <em>before</em> it merges, and the roles it would need to
+                  describe are invented faster than anyone can write them down.
                 </p>
               </div>
 
