@@ -49,7 +49,7 @@ export default async function Home() {
       <main className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
         {/* hero */}
         <section data-reveal className="grid gap-12 border-b border-line py-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16 lg:py-24">
-          <div className="flex flex-col gap-7">
+          <div data-stagger className="flex flex-col gap-7">
             <h1 className="max-w-[20ch] text-[40px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[62px]">
               Onboarding for the job no one has written down yet
             </h1>
@@ -86,7 +86,7 @@ export default async function Home() {
               to get stuck in. Everything is legible with the animation off;
               only the "deriving" line hides, because it describes work that
               is not happening. */}
-          <aside className="viz lg:pt-2">
+          <aside data-reveal="right" data-parallax className="viz lg:pt-2">
             <div
               className="viz-card overflow-hidden rounded-xl border border-line bg-surface"
               style={{ boxShadow: "var(--shadow)" }}

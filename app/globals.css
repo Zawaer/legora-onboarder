@@ -153,126 +153,132 @@
 }
 
 /* ── scroll reveal ────────────────────────────────────────────────────────
-   Content is visible by default and the animation is added only where the
-   browser supports it. The usual approach — hide everything, then reveal with
-   IntersectionObserver — means a JS failure leaves a blank page, and this gets
-   demoed on venue wifi in front of people. Progressive enhancement is the only
-   version of this worth shipping.
+   Content is revealed as you move through the page, not thrown at you.
 
-   A rise and a fade rather than a slide from the sides: horizontal entrances
-   read as templated, and at this width they also fight the eye's return to the
-   left margin on every line. Twelve pixels is enough to register as motion
-   without becoming the thing you notice.
+   Two rules govern everything below. Content is visible by default and the
+   motion is added on top, so a browser that cannot animate, or a script that
+   does not run, still shows a finished page: the usual pattern of hiding
+   everything and revealing with JS leaves a blank page when it fails, and this
+   gets demoed on venue wifi. And the movement is small. Forty pixels reads as
+   deliberate; a hundred reads as a template.
 
-   `entry 0% cover 18%` finishes the animation early, so a section is fully
-   settled well before it reaches reading position — nobody should be waiting
-   on a fade to finish before they can read. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
+   `[data-reveal]` moves a whole block. `[data-stagger]` on a container makes
+   its children arrive in sequence, so an eyebrow lands before its heading and
+   the heading before its paragraph, which is the order a person reads them in
+   anyway. `[data-reveal="right"]` and `="scale"` give a side-by-side section
+   two different entrances rather than one applied twice.                    */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
     [data-reveal] {
-      animation: reveal linear both;
+      animation: reveal-up linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 18%;
+      animation-range: entry 0% cover 22%;
+    }
+    [data-reveal="right"] {
+      animation-name: reveal-right;
+    }
+    [data-reveal="scale"] {
+      animation-name: reveal-scale;
+    }
+
+    /* Children arrive in sequence. The delay is expressed as a slice of the
+       same scroll range rather than a time, so the rhythm holds whether the
+       reader is easing down or flicking past. */
+    [data-stagger] > * {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+    }
+    [data-stagger] > *:nth-child(1) { animation-range: entry 0% cover 20%; }
+    [data-stagger] > *:nth-child(2) { animation-range: entry 4% cover 24%; }
+    [data-stagger] > *:nth-child(3) { animation-range: entry 8% cover 28%; }
+    [data-stagger] > *:nth-child(4) { animation-range: entry 12% cover 32%; }
+    [data-stagger] > *:nth-child(n + 5) { animation-range: entry 16% cover 36%; }
+
+    /* Parallax. The panel drifts against the page as it passes, which reads as
+       depth rather than as movement. Deliberately tiny: at this distance it is
+       felt and not seen, which is the entire point. */
+    [data-parallax] {
+      animation: drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
     }
   }
 }
 
-/* The JS fallback for browsers without scroll-driven animations. `.js-reveal`
-   is set by an inline script in the head, so these rules can only ever apply
-   when scripting is on and components/reveal.tsx is there to undo them. */
-.js-reveal [data-reveal] {
-  opacity: 0;
-  transform: translateY(12px);
-  transition:
-    opacity 0.55s cubic-bezier(0.2, 0.7, 0.3, 1),
-    transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
+/* Smaller distances on a phone, where the viewport is short enough that a
+   40px rise is a visible jump rather than a drift, and no parallax at all. */
+@media (max-width: 640px) {
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  [data-parallax] { animation: none !important; }
 }
-.js-reveal [data-reveal].is-revealed {
+
+.js-reveal [data-reveal],
+.js-reveal [data-stagger] > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.js-reveal [data-reveal="right"] { transform: translateX(28px) scale(0.97); }
+.js-reveal [data-reveal="scale"] { transform: translateY(18px) scale(0.97); }
+
+.js-reveal [data-reveal].is-revealed,
+.js-reveal [data-stagger] > *.is-revealed {
   opacity: 1;
   transform: none;
 }
 
-/* ── the hero visualiser ──────────────────────────────────────────────────
-   An 11-second loop that plays the product's argument rather than describing
-   it: a real quote from the corpus appears, the agent says it is reading, and
-   then the plan writes itself out a line at a time. Someone who watches it
-   once and reads nothing has still seen what this does.
+/* The stagger, in the fallback. Delays rather than scroll offsets, because
+   IntersectionObserver reports arrival and not progress. */
+.js-reveal [data-stagger] > *:nth-child(2) { transition-delay: 0.09s; }
+.js-reveal [data-stagger] > *:nth-child(3) { transition-delay: 0.18s; }
+.js-reveal [data-stagger] > *:nth-child(4) { transition-delay: 0.27s; }
+.js-reveal [data-stagger] > *:nth-child(n + 5) { transition-delay: 0.36s; }
 
-   CSS only, like the scroll reveal, and for the same reason — it is the first
-   thing on the page and must not depend on a script that might not run. The
-   loop is `infinite`, so there is no end state to get stuck in and no
-   restart to coordinate.
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(34px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes reveal-right {
+  from { opacity: 0; transform: translateX(34px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes reveal-scale {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes drift {
+  from { transform: translateY(14px); }
+  to { transform: translateY(-14px); }
+}
 
-   Percentages are of the 11s cycle: evidence lands at 4%, the deriving line
-   holds 24-36%, the output starts at 42%, and the three plan lines arrive at
-   50 / 58 / 70. The last one holds until 96 so the finished state is legible
-   for a full second before it loops. */
+/* ── the header, once the page has moved ──────────────────────────────────
+   It condenses rather than transforms: a couple of pixels of height, a
+   heavier blur and a hairline that only exists once there is content behind
+   it. The point is that it stops looking painted onto the page and starts
+   looking like a layer above it, which is the only thing a floating header
+   has to communicate. Transitioned on properties that do not reflow. */
+header {
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    backdrop-filter 0.3s ease;
+}
+.is-scrolled header {
+  background-color: color-mix(in srgb, var(--paper) 78%, transparent);
+  box-shadow: 0 1px 0 var(--line), 0 6px 20px -18px rgb(43 42 39 / 0.5);
+}
+.is-scrolled header > div {
+  transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
 @media (prefers-reduced-motion: no-preference) {
-  .viz [data-viz] {
-    animation-duration: 11s;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
-  }
-  .viz [data-viz="evidence"] { animation-name: viz-in; }
-  .viz [data-viz="status"] { animation-name: viz-status; }
-  .viz [data-viz="output"] { animation-name: viz-late; }
-  .viz [data-viz="l1"] { animation-name: viz-line-1; }
-  .viz [data-viz="l2"] { animation-name: viz-line-2; }
-  .viz [data-viz="l3"] { animation-name: viz-line-3; }
-  .viz [data-viz="dot"] {
-    animation: viz-blink 0.9s ease-in-out infinite;
-  }
-  .viz-card { animation: viz-breathe 11s ease-in-out infinite; }
-}
-
-/* Without the animation the card must still read as finished, not half-built:
-   everything visible, the "deriving" line hidden, since it describes work that
-   is not happening. */
-.viz [data-viz="status"] { opacity: 0; }
-
-@keyframes viz-in {
-  0% { opacity: 0; transform: translateY(4px); }
-  4%, 100% { opacity: 1; transform: none; }
-}
-@keyframes viz-status {
-  0%, 20% { opacity: 0; }
-  24%, 36% { opacity: 1; }
-  40%, 100% { opacity: 0; }
-}
-@keyframes viz-late {
-  0%, 38% { opacity: 0; }
-  42%, 100% { opacity: 1; }
-}
-@keyframes viz-line-1 {
-  0%, 44% { opacity: 0; transform: translateY(3px); }
-  50%, 100% { opacity: 1; transform: none; }
-}
-@keyframes viz-line-2 {
-  0%, 52% { opacity: 0; transform: translateY(3px); }
-  58%, 100% { opacity: 1; transform: none; }
-}
-@keyframes viz-line-3 {
-  0%, 64% { opacity: 0; transform: translateY(3px); }
-  70%, 100% { opacity: 1; transform: none; }
-}
-@keyframes viz-blink {
-  0%, 100% { opacity: 0.35; transform: scale(0.85); }
-  50% { opacity: 1; transform: scale(1); }
-}
-@keyframes viz-breathe {
-  0%, 100% { box-shadow: 0 20px 48px rgb(43 42 39 / 0.06); }
-  40% { box-shadow: 0 24px 56px rgb(43 42 39 / 0.09); }
-}
-
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+  .is-scrolled header > div {
+    height: 3.25rem;
   }
 }
 

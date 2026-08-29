@@ -23,7 +23,11 @@ export default function Reveal() {
     const root = document.documentElement;
     if (!root.classList.contains("js-reveal")) return;
 
-    const nodes = Array.from(document.querySelectorAll("[data-reveal]"));
+    // Staggered children are observed individually so each one arrives on its
+    // own, rather than the container revealing everything at once.
+    const nodes = Array.from(
+      document.querySelectorAll("[data-reveal], [data-stagger] > *"),
+    );
 
     // If anything goes wrong below, or the browser lacks IntersectionObserver,
     // drop the hiding class rather than leaving the page blank.
@@ -56,6 +60,29 @@ export default function Reveal() {
       io.disconnect();
       window.clearTimeout(failsafe);
     };
+  }, []);
+
+  // The header condenses once the page has moved. Done here rather than in
+  // SiteHeader because that is a server component used on every route, and
+  // making it a client one to read a scroll position would cost more than the
+  // effect is worth. A class on the root element is all the CSS needs.
+  useEffect(() => {
+    const root = document.documentElement;
+    let ticking = false;
+    const apply = () => {
+      root.classList.toggle("is-scrolled", window.scrollY > 24);
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      // rAF rather than a raw handler: this fires on every scroll event and
+      // reading scrollY outside a frame is how you lose 60fps.
+      requestAnimationFrame(apply);
+    };
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return null;
