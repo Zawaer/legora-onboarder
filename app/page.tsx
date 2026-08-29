@@ -397,7 +397,7 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-px overflow-hidden rounded-xl border border-line bg-line">
+            <div className="flex flex-col self-start divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
               {[
                 {
                   who: "1st hire",
