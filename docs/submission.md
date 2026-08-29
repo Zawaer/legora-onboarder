@@ -70,7 +70,7 @@ for screenshotting.
 > because the absence of a spare senior person is the whole constraint. Volume,
 > no docs, no humans — the only thing left that scales is an agent.
 >
-> It does four things:
+> It does five things:
 >
 > 1. **Derives the role** from a company's real Slack, docs and tickets, because
 >    nobody wrote it down. Every claim is cited back to a specific message.
@@ -78,8 +78,20 @@ for screenshotting.
 >    it — not a reading list.
 > 3. **Supervises**: speaks first, answers from company context, so the hire
 >    doesn't burn a senior's afternoon or sit stuck in silence.
-> 4. **Escalates only when it must** — naming the right person and an honest
+> 4. **Notices work going wrong before a human would.** The expensive failure at
+>    fifty hires a week isn't the question someone asks — it's the wrong thing
+>    they do confidently, without asking. A manager normally catches that by
+>    reviewing work, which holds at five to eight reports and collapses at
+>    fifty. When a hire states an approach the company has already ruled out,
+>    the agent says so and shows the message where it was ruled out. Nobody
+>    asked it to check.
+> 5. **Escalates only when it must** — naming the right person and an honest
 >    estimate of the minutes it will cost them.
+>
+> It runs on a company's own data (`/ingest` takes a Slack export, a pasted log
+> or a CSV), in the browser or **in Slack**, and the manager can take the whole
+> briefing as **60 seconds of audio** on their commute — because the buyer's
+> defining constraint is that they have no time.
 >
 > Two decisions we'd defend to anyone:
 >

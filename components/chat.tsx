@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatMessage, HireState } from "@/lib/types";
 import { sendChat } from "./client-api";
 import { Mark, clockTime } from "./ui";
+import VoiceInput from "./voice-input";
 
 const DEFAULT_PROMPTS = [
   "What should I start with?",
@@ -207,6 +208,16 @@ export default function Chat({
             }}
             placeholder={`Message Onboarder…`}
             className="max-h-40 min-h-6 flex-1 resize-none bg-transparent text-[14.5px] leading-[1.5] text-ink outline-none placeholder:text-faint"
+          />
+          <VoiceInput
+            disabled={!hireId || pending}
+            onTranscript={(text) => {
+              /* Into the composer, never straight into the conversation. The
+                 hire gets to fix a misheard acronym before the agent answers
+                 it — see the note at the top of components/voice-input.tsx. */
+              setDraft((d) => (d.trim() ? `${d.trim()} ${text}` : text));
+              textarea.current?.focus();
+            }}
           />
           <button
             type="submit"
