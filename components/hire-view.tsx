@@ -28,15 +28,15 @@ export type Corpus = Record<
 export default function HireView({
   hireId,
   corpus = {},
-  synthetic,
 }: {
   hireId: string;
   /** Seeded source material, so evidence can be shown with its channel and author. */
   corpus?: Corpus;
   /**
-   * Set by the server when this hire's corpus is the written demo. Carried as
-   * a prop rather than derived after the fetch so the notice is in the
-   * server-rendered HTML, including the loading state.
+   * Set by the server when this hire's corpus is the written demo. The banner
+   * it used to draw was removed from this screen; the prop stays so the server
+   * page's call signature is unchanged and the notice can come back without a
+   * round trip through the data layer.
    */
   synthetic?: SyntheticCorpus;
 }) {
@@ -84,16 +84,10 @@ export default function HireView({
     return () => clearInterval(id);
   }, [load]);
 
-  if (loading && !hire) return <FullPageState state="loading" synthetic={synthetic} />;
+  if (loading && !hire) return <FullPageState state="loading" />;
 
   if (!hire) {
-    return (
-      <FullPageState
-        state="missing"
-        message={error ?? undefined}
-        synthetic={synthetic}
-      />
-    );
+    return <FullPageState state="missing" message={error ?? undefined} />;
   }
 
   const role = hire.derivedRole;
@@ -120,10 +114,16 @@ export default function HireView({
         }
       />
 
-      {/* ── who this is ── */}
+      {/* ── who this is ──
+          Two registers of type, not four: the name, and one quiet line under
+          it carrying role, company and day. Everything that was a bordered
+          pill up here is now plain text with a dot, so the only pill left in
+          the strip is the one that means a human is actually needed. The
+          avatar is neutral rather than brass — brass is the evidence colour
+          and it should not be competing with itself at the top of the page. */}
       <div className="sticky top-14 z-20 shrink-0 border-b border-line bg-paper/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3 sm:px-8">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft text-[12px] font-semibold text-accent-ink">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-2.5 sm:px-8">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface-2 text-[12px] font-semibold text-muted">
             {(hire.name ?? "?")
               .split(/\s+/)
               .slice(0, 2)
@@ -132,30 +132,25 @@ export default function HireView({
               .toUpperCase()}
           </span>
           <div className="min-w-0">
-            <div className="flex items-baseline gap-2">
-              <span className="truncate text-[15px] font-semibold tracking-[-0.012em]">
-                {hire.name}
-              </span>
-              <span className="truncate text-[13px] text-muted">
-                {hire.roleTitle}
-              </span>
-            </div>
-            <span className="text-[11.5px] text-faint">
-              {company} · day 1 of 2
+            <span className="block truncate text-[15px] font-semibold tracking-[-0.012em]">
+              {hire.name}
+            </span>
+            <span className="block truncate text-[11.5px] text-faint">
+              {hire.roleTitle} · {company} · day 1 of 2
             </span>
           </div>
 
-          <div className="ml-auto flex flex-wrap items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-3">
             {deriving ? (
-              <Pill tone="accent">
-                <span className="dot h-1.5 w-1.5 rounded-full bg-current" />
+              <span className="inline-flex items-center gap-1.5 text-[11.5px] text-muted">
+                <span className="dot h-1.5 w-1.5 rounded-full bg-muted" />
                 Deriving the role
-              </Pill>
+              </span>
             ) : (
-              <Pill tone="ok">
-                <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              <span className="inline-flex items-center gap-1.5 text-[11.5px] text-muted">
+                <span className="h-1.5 w-1.5 rounded-full bg-ok" />
                 Agent active
-              </Pill>
+              </span>
             )}
             {openBlockers.length > 0 && (
               <Pill tone="warn">
@@ -166,17 +161,12 @@ export default function HireView({
         </div>
       </div>
 
-      {/* Above the fold, beside the derived role, and with nothing to dismiss.
-          `shrink-0` so the desktop layout takes the height out of the
-          workspace below rather than off the bottom of the viewport. */}
-      {synthetic && (
-        <div className="mx-auto w-full max-w-[1400px] shrink-0 px-5 pt-5 sm:px-8">
-        </div>
-      )}
-
       {/* ── the workspace ── */}
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 sm:px-8 lg:min-h-0 lg:overflow-hidden">
-        <div className="grid h-full gap-8 py-8 lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-10">
+        {/* A wider gutter between the two columns: at 40px the role and the
+            plan read as one dense field of text, and the whole screen was the
+            complaint. */}
+        <div className="grid h-full gap-8 py-8 lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-12">
           {/* left: the derived role + its evidence */}
           <section className="scroll-thin min-h-0 lg:overflow-y-auto lg:pr-2">
             {deriving ? (
@@ -271,22 +261,13 @@ function channelFor(name?: string, roleTitle?: string) {
 function FullPageState({
   state,
   message,
-  synthetic,
 }: {
   state: "loading" | "missing";
   message?: string;
-  synthetic?: SyntheticCorpus;
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <SiteHeader />
-      {/* This is the state the server renders, so the notice has to be here
-          too — otherwise it is absent from the first frame of a recording and
-          from any screenshot of the page opening. */}
-      {synthetic && (
-        <div className="mx-auto w-full max-w-[1400px] px-5 pt-5 sm:px-8">
-        </div>
-      )}
       <main className="mx-auto grid w-full max-w-[1400px] flex-1 place-items-center px-5 py-24">
         {state === "loading" ? (
           <div className="flex flex-col items-center gap-3">

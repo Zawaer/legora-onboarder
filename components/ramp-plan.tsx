@@ -84,12 +84,27 @@ function Task({
           <span className="block text-[14.5px] leading-[1.45] font-medium tracking-[-0.005em]">
             {task.title}
           </span>
+          {/* Seven identical "To do" pills down a column say nothing seven
+              times over, and they were the loudest thing in the panel. The
+              default state keeps its word but loses the border and the fill,
+              so a task that is genuinely in progress or blocked is the only
+              one wearing a pill. */}
           <span className="mt-1.5 flex flex-wrap items-center gap-2">
-            <Pill tone={s.tone}>{s.text}</Pill>
-            {typeof task.estimateMins === "number" && (
+            {status === "not_started" ? (
               <span className="tnum text-[11.5px] text-faint">
-                ~{task.estimateMins} min
+                {s.text}
+                {typeof task.estimateMins === "number" &&
+                  ` · ~${task.estimateMins} min`}
               </span>
+            ) : (
+              <>
+                <Pill tone={s.tone}>{s.text}</Pill>
+                {typeof task.estimateMins === "number" && (
+                  <span className="tnum text-[11.5px] text-faint">
+                    ~{task.estimateMins} min
+                  </span>
+                )}
+              </>
             )}
           </span>
         </span>

@@ -96,16 +96,14 @@ export default function RoleCard({
   const evidence = role.evidence ?? [];
 
   return (
-    <article className="flex flex-col gap-9 pb-14">
+    <article className="flex flex-col gap-10 pb-14">
       {/* ── header ── */}
       <header className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <Label>Derived role</Label>
-          <span className="h-3 w-px bg-line" />
-          <span className="text-[11px] text-faint">
-            reconstructed from {companyName ?? "the company"}&rsquo;s own record
-          </span>
-        </div>
+        {/* One eyebrow, nothing beside it. What this was reconstructed from
+            is said properly by the coverage panel directly below — down to the
+            counts and the company's name — so a second faint line here was
+            competing with the headline to say something weaker. */}
+        <Label>Derived role</Label>
         <h1 className="text-[28px] leading-[1.12] font-semibold tracking-[-0.022em] text-balance sm:text-[32px]">
           {role.title}
         </h1>
@@ -113,10 +111,11 @@ export default function RoleCard({
           The summary is one long paragraph of dense prose with a dozen proper
           nouns in it. At a single weight there is no way into it — a reader
           seeing this for the first time has to commit to ten lines before
-          learning anything. So the first sentence carries at heading weight and
-          the rest sits underneath as detail. Split on the sentence, not on a
-          character count, so a short summary simply renders as one line and
-          nothing looks truncated.
+          learning anything. So the first sentence carries at heading weight,
+          and the rest — which is detail, not the point — is one click away
+          rather than eight more lines of grey text above the evidence.
+          Split on the sentence, not on a character count, so a short summary
+          simply renders as one line with no disclosure at all.
         */}
         {(() => {
           const m = /^(.*?[.!?])(\s+)([\s\S]+)$/.exec(role.summary.trim());
@@ -128,7 +127,28 @@ export default function RoleCard({
                 {lead}
               </p>
               {rest && (
-                <p className="text-[15px] leading-[1.65] text-muted">{rest}</p>
+                <details>
+                  <summary className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-muted transition-colors hover:text-ink">
+                    <svg
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      className="chev h-3 w-3 shrink-0 transition-transform"
+                      aria-hidden
+                    >
+                      <path
+                        d="M6 3.5 10.5 8 6 12.5"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    The rest of the summary
+                  </summary>
+                  <p className="mt-2.5 text-[14.5px] leading-[1.65] text-muted">
+                    {rest}
+                  </p>
+                </details>
               )}
             </div>
           );
@@ -140,7 +160,7 @@ export default function RoleCard({
 
       {/* ── evidence: the proof it isn't invented ── */}
       {evidence.length > 0 && (
-        <section className="flex flex-col gap-3">
+        <section className="flex flex-col gap-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <Label>Evidence</Label>
             <Pill tone="accent">
@@ -157,59 +177,61 @@ export default function RoleCard({
               against source
             </Pill>
           </div>
-          <ol className="flex flex-col gap-3">
+          {/*
+            A citation, not a card. Five bordered, filled boxes stacked down the
+            column were the single heaviest thing on this screen, and the box
+            was carrying no information the brass rule doesn't: the rule already
+            means "this is the company's own words, verified". So the chrome
+            goes and the rule stays, which is also the only thing here allowed
+            to be brass. Nothing is removed — quote, source, author, date and
+            why it matters all still read, with air between them instead of
+            walls around them.
+          */}
+          <ol className="flex flex-col gap-5">
             {evidence.map((e, i) => {
               const a = byId.get(e.artifactId);
               return (
                 <li
                   key={`${e.artifactId}-${i}`}
-                  className="group overflow-hidden rounded-lg border border-line bg-surface"
+                  className="border-l-2 border-accent/45 pl-4 transition-colors hover:border-accent"
                 >
-                  <div className="flex gap-0">
-                    <div className="w-[3px] shrink-0 bg-accent/55 transition-colors group-hover:bg-accent" />
-                    <div className="min-w-0 flex-1 px-4 py-3.5 sm:px-5">
-                      <blockquote className="text-[15px] leading-[1.6] font-medium tracking-[-0.005em] break-words hyphens-auto text-ink">
-                        <span className="mr-0.5 text-accent">&ldquo;</span>
-                        {a ? expandToSentence(e.quote, a.text) : e.quote}
-                        <span className="ml-0.5 text-accent">&rdquo;</span>
-                      </blockquote>
+                  <blockquote className="text-[14.5px] leading-[1.6] tracking-[-0.005em] break-words hyphens-auto text-ink">
+                    &ldquo;{a ? expandToSentence(e.quote, a.text) : e.quote}
+                    &rdquo;
+                  </blockquote>
 
-                      <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12px] text-muted">
-                        <span className="inline-flex items-center gap-1.5 font-mono text-[11.5px] tracking-tight text-accent-ink">
-                          <KindIcon kind={a?.kind} />
-                          {sourceLine(a, e.artifactId)}
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] text-muted">
+                    <span className="inline-flex items-center gap-1.5 font-mono tracking-tight text-accent-ink">
+                      <KindIcon kind={a?.kind} />
+                      {sourceLine(a, e.artifactId)}
+                    </span>
+                    {a?.author && (
+                      <>
+                        <span className="text-line-strong">/</span>
+                        <span className="font-medium text-ink">{a.author}</span>
+                      </>
+                    )}
+                    {a?.authorRole && (
+                      <span className="text-faint">{a.authorRole}</span>
+                    )}
+                    {a?.timestamp && (
+                      <>
+                        <span className="text-line-strong">/</span>
+                        <span className="tnum text-faint">
+                          {dayStamp(a.timestamp)}
                         </span>
-                        {a?.author && (
-                          <>
-                            <span className="text-line-strong">/</span>
-                            <span className="font-medium text-ink">
-                              {a.author}
-                            </span>
-                          </>
-                        )}
-                        {a?.authorRole && (
-                          <span className="text-faint">{a.authorRole}</span>
-                        )}
-                        {a?.timestamp && (
-                          <>
-                            <span className="text-line-strong">/</span>
-                            <span className="tnum text-faint">
-                              {dayStamp(a.timestamp)}
-                            </span>
-                          </>
-                        )}
-                      </div>
-
-                      {e.why && (
-                        <p className="mt-2.5 border-t border-line pt-2.5 text-[13px] leading-[1.55] text-muted">
-                          <span className="font-medium text-ink">
-                            Why this matters:{" "}
-                          </span>
-                          {e.why}
-                        </p>
-                      )}
-                    </div>
+                      </>
+                    )}
                   </div>
+
+                  {e.why && (
+                    <p className="mt-2 text-[13px] leading-[1.55] text-muted">
+                      <span className="font-medium text-ink">
+                        Why this matters:{" "}
+                      </span>
+                      {e.why}
+                    </p>
+                  )}
                 </li>
               );
             })}
@@ -243,12 +265,11 @@ export default function RoleCard({
               outcomes by end of week one — not a reading list
             </span>
           </div>
-          <ul className="flex flex-col gap-2">
+          {/* The tick already marks each line; a filled box around every one of
+              them was saying the same thing a second time. */}
+          <ul className="flex flex-col gap-2.5">
             {role.firstWeekOutcomes.map((o, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-3 rounded-lg border border-line bg-surface-2/60 px-4 py-3"
-              >
+              <li key={i} className="flex items-start gap-3">
                 <svg
                   viewBox="0 0 16 16"
                   fill="none"
@@ -282,7 +303,7 @@ export default function RoleCard({
                 className="rounded-lg border border-line bg-surface px-4 py-3"
               >
                 <div className="flex items-center gap-2.5">
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent-soft text-[11px] font-semibold text-accent-ink">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-surface-2 text-[11px] font-semibold text-muted">
                     {p.name
                       .split(/\s+/)
                       .slice(0, 2)
