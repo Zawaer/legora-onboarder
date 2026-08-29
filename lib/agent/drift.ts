@@ -439,27 +439,59 @@ export function driftBlocker(note: DriftNote): Blocker {
 export function renderDriftNote(note: DriftNote, company: Company): string {
   const byId = new Map<string, Artifact>(company.artifacts.map((a) => [a.id, a]));
 
-  const lines: string[] = [
-    `**Worth knowing before you go further** — here's how this has been done here.`,
-    ``,
-    note.observation,
-  ];
+  const shown = note.evidence.slice(0, MAX_QUOTES_SHOWN);
+  const lead = shown[0] ? byId.get(shown[0].artifactId) : undefined;
 
-  for (const item of note.evidence.slice(0, MAX_QUOTES_SHOWN)) {
+  /*
+   * The person speaks, not the system.
+   *
+   * Landis, Fisher & Menges (JAP 2020, workplace, N=131 + 97 + 629) found that
+   * unsolicited advice with *identical content* gets attributed to wanting to
+   * flaunt knowledge (γ=.24) and expose differences (γ=.15), and those
+   * attributions mediate drops in learning (b=−.29) and performance (b=−.33).
+   * Friendship does not moderate it (p=.673), so being friendlier is not the
+   * escape hatch — softening the wording only changes the register, not who the
+   * reader thinks is showing off.
+   *
+   * Marót et al. (2026, N=192, identical text) isolates the active ingredient:
+   * the same feedback attributed to AI rather than a person reduced openness to
+   * ask for help (η²=0.17) and willingness to correct mistakes (η²=0.14). Those
+   * are precisely the behaviours the rest of this product depends on — a drift
+   * note that suppresses asking has damaged the loop it sits inside. The same
+   * study found human-written-then-AI-refined performed comparably to human,
+   * which is exactly this: a real sentence a real colleague wrote, surfaced.
+   *
+   * So the lead line names the author, the room and the date, and the system
+   * says as little as possible. And the tone stays flat — Hao et al. (45,865
+   * first issues) found retention peaks at neutral, with strongly positive as
+   * costly as harsh, so there is no warm framing here on purpose.
+   */
+  const lines: string[] = lead
+    ? [
+        `${lead.author} wrote this${lead.channel ? ` in ${lead.channel}` : ""} on ${shortDate(lead.timestamp)}:`,
+      ]
+    : [`From your team's own material:`];
+
+  for (const item of shown) {
     const a = byId.get(item.artifactId);
     lines.push(``, `> ${item.quote.trim()}`);
-    if (a) lines.push(`— ${a.author}${a.channel ? `, ${a.channel}` : ""}, ${shortDate(a.timestamp)}`);
+    // Every quote after the first still needs its own attribution — a reader
+    // skimming must never have to guess which of two people said which line.
+    if (a && a !== lead) {
+      lines.push(`— ${a.author}${a.channel ? `, ${a.channel}` : ""}, ${shortDate(a.timestamp)}`);
+    }
   }
 
+  /*
+   * The decision is the grammatical subject, never the hire. "The team settled
+   * this in August" describes a fact about the company; "you're doing it wrong"
+   * describes a fact about the reader, and only one of those is ours to assert.
+   */
+  if (note.observation) lines.push(``, note.observation);
   if (note.whyItMatters) lines.push(``, note.whyItMatters);
 
   if (note.needsHuman && note.suggestedPerson) {
-    lines.push(
-      ``,
-      `This one isn't yours to settle alone — ${note.suggestedPerson} owns it, and I've put it on your manager's list.`,
-    );
-  } else {
-    lines.push(``, `Your call — you have the source, I'm not going to make it for you.`);
+    lines.push(``, `${note.suggestedPerson} owns this one. It's on your manager's list.`);
   }
 
   return lines.join("\n");
