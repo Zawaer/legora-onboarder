@@ -1,0 +1,51 @@
+# Vanav — Slack app manifest.
+#
+# api.slack.com/apps → Create New App → From a manifest → paste this.
+# Configures scopes, events, the slash command, Socket Mode and the App Home
+# messages tab in one step. See docs/slack.md for what each piece is for.
+#
+# Two things a manifest cannot do, so do them by hand afterwards:
+#   1. Basic Information → App-Level Tokens → Generate, name it `socket`,
+#      scope `connections:write`. That is SLACK_APP_TOKEN (xapp-…).
+#   2. Install App → Install to Workspace. That is SLACK_BOT_TOKEN (xoxb-…).
+display_information:
+  name: Vanav
+  description: Onboards new hires into roles nobody has held before.
+  background_color: "#172420"
+
+features:
+  bot_user:
+    display_name: Vanav
+    always_online: true
+  slash_commands:
+    - command: /onboard
+      description: Start your ramp
+      usage_hint: "[role title]"
+      should_escape: false
+  app_home:
+    home_tab_enabled: false
+    # Both of these matter. The tab alone shows the DM; the second is what makes
+    # the message box writable. With it false the hire opens the bot and finds
+    # "Sending messages to this app has been turned off", no event is emitted,
+    # and the bot looks dead while every scope is correct.
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+
+oauth_config:
+  scopes:
+    bot:
+      - chat:write          # post at all — DMs and escalations
+      - im:history          # see the hire's replies
+      - im:write            # open a DM to speak first
+      - commands            # /onboard
+      - app_mentions:read   # @Vanav in a channel
+
+settings:
+  event_subscriptions:
+    bot_events:
+      - app_mention
+      - message.im
+  # No public URL, no tunnel. This is why there is no Request URL field.
+  socket_mode_enabled: true
+  org_deploy_enabled: false
+  token_rotation_enabled: false
