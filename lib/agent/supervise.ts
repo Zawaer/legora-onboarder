@@ -397,15 +397,93 @@ function alreadyMade(reply: string, drift: DriftNote): boolean {
  * One open obstacle is one row. Re-raising is not new information.
  */
 export function isDuplicateBlocker(existing: Blocker[], candidate: Blocker): boolean {
-  const key = blockerKey(candidate.summary);
-  return existing.some((b) => !b.resolved && blockerKey(b.summary) === key);
+  return existing.some((b) => !b.resolved && sameObstacle(b, candidate));
 }
 
-function blockerKey(summary: string): string {
-  return summary
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
+/**
+ * Exact string equality was too brittle, and it failed in production on the
+ * demo's own escalation question. The model raised the already-open Nordkap
+ * blocker again, worded one token differently — "the source SPAs" against "the
+ * three source SPAs" — and a second identical row appeared on the manager
+ * screen, which is precisely what this function exists to stop.
+ *
+ * Two signals now, and the asymmetry decides how loose each is allowed to be.
+ * A false split fills a manager's queue with copies of one obstacle and
+ * silently multiplies the "minutes of your time" total. A false merge shows one
+ * row where two were warranted, and the second obstacle still surfaces in the
+ * reply the hire is reading. The first failure is the one that gets the product
+ * removed, so both signals lean toward merging.
+ */
+function sameObstacle(a: Blocker, b: Blocker): boolean {
+  const ca = contentTokens(a.summary);
+  const cb = contentTokens(b.summary);
+  if (ca.size === 0 || cb.size === 0) return false;
+
+  // Same obstacle, reworded only in function words, articles or quantifiers.
+  // Content-word equality keeps "the three source SPAs" and "the source SPAs"
+  // together while still separating Nordkap from Ardent, which differ on a
+  // content word and are genuinely two obstacles.
+  if (ca.size === cb.size && [...ca].every((t) => cb.has(t))) return true;
+
+  // A larger rewrite of the same obstacle. Only trusted when the routing agrees
+  // too: same task, same person.
+  if (a.taskId !== b.taskId) return false;
+  if ((a.suggestedPerson ?? "") !== (b.suggestedPerson ?? "")) return false;
+
+  // ...and only when the names agree. Word overlap alone is not enough here:
+  // the Nordkap and the Ardent workspace produce summaries that differ by one
+  // token out of twenty and score 0.8, while being two separate access
+  // problems for two separate clients. Merging those would hide the second one
+  // from the manager entirely, which is worse than the duplicate row this
+  // function exists to prevent. Client names, ticket ids and product surfaces
+  // all carry a capital, so this is the cheap signal that separates them.
+  const na = properNouns(a.summary);
+  const nb = properNouns(b.summary);
+  if (na.size !== nb.size || ![...na].every((t) => nb.has(t))) return false;
+
+  let shared = 0;
+  for (const t of ca) if (cb.has(t)) shared++;
+  return shared / (ca.size + cb.size - shared) >= 0.7;
+}
+
+/**
+ * Function words carry no information about *which* obstacle this is, and they
+ * are exactly what a model varies when it restates something. Numerals go too:
+ * "three SPAs" and "the SPAs" are the same access problem.
+ */
+const NOISE = new Set([
+  "a","an","the","and","or","but","so","is","are","was","were","be","been","being",
+  "not","no","of","to","in","on","at","for","from","under","over","with","without",
+  "it","its","this","that","these","those","there","here","my","our","their","i",
+  "can","cannot","cant","could","will","would","should","do","does","did","have",
+  "has","had","yet","still","because","which","who","when","while","as","by","up",
+  "one","two","three","four","five","six","seven","eight","nine","ten","first",
+  "second","third","new","open","opened","see","seen",
+]);
+
+/**
+ * Capitalised tokens after the first word: client names, ticket ids, product
+ * surfaces. The first word is skipped because every sentence starts with one.
+ */
+function properNouns(summary: string): Set<string> {
+  const words = summary.trim().split(/\s+/).slice(1);
+  const out = new Set<string>();
+  for (const w of words) {
+    const clean = w.replace(/[^A-Za-z0-9-]/g, "");
+    if (clean.length >= 3 && /^[A-Z]/.test(clean)) out.add(clean.toLowerCase());
+  }
+  return out;
+}
+
+function contentTokens(summary: string): Set<string> {
+  return new Set(
+    summary
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
+      .split(" ")
+      .filter((t) => t.length > 0 && !NOISE.has(t)),
+  );
 }
 
 /** The task the hire is on: the first one not yet finished, in plan order. */
