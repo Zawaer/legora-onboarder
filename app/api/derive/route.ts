@@ -35,7 +35,19 @@ import { randomUUID } from "node:crypto";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+
+/**
+ * A cold derivation measured 140-186 seconds against the seeded corpus, so the
+ * 60 this used to be would have killed every uncached run on Vercel while
+ * passing every rehearsal — `next dev` does not enforce it.
+ *
+ * 300 is the ceiling Vercel allows on Fluid Compute; if the account's plan
+ * caps lower, the platform clamps it rather than failing the build, and the
+ * symptom is the same timeout at whatever that limit is. The demo path is
+ * unaffected either way because it is served from cache in ~20ms — this only
+ * governs a genuinely new derivation, which is the `/ingest` flow.
+ */
+export const maxDuration = 300;
 
 const Body = z.object({
   companySlug: z.string().min(1),

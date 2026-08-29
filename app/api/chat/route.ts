@@ -20,7 +20,14 @@ import type { ChatMessage } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+
+/**
+ * Turns measured 20-37 seconds, so 60 was cutting it closer than it looked:
+ * the drift check runs concurrently, and a slow upstream on both calls at once
+ * lands uncomfortably near the ceiling. `next dev` does not enforce this, so a
+ * breach would first appear on the deployed URL, mid-demo.
+ */
+export const maxDuration = 120;
 
 const Body = z.object({
   hireId: z.string().min(1),

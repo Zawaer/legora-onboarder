@@ -134,6 +134,28 @@ export async function POST(request: Request) {
     );
   }
 
+  // Same refusal, one step further in: a corpus with messages but no identifiable
+  // authors. The parser drops artifacts whose author is unknown, so a plain
+  // document paste lands here with artifacts but an empty roster.
+  //
+  // Refusing at the door matters more than it looks. Everything downstream
+  // assumes a roster: `resolveOwner` picks who to name in "ask if stuck", and it
+  // throws rather than inventing a colleague. That throw would otherwise land
+  // three minutes and a dollar or two into a derivation, as an internal error
+  // string in front of whoever we were showing it to. The failure is the same
+  // either way; only the cost and the dignity differ.
+  if (result.company.people.length === 0) {
+    return NextResponse.json(
+      {
+        error:
+          "No author names were found, so there is nobody for the agent to point a stuck hire at. Export with usernames included, or paste a channel where messages have names against them.",
+        warnings: result.warnings,
+        format: result.format,
+      },
+      { status: 422 },
+    );
+  }
+
   const stored = await saveCompany(result.company, {
     format: result.format,
     warnings: result.warnings,
