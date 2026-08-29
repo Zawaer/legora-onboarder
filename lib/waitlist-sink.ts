@@ -19,6 +19,23 @@ export type Signup = {
 const FILE = path.join(process.cwd(), "data", "waitlist.json");
 
 /**
+ * Is anything durable configured? Never returns the URL itself — a webhook is a
+ * credential, and the only question worth answering from outside is whether one
+ * is present. Exists so a 503 can be told apart from a misconfiguration without
+ * reading the deployment's environment.
+ */
+export function waitlistSinkStatus(): { webhook: boolean; host: string | null } {
+  const url = process.env.WAITLIST_WEBHOOK_URL?.trim();
+  if (!url) return { webhook: false, host: null };
+  try {
+    return { webhook: true, host: new URL(url).host };
+  } catch {
+    // Present but unparseable — that is a different fault from absent.
+    return { webhook: true, host: "invalid-url" };
+  }
+}
+
+/**
  * Post to whatever is on the other end of WAITLIST_WEBHOOK_URL. Shaped as a
  * Slack incoming webhook payload, which is the fastest durable sink to stand up
  * and the one place the team is already looking — but any endpoint that accepts

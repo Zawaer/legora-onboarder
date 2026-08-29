@@ -8,7 +8,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isPlausibleEmail } from "@/lib/waitlist";
-import { recordSignup } from "@/lib/waitlist-sink";
+import { recordSignup, waitlistSinkStatus } from "@/lib/waitlist-sink";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -58,4 +58,9 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
+}
+
+/** Diagnostic only: is a durable sink configured for this deployment? */
+export async function GET() {
+  return NextResponse.json(waitlistSinkStatus());
 }
