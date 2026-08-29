@@ -15,33 +15,76 @@ import { PRODUCT } from "@/lib/product";
  * #c99a3a, so the mark inverts correctly in dark mode. The brass in the
  * original is within a few points of our accent already.
  */
-export function Mark({ className = "h-6 w-6" }: { className?: string }) {
+/**
+ * The mark: a vana — the trail left behind — with one point picked out on it.
+ *
+ * These are the source lockup's own 24 coordinates, translated into a 438x62
+ * viewBox rather than resampled. The first attempt rebuilt the curve as nine
+ * dots on a 24-grid to fit a square icon slot, and squaring a 7:1 wave turned
+ * a long flat trail into a steep zigzag — the right dots, the wrong shape.
+ * Geometry this distinctive is cheaper to keep than to reconstruct.
+ *
+ * Fills come from tokens, not the source's #0a0a0a and #c99a3a: the brass in
+ * the original is within a few points of our accent already, and tokens keep
+ * the mark correct if the palette ever moves again.
+ */
+export function Mark({ className = "h-[9px] w-[70px]" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden className={className}>
-      <circle cx="3.0" cy="12.0" r="1.15" className="fill-ink/45" />
-      <circle cx="5.25" cy="15.54" r="1.15" className="fill-ink/45" />
-      <circle cx="7.5" cy="17.0" r="1.15" className="fill-ink/45" />
-      <circle cx="9.75" cy="15.54" r="1.15" className="fill-ink/45" />
-      <circle cx="12.0" cy="12.0" r="1.9" className="fill-accent" />
-      <circle cx="14.25" cy="8.46" r="1.15" className="fill-ink/45" />
-      <circle cx="16.5" cy="7.0" r="1.15" className="fill-ink/45" />
-      <circle cx="18.75" cy="8.46" r="1.15" className="fill-ink/45" />
-      <circle cx="21.0" cy="12.0" r="1.15" className="fill-ink/45" />
+    <svg
+      viewBox="0 0 438 62"
+      fill="none"
+      aria-hidden
+      // The trail spans the wordmark exactly, as it does in the source
+      // lockup, so it is stretched to the measure rather than letterboxed
+      // inside it. At roughly 7px tall the dots are under 2px across and a
+      // few percent of horizontal scaling is not visible.
+      preserveAspectRatio="none"
+      className={className}
+    >
+      <circle cx="9.0" cy="30.9" r="5.5" className="fill-ink" />
+      <circle cx="27.3" cy="36.8" r="5.5" className="fill-ink" />
+      <circle cx="45.5" cy="42.3" r="5.5" className="fill-ink" />
+      <circle cx="63.8" cy="47.0" r="5.5" className="fill-ink" />
+      <circle cx="82.0" cy="50.4" r="5.5" className="fill-ink" />
+      <circle cx="100.3" cy="52.4" r="5.5" className="fill-ink" />
+      <circle cx="118.6" cy="52.8" r="5.5" className="fill-ink" />
+      <circle cx="136.8" cy="51.6" r="5.5" className="fill-ink" />
+      <circle cx="155.1" cy="48.9" r="5.5" className="fill-ink" />
+      <circle cx="173.3" cy="44.8" r="5.5" className="fill-ink" />
+      <circle cx="191.6" cy="39.7" r="5.5" className="fill-ink" />
+      <circle cx="209.9" cy="33.9" r="5.5" className="fill-ink" />
+      <circle cx="228.1" cy="27.9" r="9.0" className="fill-accent" />
+      <circle cx="246.4" cy="22.1" r="5.5" className="fill-ink" />
+      <circle cx="264.7" cy="17.0" r="5.5" className="fill-ink" />
+      <circle cx="282.9" cy="12.9" r="5.5" className="fill-ink" />
+      <circle cx="301.2" cy="10.2" r="5.5" className="fill-ink" />
+      <circle cx="319.4" cy="9.0" r="5.5" className="fill-ink" />
+      <circle cx="337.7" cy="9.4" r="5.5" className="fill-ink" />
+      <circle cx="356.0" cy="11.4" r="5.5" className="fill-ink" />
+      <circle cx="374.2" cy="14.8" r="5.5" className="fill-ink" />
+      <circle cx="392.5" cy="19.5" r="5.5" className="fill-ink" />
+      <circle cx="410.7" cy="25.0" r="5.5" className="fill-ink" />
+      <circle cx="429.0" cy="30.9" r="5.5" className="fill-ink" />
     </svg>
   );
 }
 
 export function Wordmark({ muted = false }: { muted?: boolean }) {
   return (
-    <span className="inline-flex items-center gap-2">
-      <Mark className="h-[18px] w-[18px]" />
+    // Stacked, like the source lockup: the word, and the trail running the
+    // width of it underneath. inline-flex with items-stretch so the mark takes
+    // the wordmark's measure whatever the text renders at.
+    <span className="inline-flex flex-col items-stretch gap-[3px]">
       <span
-        className={`text-[15px] font-semibold uppercase tracking-[0.06em] ${
+        className={`text-[15px] leading-none font-semibold uppercase tracking-[0.06em] ${
           muted ? "text-muted" : "text-ink"
         }`}
       >
         {PRODUCT}
       </span>
+      <Mark
+        className={`h-[7px] w-full ${muted ? "opacity-60" : ""}`}
+      />
     </span>
   );
 }
