@@ -77,7 +77,7 @@ function Task({
       className="group overflow-hidden rounded-lg border border-line bg-surface transition-colors open:border-line-strong"
     >
       <summary className="flex items-start gap-3 px-4 py-3.5 hover:bg-surface-2/60">
-        <span className="tnum mt-[1px] w-5 shrink-0 font-mono text-[11px] text-faint">
+        <span className="tnum mt-[1px] w-6 shrink-0 font-mono text-[13px] text-faint">
           {String(index + 1).padStart(2, "0")}
         </span>
         <span className="min-w-0 flex-1">

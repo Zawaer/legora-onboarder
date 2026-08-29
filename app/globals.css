@@ -147,9 +147,13 @@ body {
 
 /* eyebrow / small-caps label */
 .label {
-  font-size: 10.5px;
+  /* Was 10.5px. These eyebrows name the section a reader is about to enter, so
+     they are navigation rather than decoration, and at 10.5px they read as a
+     watermark. The letter-spacing below already costs legibility at small
+     sizes; 12px pays it back. */
+  font-size: 12px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.085em;
   text-transform: uppercase;
   font-weight: 600;
   color: var(--faint);

@@ -530,7 +530,7 @@ function Section({
   return (
     <section className="border-b border-line py-9">
       <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="tnum text-[12px] font-semibold tracking-[0.06em] text-faint">{n}</span>
+        <span className="tnum text-[14px] font-semibold tracking-[0.06em] text-faint">{n}</span>
         <h2 className="text-[17px] font-semibold tracking-[-0.015em]">{title}</h2>
         {note && <span className="text-[12.5px] text-faint">{note}</span>}
       </div>

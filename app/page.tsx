@@ -198,7 +198,7 @@ export default async function Home() {
           <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-3">
             {BEATS.map((b) => (
               <article key={b.n} className="flex flex-col gap-4 bg-surface p-6 lg:p-8">
-                <span className="tnum font-mono text-[11px] text-faint">
+                <span className="tnum font-mono text-[13px] text-faint">
                   {b.n}
                 </span>
                 <div>
