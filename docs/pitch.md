@@ -160,6 +160,33 @@ That admission scores better than the claim it replaces. Use it.
 > week, and make refusing free. Completion rate per expert is what we'd
 > instrument on day one.
 
+## "Would an enterprise really let you send their Slack to a model?"
+
+The right objection, and a legal-AI buyer will always ask it.
+
+> It deploys into your own cloud. The Anthropic SDK has first-class clients for
+> Bedrock, Vertex and Foundry — same code above the client, so inference runs in
+> your account, your region, under your existing cloud agreement. The export
+> never leaves your boundary.
+>
+> And a pilot never starts on client-facing channels. One internal engineering
+> or ops channel, thirty days, scoped and refusable.
+
+Two claims to **verify against current terms before saying them on stage**:
+Anthropic does not train on API inputs or outputs by default, and zero data
+retention is available to API customers on request. Say "my understanding is" if
+you have not checked — this buyer knows the real answer better than you do, and
+hedging correctly earns more than confidence.
+
+**Say the weakness before they find it:** we currently ship the whole corpus
+in-context on every call. That is right at 63 artifacts and wrong at 50,000. The
+answer at scale is retrieval, so only relevant passages cross the boundary. We
+know it, and it is the next thing.
+
+**Do not offer to broker anything.** We cannot arrange terms between Anthropic
+and a customer and should not imply we can. The deployment answer is ours to
+give; the commercial one is not.
+
 ## "What happens when your customer stops hypergrowing?"
 
 > Internal mobility hits the identical wall — someone moving into a role nobody
