@@ -3,6 +3,7 @@ import SiteHeader from "@/components/site-header";
 import StartDemo, { type FeedItem } from "@/components/start-demo";
 import { Label, Wordmark } from "@/components/ui";
 import Waitlist from "@/components/waitlist";
+import Story from "@/components/story";
 
 export const dynamic = "force-dynamic";
 
@@ -171,7 +172,9 @@ export default async function Home() {
         </section>
 
         <div className="border-b border-line">
-          <Waitlist />
+          <Story />
+
+        <Waitlist />
         </div>
 
         <section data-reveal className="py-14 lg:py-20">
