@@ -86,7 +86,7 @@ Stora Enso is a ~20,000-person, 100+ year old materials company. She is the one
 judge who does **not** live in hypergrowth-startup world.
 
 **She will ask the question your ICP framing is weakest on:**
-> *"Does this only work for AI startups hiring fifty people a week?"*
+> *"Does this only work for AI startups hiring a hundred people a month?"*
 
 Have the answer ready: **internal mobility hits the identical wall.** A large
 traditional company creating a function that did not previously exist — an AI

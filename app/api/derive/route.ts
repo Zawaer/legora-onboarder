@@ -28,6 +28,7 @@ import { buildRampPlan } from "@/lib/agent/plan";
 import { openingMessage } from "@/lib/agent/supervise";
 import { getHire, putHire } from "@/lib/agent/hires";
 import { listDerivations, readDerivation, writeDerivation } from "@/lib/agent/cache";
+import { computeCoverage } from "@/lib/agent/coverage";
 import { toApiError } from "@/lib/anthropic";
 import type { DerivedRole, HireState, RampPlan, TaskStatus } from "@/lib/types";
 import { randomUUID } from "node:crypto";
@@ -165,7 +166,13 @@ export async function POST(request: Request) {
 
     await putHire(hire);
 
-    return NextResponse.json({ hire, cached, derivedAt, grounding }, { status: 200 });
+    // What the derivation was standing on, alongside the derivation itself.
+    // Pure arithmetic over the corpus already in memory — no model call, no
+    // disk, nothing added to the latency of either path — so the answer never
+    // travels without the sample it came from.
+    const coverage = computeCoverage(company);
+
+    return NextResponse.json({ hire, cached, derivedAt, grounding, coverage }, { status: 200 });
   } catch (err) {
     const { status, message } = toApiError(err);
     console.error("[derive]", err);

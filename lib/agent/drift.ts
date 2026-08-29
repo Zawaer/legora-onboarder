@@ -8,7 +8,7 @@
  * person knows to ask, and it is genuinely most of the value.
  *
  * It does not cover the expensive failure. The expensive failure at a company
- * hiring 150 people a week is not the question someone asks — it is the thing
+ * hiring at this pace is not the question someone asks — it is the thing
  * they do confidently, correctly-seeming, and wrong, for two weeks, because
  * nobody happened to look. A manager with six reports catches that by reviewing
  * the work. A manager with fifty does not catch it at all, and the correction

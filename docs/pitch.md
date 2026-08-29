@@ -23,7 +23,8 @@ judges will know the difference.
 
 > We checked the numbers. Legora went from three million to a hundred and fifty
 > million ARR in eighteen months. They're going from seven hundred people to
-> fifteen hundred by December. That's about fifty hires a week.
+> fifteen hundred by December. They crossed a hundred hires in a single month
+> for the first time in July, and onboarded ninety-seven people in one cohort.
 >
 > So: you can't write documentation, because the role is being invented while
 > they hire for it. You can't use Glean, because retrieval needs the answer to
@@ -52,7 +53,7 @@ a query, and a query needs you to already know the shape of the answer.
 
 This is the one that makes hypergrowth *qualitatively* different rather than
 just more of the same. The mechanism that normally transmits tacit knowledge
-requires a ratio of veterans to newcomers, and at fifty hires a week that ratio
+requires a ratio of veterans to newcomers, and at that pace the ratio
 inverts. It isn't that onboarding got harder — it's that the thing that used to
 do the job silently no longer exists.
 
@@ -62,7 +63,7 @@ Two more worth having in your pocket:
   what order, because the manager is running twenty other new people.
 - **Mistakes surface late.** Someone can do a thing wrong for weeks before
   anyone notices. That's normally caught by a manager reviewing work — which
-  works at five to eight reports and not at fifty a week.
+  works at five to eight reports and not at a hundred a month.
 
 ## 1:05–2:05 — Demo (one minute, rehearsed, no live derivation)
 
@@ -120,7 +121,7 @@ form inside a company, and it isn't a prompt anyone can copy in a sprint.
 
 ## "Isn't onboarding a nice-to-have? HR budgets are slow."
 
-Our buyer isn't HR, it's the hiring manager — and at fifty hires a week it isn't
+Our buyer isn't HR, it's the hiring manager — and at ten to forty hires a month it isn't
 episodic, it's continuous. We're not selling a document tool, we're selling back
 supervision capacity that doesn't exist at any price.
 

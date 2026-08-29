@@ -29,7 +29,7 @@
  * first real task and who each task escalates to), and the roster. A second
  * generation would re-derive what we already paid for, and would do it at the
  * worst possible moment — this thing has to fire unattended, on a schedule, at
- * 03:00 two days before a start date, for fifty people a week. A composed brief
+ * 03:00 two days before a start date, for tens of people a month. A composed brief
  * is free, instant, deterministic, and diffable in review.
  *
  * The decisive argument is not cost though, it is fabrication surface. A model

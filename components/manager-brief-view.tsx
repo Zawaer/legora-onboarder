@@ -152,7 +152,7 @@ export default function ManagerBriefView() {
             The highest-return onboarding intervention anyone has published is a
             short note to the <em>manager</em> before the start date — not
             another portal for the hire. It needs a human with a spare hour who
-            notices a start date. A company hiring fifty people a week does not
+            notices a start date. A company hiring tens of people a month does not
             have that human, so this composes it instead: four things, each one
             quoted from your own Slack, docs and tickets.
           </p>

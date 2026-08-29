@@ -1,4 +1,5 @@
 import type { Artifact, DerivedRole } from "@/lib/types";
+import CoverageNote from "./coverage-note";
 import { Label, Pill } from "./ui";
 
 /* ── source icons ─────────────────────────────────────────────────────── */
@@ -108,6 +109,9 @@ export default function RoleCard({
           {role.summary}
         </p>
       </header>
+
+      {/* ── what it was derived from, before anything derived from it ── */}
+      <CoverageNote artifacts={artifacts} companyName={companyName} />
 
       {/* ── evidence: the proof it isn't invented ── */}
       {evidence.length > 0 && (

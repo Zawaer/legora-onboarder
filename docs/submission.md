@@ -79,7 +79,7 @@ for screenshotting.
 > 3. **Supervises**: speaks first, answers from company context, so the hire
 >    doesn't burn a senior's afternoon or sit stuck in silence.
 > 4. **Notices work going wrong before a human would.** The expensive failure at
->    fifty hires a week isn't the question someone asks — it's the wrong thing
+>    this pace isn't the question someone asks — it's the wrong thing
 >    they do confidently, without asking. A manager normally catches that by
 >    reviewing work, which holds at five to eight reports and collapses at
 >    fifty. When a hire states an approach the company has already ruled out,

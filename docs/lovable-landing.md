@@ -28,7 +28,7 @@ role really is, and stays with the new hire through their first week.
 Primary CTA "See it work", secondary "How it works".
 
 **The three facts**, as a bordered three-up:
-- **700 → 1,500** — people at one customer this year. Roughly fifty hires a week.
+- **700 → 1,500** — people at one customer this year. A hundred hires in July alone.
 - **0** — playbooks for a role nobody has held before.
 - **Day 1** — when they're expected to be useful.
 
@@ -39,7 +39,7 @@ Primary CTA "See it work", secondary "How it works".
   person doesn't know what to search for. They don't know what they don't know.
 - *Assign a mentor* — the absence of a spare senior person **is** the constraint.
 - *Wait and see* — a manager catches mistakes by reviewing work. That holds at
-  five to eight reports and collapses at fifty a week.
+  five to eight reports and collapses well before this.
 
 Then, set apart and larger: **"So the only thing left that scales is an agent."**
 

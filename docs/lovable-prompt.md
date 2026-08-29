@@ -13,7 +13,7 @@ visual build.
 ## What the product is
 
 Onboarder onboards new hires into roles that have **never existed before** at a
-company. At companies hiring 50 people a week, most new roles have no
+company. At companies hiring tens of people a month, most new roles have no
 predecessor, no playbook and no documentation. So the role can't be looked up —
 it has to be *derived* from the company's real Slack messages, docs and tickets.
 
@@ -26,7 +26,7 @@ genuinely can't help.
 Three facts, in this order, each closing a door:
 
 1. Hypergrowth companies hire faster than they can document. One went from 700
-   to 1,500 people in a year — roughly 50 hires a week.
+   to 1,500 people in a year — a hundred hires in July alone.
 2. Most of those roles have never existed at the company before, so there is no
    playbook to hand anyone.
 3. Nobody has time to supervise, so the new hire must be independent from day one.

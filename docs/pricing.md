@@ -31,7 +31,7 @@ the "real" price — the situation picks.
 > Cutting ramp from two weeks to two days saves about eight days — call it
 > €3,700 per hire — before you count the senior engineer's afternoon we stop
 > them burning. A 2 500 kr pilot is a ten-times return on one hire. They hire
-> fifty a week.
+> ten to forty a month, every month.
 
 That is the whole pricing conversation. Do not get drawn into per-seat
 haggling; move to the per-hire frame, because it is the one where our number
