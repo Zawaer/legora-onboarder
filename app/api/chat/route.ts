@@ -12,7 +12,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { randomUUID } from "node:crypto";
 import { getCompany } from "@/lib/seed";
-import { currentTask, respond } from "@/lib/agent/supervise";
+import { currentTask, isDuplicateBlocker, respond } from "@/lib/agent/supervise";
 import { getHire, updateHire } from "@/lib/agent/hires";
 import { toApiError } from "@/lib/anthropic";
 import type { ChatMessage } from "@/lib/types";
@@ -77,19 +77,33 @@ export async function POST(request: Request) {
         taskId: task?.id,
       };
 
+      // Deduped against the state as it is inside the lock, not the snapshot the
+      // model saw. That covers both a turn that simply restates a still-open
+      // obstacle and two turns landing together, neither of which can see the
+      // other's blocker.
+      const isNew = result.blocker != null && !isDuplicateBlocker(h.blockers, result.blocker);
+
       return {
         ...h,
         messages: [...h.messages, hireMessage, agentMessage],
         taskStatus:
           result.taskStatus && task ? { ...h.taskStatus, [task.id]: result.taskStatus } : h.taskStatus,
-        blockers: result.blocker ? [...h.blockers, result.blocker] : h.blockers,
+        blockers: isNew && result.blocker ? [...h.blockers, result.blocker] : h.blockers,
       };
     });
 
     if (!updated) return NextResponse.json({ error: "Unknown hire." }, { status: 404 });
 
+    // Only report a blocker the caller can actually find on the hire — saying we
+    // raised one that was deduped away is the same class of lie as a spinner
+    // over a disk read.
+    const raised =
+      result.blocker && updated.blockers.some((b) => b.id === result.blocker?.id)
+        ? result.blocker
+        : null;
+
     return NextResponse.json(
-      { hire: updated, reply: result.reply, blocker: result.blocker ?? null },
+      { hire: updated, reply: result.reply, blocker: raised },
       { status: 200 },
     );
   } catch (err) {

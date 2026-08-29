@@ -28,6 +28,12 @@ async function readJson(res: Response): Promise<unknown> {
   try {
     return JSON.parse(text);
   } catch {
+    // An HTML error page — a 404 from a route that does not exist, a dev-mode
+    // 500, a proxy's own page — is not a message for a human. Returning it as
+    // `error` puts 400 characters of raw markup on screen in the chat error
+    // bubble or the "workspace isn't here" page. Fall through to the status
+    // line instead, which at least says something true.
+    if (/^\s*<(?:!doctype|!--|html|\?xml)/i.test(text)) return null;
     return { error: text.slice(0, 400) };
   }
 }
@@ -170,7 +176,10 @@ export async function fetchHire(id: string): Promise<HirePayload | null> {
       const res = await fetch(url, { cache: "no-store" });
       const body = await readJson(res);
       if (!res.ok) {
-        lastError = errorFrom(body, res);
+        // Keep the FIRST error. `?id=` is the route that actually exists and it
+        // answers "Unknown hire."; the nested fallback below it 404s with a
+        // framework page whose status line would otherwise overwrite that.
+        lastError ??= errorFrom(body, res);
         continue;
       }
       const hire = asHire(body);
@@ -182,7 +191,7 @@ export async function fetchHire(id: string): Promise<HirePayload | null> {
         };
       }
     } catch (err) {
-      lastError = err instanceof Error ? err.message : String(err);
+      lastError ??= err instanceof Error ? err.message : String(err);
     }
   }
   if (lastError) throw new Error(lastError);

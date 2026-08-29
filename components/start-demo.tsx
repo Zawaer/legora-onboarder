@@ -130,8 +130,9 @@ export default function StartDemo({
         </button>
 
         <p className="max-w-[36ch] text-[12.5px] leading-[1.5] text-faint">
-          Runs live against {companyName}&rsquo;s corpus. No cached answer, no
-          template, nothing pre-written. Takes about two minutes.
+          Derived from {companyName}&rsquo;s real corpus — no template, nothing
+          pre-written. A role already derived from an unchanged corpus is served
+          from cache; anything new takes about two minutes.
         </p>
       </div>
 

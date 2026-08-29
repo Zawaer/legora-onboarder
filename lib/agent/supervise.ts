@@ -217,6 +217,31 @@ export async function respond(
   return result;
 }
 
+/**
+ * Is this obstacle already sitting open on the hire's list?
+ *
+ * The prompt shows the model every open blocker, and the model — correctly —
+ * keeps reporting one that is still in the way. Asked an unrelated question
+ * while the hire is waiting on an access grant, it restates the access grant.
+ * Appending that verbatim turns one escalation into a new row every turn, so
+ * the manager screen fills with copies of a single obstacle, each with its own
+ * minute estimate and sometimes a different needsHuman verdict — and the "how
+ * many minutes of your time" total silently multiplies.
+ *
+ * One open obstacle is one row. Re-raising is not new information.
+ */
+export function isDuplicateBlocker(existing: Blocker[], candidate: Blocker): boolean {
+  const key = blockerKey(candidate.summary);
+  return existing.some((b) => !b.resolved && blockerKey(b.summary) === key);
+}
+
+function blockerKey(summary: string): string {
+  return summary
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
 /** The task the hire is on: the first one not yet finished, in plan order. */
 export function currentTask(hire: HireState): RampTask | undefined {
   for (const day of hire.plan?.days ?? []) {
