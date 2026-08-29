@@ -24,13 +24,13 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VANAV — onboarding for roles that have never existed",
+  title: "VANAV · onboarding for the job no one has written down yet",
   description:
-    "VANAV derives a brand-new role from a company's real Slack, docs and tickets, then drives the new hire through their first two days of real work — escalating to a human only when it genuinely can't unblock them.",
+    "VANAV derives a brand-new role from a company's real Slack, docs and tickets, then drives the new hire through their first two days of real work, escalating to a human only when it genuinely cannot unblock them.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#eceee4",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({

@@ -150,7 +150,7 @@ export default function Waitlist() {
                 </p>
 
                 <p className="text-[12.5px] leading-[1.5] text-faint">
-                  Or, if you&rsquo;d rather talk now —{" "}
+                  Or, if you&rsquo;d rather talk now:{" "}
                   <a
                     href={WAITLIST_BOOKING_URL}
                     target="_blank"

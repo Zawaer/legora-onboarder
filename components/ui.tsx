@@ -24,9 +24,11 @@ import { PRODUCT } from "@/lib/product";
  * a long flat trail into a steep zigzag — the right dots, the wrong shape.
  * Geometry this distinctive is cheaper to keep than to reconstruct.
  *
- * Fills come from tokens, not the source's #0a0a0a and #c99a3a: the brass in
- * the original is within a few points of our accent already, and tokens keep
- * the mark correct if the palette ever moves again.
+ * The palette moved to monochrome, which broke the mark in a way worth
+ * recording: --accent and --ink became the same black, so the highlighted dot
+ * disappeared into the other twenty-three. It is now carried by weight instead
+ * of hue. The trail sits at 35% and the marked point is solid, which is the
+ * same emphasis the brass was making and survives having no colour at all.
  */
 export function Mark({ className = "h-[9px] w-[70px]" }: { className?: string }) {
   return (
@@ -41,30 +43,30 @@ export function Mark({ className = "h-[9px] w-[70px]" }: { className?: string })
       preserveAspectRatio="none"
       className={className}
     >
-      <circle cx="9.0" cy="30.9" r="5.5" className="fill-ink" />
-      <circle cx="27.3" cy="36.8" r="5.5" className="fill-ink" />
-      <circle cx="45.5" cy="42.3" r="5.5" className="fill-ink" />
-      <circle cx="63.8" cy="47.0" r="5.5" className="fill-ink" />
-      <circle cx="82.0" cy="50.4" r="5.5" className="fill-ink" />
-      <circle cx="100.3" cy="52.4" r="5.5" className="fill-ink" />
-      <circle cx="118.6" cy="52.8" r="5.5" className="fill-ink" />
-      <circle cx="136.8" cy="51.6" r="5.5" className="fill-ink" />
-      <circle cx="155.1" cy="48.9" r="5.5" className="fill-ink" />
-      <circle cx="173.3" cy="44.8" r="5.5" className="fill-ink" />
-      <circle cx="191.6" cy="39.7" r="5.5" className="fill-ink" />
-      <circle cx="209.9" cy="33.9" r="5.5" className="fill-ink" />
-      <circle cx="228.1" cy="27.9" r="9.0" className="fill-accent" />
-      <circle cx="246.4" cy="22.1" r="5.5" className="fill-ink" />
-      <circle cx="264.7" cy="17.0" r="5.5" className="fill-ink" />
-      <circle cx="282.9" cy="12.9" r="5.5" className="fill-ink" />
-      <circle cx="301.2" cy="10.2" r="5.5" className="fill-ink" />
-      <circle cx="319.4" cy="9.0" r="5.5" className="fill-ink" />
-      <circle cx="337.7" cy="9.4" r="5.5" className="fill-ink" />
-      <circle cx="356.0" cy="11.4" r="5.5" className="fill-ink" />
-      <circle cx="374.2" cy="14.8" r="5.5" className="fill-ink" />
-      <circle cx="392.5" cy="19.5" r="5.5" className="fill-ink" />
-      <circle cx="410.7" cy="25.0" r="5.5" className="fill-ink" />
-      <circle cx="429.0" cy="30.9" r="5.5" className="fill-ink" />
+      <circle cx="9.0" cy="30.9" r="5.5" className="fill-ink/35" />
+      <circle cx="27.3" cy="36.8" r="5.5" className="fill-ink/35" />
+      <circle cx="45.5" cy="42.3" r="5.5" className="fill-ink/35" />
+      <circle cx="63.8" cy="47.0" r="5.5" className="fill-ink/35" />
+      <circle cx="82.0" cy="50.4" r="5.5" className="fill-ink/35" />
+      <circle cx="100.3" cy="52.4" r="5.5" className="fill-ink/35" />
+      <circle cx="118.6" cy="52.8" r="5.5" className="fill-ink/35" />
+      <circle cx="136.8" cy="51.6" r="5.5" className="fill-ink/35" />
+      <circle cx="155.1" cy="48.9" r="5.5" className="fill-ink/35" />
+      <circle cx="173.3" cy="44.8" r="5.5" className="fill-ink/35" />
+      <circle cx="191.6" cy="39.7" r="5.5" className="fill-ink/35" />
+      <circle cx="209.9" cy="33.9" r="5.5" className="fill-ink/35" />
+      <circle cx="228.1" cy="27.9" r="9.0" className="fill-ink" />
+      <circle cx="246.4" cy="22.1" r="5.5" className="fill-ink/35" />
+      <circle cx="264.7" cy="17.0" r="5.5" className="fill-ink/35" />
+      <circle cx="282.9" cy="12.9" r="5.5" className="fill-ink/35" />
+      <circle cx="301.2" cy="10.2" r="5.5" className="fill-ink/35" />
+      <circle cx="319.4" cy="9.0" r="5.5" className="fill-ink/35" />
+      <circle cx="337.7" cy="9.4" r="5.5" className="fill-ink/35" />
+      <circle cx="356.0" cy="11.4" r="5.5" className="fill-ink/35" />
+      <circle cx="374.2" cy="14.8" r="5.5" className="fill-ink/35" />
+      <circle cx="392.5" cy="19.5" r="5.5" className="fill-ink/35" />
+      <circle cx="410.7" cy="25.0" r="5.5" className="fill-ink/35" />
+      <circle cx="429.0" cy="30.9" r="5.5" className="fill-ink/35" />
     </svg>
   );
 }
