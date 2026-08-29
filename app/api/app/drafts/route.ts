@@ -21,6 +21,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
 import { serviceClient } from "@/lib/supabase";
+import { deliverToSlack } from "@/lib/slack/deliver";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -129,6 +130,36 @@ export async function POST(request: Request) {
       { error: "This draft has already been decided." },
       { status: 409 },
     );
+  }
+
+  // Approving used to end here, which meant the message was released and
+  // never sent: the status changed and nothing in the system was listening.
+  // Delivery happens now, on the request that authorised it, so an admin who
+  // clicks Approve has actually done the thing the button says.
+  if (action === "approve") {
+    const text = (updated.edited_body as string | null) ?? (updated.body as string);
+    const result = await deliverToSlack(updated.hire_ref as string, text);
+
+    if (result.sent) {
+      // Only now is it sent. Marked separately from approved so the two are
+      // distinguishable: one is a human decision, the other is a fact about
+      // the outside world, and conflating them hides failed deliveries.
+      await db.from("drafts").update({ status: "sent" }).eq("id", draftId);
+      return NextResponse.json({ ok: true, draft: { ...updated, status: "sent" } });
+    }
+
+    // Left as approved rather than sent, so it is visibly undelivered and can
+    // be retried. Marking it done on the strength of a request nobody checked
+    // is how a new hire waits forever for a message an admin believes they
+    // already released.
+    console.error(
+      `[drafts] approved but not delivered: ${draftId} (${result.reason})`,
+    );
+    return NextResponse.json({
+      ok: true,
+      draft: updated,
+      warning: `Approved, but Slack did not accept it (${result.reason}). It stays in the queue as approved so you can retry.`,
+    });
   }
 
   return NextResponse.json({ ok: true, draft: updated });
