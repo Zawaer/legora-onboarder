@@ -137,8 +137,13 @@ export async function POST(request: Request) {
   // Delivery happens now, on the request that authorised it, so an admin who
   // clicks Approve has actually done the thing the button says.
   if (action === "approve") {
-    const text = (updated.edited_body as string | null) ?? (updated.body as string);
-    const result = await deliverToSlack(updated.hire_ref as string, text);
+    const edited = updated.edited_body as string | null;
+    const text = edited ?? (updated.body as string);
+    // Blocks only when nothing was edited. An admin who rewrote the message
+    // wrote plain text, and rendering their words inside the agent's original
+    // card would show a card that no longer says what it appears to say.
+    const blocks = edited ? undefined : (updated.blocks as unknown);
+    const result = await deliverToSlack(updated.hire_ref as string, text, blocks);
 
     if (result.sent) {
       // Only now is it sent. Marked separately from approved so the two are

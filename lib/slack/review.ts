@@ -50,7 +50,10 @@ export function isReviewConfigured(): boolean {
 export async function reviewBeforeSend(input: {
   hireRef: string;
   kind: string;
+  /** The readable message. Not Slack's notification preview, which is clipped. */
   body: string;
+  /** What Slack renders. Kept so an approved message keeps its formatting. */
+  blocks?: unknown;
 }): Promise<ReviewOutcome> {
   const id = companyId();
   if (!id || !isSupabaseConfigured()) return { held: false };
@@ -81,6 +84,7 @@ export async function reviewBeforeSend(input: {
         hire_ref: input.hireRef,
         kind: input.kind,
         body: input.body,
+        blocks: input.blocks ?? null,
       })
       .select("id")
       .single();

@@ -35,6 +35,7 @@ export type DeliveryResult =
 export async function deliverToSlack(
   channel: string,
   text: string,
+  blocks?: unknown,
 ): Promise<DeliveryResult> {
   const token = process.env.SLACK_BOT_TOKEN?.trim();
   if (!token) return { sent: false, reason: "no_bot_token" };
@@ -48,7 +49,11 @@ export async function deliverToSlack(
         authorization: `Bearer ${token}`,
         "content-type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify({ channel, text }),
+      body: JSON.stringify(
+        Array.isArray(blocks) && blocks.length
+          ? { channel, text, blocks }
+          : { channel, text },
+      ),
       signal: controller.signal,
     });
 

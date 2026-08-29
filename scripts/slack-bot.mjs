@@ -202,10 +202,15 @@ async function send(client, action, dmChannel, replace) {
   // manager channel is a different audience with a different consent.
   const { reviewBeforeSend, isReviewConfigured } = await import("@/lib/slack/review.ts");
   if (isReviewConfigured() && !action.system) {
+    // action.text is the notification preview and fallback() clips it to 200
+    // characters. The message itself is in the blocks, so the readable body is
+    // reconstructed from them and the blocks ride along for delivery.
+    const { readableFromBlocks } = await import("@/lib/slack/format.ts");
     const outcome = await reviewBeforeSend({
       hireRef: dmChannel,
       kind: "message",
-      body: action.text ?? "",
+      body: readableFromBlocks(action.blocks) || action.text || "",
+      blocks: action.blocks,
     });
     if (outcome.held) {
       const note = outcome.draftId

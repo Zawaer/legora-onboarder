@@ -426,3 +426,35 @@ export function errorBlocks(message: string): Block[] {
     context("This is the bot's own failure, not an answer. Check the terminal running the bot."),
   ];
 }
+
+/**
+ * The readable text inside a set of Block Kit blocks.
+ *
+ * Needed because `fallback()` deliberately clips to 200 characters: it feeds
+ * Slack's notification preview, not the message. A draft that stored the
+ * fallback held a truncated sentence, and an admin approved something that
+ * stopped mid-word.
+ *
+ * Best effort by design. Anything it cannot read falls back to the preview,
+ * which is short but never wrong.
+ */
+export function readableFromBlocks(blocks: unknown): string {
+  if (!Array.isArray(blocks)) return "";
+  const out: string[] = [];
+  for (const b of blocks) {
+    if (!b || typeof b !== "object") continue;
+    const block = b as {
+      type?: string;
+      text?: { text?: string };
+      elements?: { text?: string }[];
+      fields?: { text?: string }[];
+    };
+    if (block.type === "divider") continue;
+    if (block.text?.text) out.push(block.text.text);
+    for (const f of block.fields ?? []) if (f?.text) out.push(f.text);
+    for (const e of block.elements ?? []) if (e?.text) out.push(e.text);
+  }
+  // Slack mrkdwn is close enough to read as-is; the admin sees what the hire
+  // would see rather than a stripped approximation of it.
+  return out.join("\n\n").trim();
+}
