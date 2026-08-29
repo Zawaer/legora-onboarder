@@ -2,6 +2,7 @@ import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 import StartDemo, { type FeedItem } from "@/components/start-demo";
 import { Label, Wordmark } from "@/components/ui";
+import Waitlist from "@/components/waitlist";
 
 export const dynamic = "force-dynamic";
 
@@ -152,7 +153,7 @@ export default async function Home() {
               <Link href="/loi" className="text-muted hover:text-ink">
                 Sign a letter of intent
               </Link>
-              <Link href="/pay" className="text-muted hover:text-ink">
+              <Link href="/pricing" className="text-muted hover:text-ink">
                 Pricing
               </Link>
             </div>
@@ -494,12 +495,16 @@ export default async function Home() {
             ))}
           </div>
         </section>
+        <Waitlist />
       </main>
 
       <footer className="border-t border-line bg-surface-2/40">
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:px-8">
           <Wordmark muted />
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] sm:ml-auto">
+            <Link href="/#waitlist" className="text-muted hover:text-ink">
+              Join the waitlist
+            </Link>
             <Link href="/manager" className="text-muted hover:text-ink">
               Manager view
             </Link>
@@ -512,7 +517,7 @@ export default async function Home() {
             <Link href="/loi" className="text-muted hover:text-ink">
               Letter of intent
             </Link>
-            <Link href="/pay" className="text-muted hover:text-ink">
+            <Link href="/pricing" className="text-muted hover:text-ink">
               Pricing
             </Link>
           </div>
