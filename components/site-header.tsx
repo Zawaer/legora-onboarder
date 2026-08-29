@@ -18,21 +18,28 @@ export default function SiteHeader({
         <Link href="/" className="shrink-0">
           <Wordmark />
         </Link>
-        <div className="ml-auto flex items-center gap-1.5">
+        {/* The nav. Pricing, traction and the letter of intent used to live
+            only in the footer, which meant the price of the product was
+            reachable from one small link at the very bottom of a long page.
+            They are navigation, so they sit in the navigation.
+
+            Hidden below sm and left in the footer there instead: four links
+            plus a CTA do not fit on a phone, and a hamburger for five items is
+            more machinery than the problem deserves. */}
+        <nav className="ml-auto hidden items-center gap-0.5 sm:flex">
           {right ?? (
             <>
-              {/* Two links, both of which mean something to someone who has
-                  never seen this product. "Your own data" and "JD check" used
-                  to sit here and told a first-time visitor nothing; they are
-                  now named by what they do, in the body of the landing page.
-                  "Letter of intent" is a sales instrument, not a surface, and
-                  lives next to the price. */}
               <NavLink href="/manager">Manager view</NavLink>
-              <NavLink href="/#waitlist" emphasis>
-                Join the waitlist
-              </NavLink>
+              <NavLink href="/pricing">Pricing</NavLink>
+              <NavLink href="/pitch">Traction</NavLink>
+              <NavLink href="/loi">Letter of intent</NavLink>
             </>
           )}
+        </nav>
+        <div className="ml-auto flex items-center sm:ml-2.5">
+          <NavLink href="/#waitlist" emphasis>
+            Join the waitlist
+          </NavLink>
         </div>
       </div>
     </header>

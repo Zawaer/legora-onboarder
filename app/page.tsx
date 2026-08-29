@@ -146,7 +146,7 @@ export default async function Home() {
               to be filled — and filled quickly.
             </p>
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              Vanav reads a company&rsquo;s real Slack, docs and tickets,
+              VANAV reads a company&rsquo;s real Slack, docs and tickets,
               works out what a brand-new role actually is, and drives the new
               hire through their first two days of real work.
             </p>
@@ -646,6 +646,9 @@ export default async function Home() {
             </Link>
             <Link href="/pricing" className="text-muted hover:text-ink">
               Pricing
+            </Link>
+            <Link href="/privacy" className="text-muted hover:text-ink">
+              Privacy
             </Link>
           </div>
         </div>

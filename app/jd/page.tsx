@@ -7,9 +7,9 @@ import { Label } from "@/components/ui";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Job description vs. the traces · Vanav",
+  title: "Job description vs. the traces · VANAV",
   description:
-    "Paste a job description. Vanav breaks it into claims and shows you, with verified quotes from your own Slack, docs and tickets, which ones the traces support, which ones they contradict, and which ones they say nothing about at all.",
+    "Paste a job description. VANAV breaks it into claims and shows you, with verified quotes from your own Slack, docs and tickets, which ones the traces support, which ones they contradict, and which ones they say nothing about at all.",
 };
 
 /**

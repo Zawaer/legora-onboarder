@@ -8,7 +8,7 @@
  */
 
 /** What it does, said plainly. The buyer is a Head of People, not a builder. */
-export const PRODUCT = "Vanav";
+export const PRODUCT = "VANAV";
 
 /** One line. What they get for the money. Under about ten words. */
 export const PITCH = "Onboards new hires into roles nobody has held before.";

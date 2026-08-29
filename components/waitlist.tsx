@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  WAITLIST_BOOKING_URL,
-  WAITLIST_COMPANIES,
-  waitlistCountLabel,
-} from "@/lib/waitlist";
+import { WAITLIST_BOOKING_URL } from "@/lib/waitlist";
 
 /**
  * The waitlist band.
@@ -61,9 +57,6 @@ export default function Waitlist() {
           <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
             <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-accent" />
             Waitlist · onboarding slots
-          </span>
-          <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.08em] text-faint">
-            {waitlistCountLabel(WAITLIST_COMPANIES)}
           </span>
         </div>
 
@@ -145,6 +138,18 @@ export default function Waitlist() {
                 )}
 
                 <p className="mt-0.5 text-[12.5px] leading-[1.5] text-faint">
+                  Your address is used to contact you about VANAV and nothing
+                  else.{" "}
+                  <a
+                    href="/privacy"
+                    className="underline decoration-line-strong underline-offset-2 hover:text-muted"
+                  >
+                    Privacy
+                  </a>
+                  .
+                </p>
+
+                <p className="text-[12.5px] leading-[1.5] text-faint">
                   Or, if you&rsquo;d rather talk now —{" "}
                   <a
                     href={WAITLIST_BOOKING_URL}
