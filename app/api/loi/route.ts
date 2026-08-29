@@ -70,11 +70,11 @@ export async function POST(request: Request) {
   // able to delay or block it.
   void notify(
     `*Letter of intent signed*\n` +
-      `*${loi.full_name}* — ${loi.role}, ${loi.company}\n` +
+      `*${loi.full_name}*, ${loi.role}, ${loi.company}\n` +
       `Intends to: ${loi.intent}\n` +
       `Blocked on: ${loi.blocker}\n` +
       `${loi.email} · signed "${loi.signed_name}" · via ${loi.source}` +
-      (loi.livemode ? "" : "\n_test mode — does not count as traction_"),
+      (loi.livemode ? "" : "\n_test mode, does not count as traction_"),
     { kind: "loi", ...loi },
   );
 

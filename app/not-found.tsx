@@ -53,7 +53,7 @@ export default function NotFound() {
           </h1>
           <p className="mt-5 max-w-[62ch] text-[16px] leading-[1.6] text-muted">
             The address may be mistyped, or it may point at something that has
-            since moved. Nothing is broken behind it &mdash; there is simply
+            since moved. Nothing is broken behind it, there is simply
             nothing here.
           </p>
         </section>

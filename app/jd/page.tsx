@@ -70,14 +70,14 @@ export default function JdPage() {
           <p className="max-w-[64ch] text-[16px] leading-[1.6] text-muted sm:text-[17px]">
             Paste the posting. We break it into claims and, for each one, show
             you what your team&rsquo;s own Slack, docs, tickets and meeting notes
-            say — including where they say something else, and including, out
+            say, including where they say something else, and including, out
             loud, where they say nothing at all.
           </p>
 
           <p className="max-w-[64ch] text-[13.5px] leading-[1.65] text-faint">
             We do not tell you what your role is. Every verdict that is not
             &ldquo;silent&rdquo; carries a sentence a real person really wrote,
-            verified character by character against the artifact it came from —
+            verified character by character against the artifact it came from, 
             if the quote is not there, the verdict is deleted rather than
             softened. You can check any line on this page by opening Slack.
           </p>
@@ -111,7 +111,7 @@ export default function JdPage() {
             The claims are extracted by a call that has never seen your corpus,
             so the denominator is not picked to flatter the numerator; each
             quoted line is then verified as really being in the document you
-            pasted. A verdict biased toward silent is the point — a false
+            pasted. A verdict biased toward silent is the point, a false
             contradiction tells a hiring manager their own posting is at odds
             with their own team on evidence that will not survive being looked
             at, and the first one of those takes every true verdict next to it

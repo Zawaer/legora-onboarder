@@ -262,7 +262,7 @@ export default function RoleCard({
           <div className="flex flex-wrap items-baseline gap-2">
             <Label>Ramped looks like this</Label>
             <span className="text-[11px] text-faint">
-              outcomes by end of week one — not a reading list
+              outcomes by end of week one, not a reading list
             </span>
           </div>
           {/* The tick already marks each line; a filled box around every one of
@@ -330,7 +330,7 @@ export default function RoleCard({
           </div>
           <div className="rounded-lg border border-warn-line bg-warn-soft px-4 py-4 sm:px-5">
             <p className="text-[13px] leading-[1.6] text-warn">
-              Not gaps in the derivation — genuine open decisions. The agent will
+              Not gaps in the derivation, genuine open decisions. The agent will
               not invent an answer to any of these, and will route them to a
               human if the hire hits one.
             </p>

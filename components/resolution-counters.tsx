@@ -84,7 +84,7 @@ export default function ResolutionCounters({ companySlug }: { companySlug?: stri
           // `null` share means no corpus miss has happened yet. A "0%" here
           // would read as "none of them were general", which is a different
           // and untrue statement.
-          value={share == null ? "—" : `${Math.round(share * 100)}%`}
+          value={share == null ? "n/a" : `${Math.round(share * 100)}%`}
           of={
             stats
               ? stats.corpusMisses === 0

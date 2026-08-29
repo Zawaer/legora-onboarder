@@ -42,7 +42,7 @@ export default function BlockerList({
         <p className="text-[15px] font-medium">Nobody is blocked.</p>
         <p className="mx-auto mt-1.5 max-w-[46ch] text-[13.5px] leading-relaxed text-muted">
           When the agent hits something it genuinely can&rsquo;t resolve from
-          company context, it will appear here — and nowhere else.
+          company context, it will appear here, and nowhere else.
         </p>
       </div>
     );
@@ -186,7 +186,7 @@ export default function BlockerList({
           <Label className="!text-ok">The agent handled it</Label>
           <span className="tnum text-[11px] text-faint">{handled.length}</span>
           <span className="ml-auto hidden text-[11.5px] text-faint sm:block">
-            resolved from company context — no interruption sent
+            resolved from company context, no interruption sent
           </span>
         </div>
 

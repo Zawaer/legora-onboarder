@@ -278,7 +278,7 @@ async function handleCreate(input: z.infer<typeof CreateBody>) {
 
   const company = await loadCompany(companySlug);
   if (!company) {
-    return fail(404, `No corpus for "${companySlug}" — it is neither seeded nor ingested.`);
+    return fail(404, `No corpus for "${companySlug}", it is neither seeded nor ingested.`);
   }
 
   const blocker = hire?.blockers?.find((b) => b.id === input.blockerId);
@@ -366,7 +366,7 @@ async function raise(input: RaiseInput): Promise<{
       };
       reason =
         `Nothing in the corpus shows who has worked on this. Using the name already on the blocker ` +
-        `(${named.name}) rather than picking one — a human's suggestion, not an observed match.`;
+        `(${named.name}) rather than picking one, a human's suggestion, not an observed match.`;
     }
   }
 
@@ -432,14 +432,14 @@ async function raise(input: RaiseInput): Promise<{
   const firstName = pick.person.name.split(/\s+/)[0];
   await noteToHire(
     record,
-    `This isn't written down anywhere in ${company.name}'s corpus — I read all of it, and I'm not going to guess.\n\n` +
+    `This isn't written down anywhere in ${company.name}'s corpus, I read all of it, and I'm not going to guess.\n\n` +
       `So I've put the question to ${pick.person.name}, ${pick.person.role}. ` +
       (pick.routing === "ranked"
         ? pick.tier === "peer"
-          ? `${firstName} has worked on this and isn't the person the team already routes everything to, which is deliberate — that person gets asked only if this comes back empty.`
+          ? `${firstName} has worked on this and isn't the person the team already routes everything to, which is deliberate, that person gets asked only if this comes back empty.`
           : `${firstName} ${pick.why}`
-        : `Routing is weaker than usual here — nobody has worked on this anywhere in the corpus, so ${firstName} ${pick.why}`) +
-      `\n\nThey may not reply, and that's a normal outcome rather than a failure — if it goes quiet you can push it to someone else. Nothing is written down until they've answered and checked it. Carry on with the rest; I'll put it here the moment it lands.`,
+        : `Routing is weaker than usual here, nobody has worked on this anywhere in the corpus, so ${firstName} ${pick.why}`) +
+      `\n\nThey may not reply, and that's a normal outcome rather than a failure, if it goes quiet you can push it to someone else. Nothing is written down until they've answered and checked it. Carry on with the rest; I'll put it here the moment it lands.`,
   );
 
   return { record, pick, reason };
@@ -608,10 +608,10 @@ async function handleConfirm(input: z.infer<typeof ConfirmBody>) {
     `${updated.expert.name} (${updated.expert.role}) answered, on ${new Date(
       updated.teachback?.confirmedAt ?? Date.now(),
     ).toUTCString().slice(5, 16)}:\n\n` +
-      finalLines.map((l) => `— ${l}`).join("\n") +
+      finalLines.map((l) => `, ${l}`).join("\n") +
       `\n\nThey read that back and ${
         updated.teachback?.outcome === "corrected" ? "corrected a line" : "confirmed it"
-      } before it was written down, so it is their words rather than my summary of them. It's in the corpus now as ${artifact.id} — quotable, dated, with their name on it, and there for whoever starts next.`,
+      } before it was written down, so it is their words rather than my summary of them. It's in the corpus now as ${artifact.id}, quotable, dated, with their name on it, and there for whoever starts next.`,
     { resolveBlocker: true },
   );
 
@@ -675,7 +675,7 @@ async function handleDecline(
     await noteToHire(
       record,
       mode === "declined"
-        ? `${record.expert.name} passed on that one${reason ? ` — “${reason}”` : ""}, and there's nobody else in the corpus who has worked on it.\n\n` +
+        ? `${record.expert.name} passed on that one${reason ? `, “${reason}”` : ""}, and there's nobody else in the corpus who has worked on it.\n\n` +
             `So it is still not written down, and I'm not going to fill the gap with something that sounds right. This one needs a human to say who else to ask.`
         : `Still nothing back from ${record.expert.name}, and there's nobody else the corpus points to.\n\n` +
             `It remains unwritten. Worth asking in the open in a channel rather than routing it to one more person.`,

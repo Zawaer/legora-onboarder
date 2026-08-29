@@ -352,7 +352,7 @@ function Members({ companyId }: { companyId: string }) {
                       row.full_name ? "text-ink" : "text-faint"
                     }`}
                   >
-                    {row.full_name || "—"}
+                    {row.full_name || "n/a"}
                   </span>
                   <span className="shrink-0 font-mono text-[12px] uppercase tracking-[0.06em] text-faint">
                     {row.role}

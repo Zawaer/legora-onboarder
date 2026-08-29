@@ -92,7 +92,7 @@ export default function PrivacyPage() {
 
         <Section title="Why, and for how long">
           <p>
-            Only to contact you about {PRODUCT} — to tell you when a slot opens,
+            Only to contact you about {PRODUCT}, to tell you when a slot opens,
             or to reply to something you sent us. We do not sell it, share it
             with advertisers, or use it to train anything.
           </p>
@@ -128,8 +128,8 @@ export default function PrivacyPage() {
 
         <Section title="The demo data">
           <p>
-            Everything in the product demo — the company, the fourteen people
-            and every message — is invented. It is not any real company&rsquo;s
+            Everything in the product demo, the company, the fourteen people
+            and every message, is invented. It is not any real company&rsquo;s
             data, and no customer data has ever been through this site.
           </p>
           <p>

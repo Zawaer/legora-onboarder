@@ -177,7 +177,7 @@ export default function HireView({
                     {DERIVING_COPY[tick % DERIVING_COPY.length]}…
                   </p>
                   <p className="mt-1.5 text-[12px] text-accent-ink/80">
-                    This page fills in on its own — no need to reload. Usually
+                    This page fills in on its own, no need to reload. Usually
                     about two minutes.
                   </p>
                 </div>

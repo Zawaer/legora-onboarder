@@ -177,7 +177,7 @@ export default function RampPlanView({
           </div>
         ))}
         <p className="text-[12.5px] text-faint">
-          The plan is written after the role is derived — real tasks, not a
+          The plan is written after the role is derived, real tasks, not a
           reading list.
         </p>
       </div>

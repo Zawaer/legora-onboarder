@@ -229,7 +229,7 @@ export default function JdDiff({ companySlug = "lexhav" }: { companySlug?: strin
 
       {tooShort && !running && (
         <p className="-mt-6 text-[12.5px] text-faint">
-          A little more than that — there is nothing to break into claims yet.
+          A little more than that, there is nothing to break into claims yet.
         </p>
       )}
 
@@ -340,7 +340,7 @@ function CoverageNote({
       <Label>What we could see</Label>
       <p className="max-w-[86ch] text-[12.5px] leading-[1.65] text-muted">
         {coverage.artifacts.toLocaleString()} artifacts from {coverage.people} people
-        {coverage.from && coverage.to ? `, ${coverage.from} to ${coverage.to}` : ""} —{" "}
+        {coverage.from && coverage.to ? `, ${coverage.from} to ${coverage.to}` : ""}, {" "}
         {channels.join(", ")}
         {more > 0 ? ` and ${more} more` : ""}. Anything decided in a meeting nobody
         wrote up, a DM, or an email is outside this window, and a silent verdict

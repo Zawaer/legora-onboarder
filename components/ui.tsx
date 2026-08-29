@@ -186,7 +186,7 @@ export function SyntheticNote({
             <span className="tnum">{people}</span>{" "}
           </>
         )}
-        people and every message are invented &mdash; built to mirror how a
+        people and every message are invented, built to mirror how a
         fast-growing company is structured. Nothing here is real {companyName}{" "}
         data.
       </p>

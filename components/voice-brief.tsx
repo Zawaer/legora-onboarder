@@ -193,7 +193,7 @@ export default function VoiceBrief() {
 
         <p className="mt-3.5 max-w-[68ch] text-[14px] leading-[1.7] text-muted">
           You are onboarding twenty people and you are not at a desk. This is
-          everything above, read out loud in under ninety seconds — what needs
+          everything above, read out loud in under ninety seconds, what needs
           you, who can clear it, and how many minutes it costs. Spoken by
           ElevenLabs. Obstacles only, never a judgement of anyone.
         </p>

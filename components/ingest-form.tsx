@@ -74,7 +74,7 @@ export default function IngestForm() {
     }
     if (next.size > MAX_BYTES) {
       setError(
-        `${next.name} is ${(next.size / 1024 / 1024).toFixed(1)}MB — the limit is 6MB. Export a few of the busiest channels rather than the whole workspace.`,
+        `${next.name} is ${(next.size / 1024 / 1024).toFixed(1)}MB, the limit is 6MB. Export a few of the busiest channels rather than the whole workspace.`,
       );
       return;
     }
@@ -168,7 +168,7 @@ export default function IngestForm() {
             />
             <p className="text-[11.5px] leading-[1.5] text-faint">
               We do not look your company up. Without this, the derivation only
-              knows what is in the corpus below — which works, but a sentence
+              knows what is in the corpus below, which works, but a sentence
               here makes the role noticeably more specific.
             </p>
           </div>
@@ -256,7 +256,7 @@ export default function IngestForm() {
               {reading ? "Reading…" : "Read my data"}
             </button>
             <p className="max-w-[46ch] text-[12.5px] leading-[1.5] text-faint">
-              This step is free and instant — no model call. You will see exactly
+              This step is free and instant, no model call. You will see exactly
               what was understood before anything is derived.
             </p>
           </div>
@@ -298,10 +298,10 @@ function ParseReport({ result }: { result: IngestResult }) {
         <div className="grid grid-cols-2 divide-line sm:grid-cols-4 sm:divide-x">
           <Stat label="Artifacts" value={result.artifactCount.toLocaleString()} note={dropped ? `${dropped.toLocaleString()} dropped or capped` : "all of them kept"} />
           <Stat label="People" value={result.peopleCount.toLocaleString()} note="from message authors" />
-          <Stat label="Channels" value={result.channels.length.toLocaleString()} note={result.channels[0]?.channel ?? "—"} />
+          <Stat label="Channels" value={result.channels.length.toLocaleString()} note={result.channels[0]?.channel ?? "n/a"} />
           <Stat
             label="Date range"
-            value={result.dateRange ? `${result.dateRange.from.slice(0, 10)}` : "—"}
+            value={result.dateRange ? `${result.dateRange.from.slice(0, 10)}` : "n/a"}
             note={
               result.dateRange
                 ? `to ${result.dateRange.to.slice(0, 10)}${result.datesInferred ? " · partly placeholder" : ""}`
@@ -348,7 +348,7 @@ function ParseReport({ result }: { result: IngestResult }) {
                 ))}
               </ul>
               <p className="mt-3 text-[11.5px] leading-[1.5] text-faint">
-                Team is the channel each person posts in most — a fact about the
+                Team is the channel each person posts in most, a fact about the
                 corpus, not a guess at your org chart. Nobody is marked as owning
                 anything, because the corpus does not say so and inventing it
                 would send a stuck hire to the wrong person.

@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   if (Number.isFinite(declared) && declared > MAX_BYTES) {
     return NextResponse.json(
       {
-        error: `That file is ${mb(declared)}MB. The limit is ${mb(MAX_BYTES)}MB — export a few of the busiest channels rather than the whole workspace; the corpus is capped well below this anyway.`,
+        error: `That file is ${mb(declared)}MB. The limit is ${mb(MAX_BYTES)}MB, export a few of the busiest channels rather than the whole workspace; the corpus is capped well below this anyway.`,
       },
       { status: 413 },
     );
@@ -221,7 +221,7 @@ async function readInput(request: Request): Promise<z.infer<typeof Body>> {
       if (blob.size > MAX_BYTES) {
         throw fail(
           413,
-          `That file is ${mb(blob.size)}MB. The limit is ${mb(MAX_BYTES)}MB — a few busy channels is plenty.`,
+          `That file is ${mb(blob.size)}MB. The limit is ${mb(MAX_BYTES)}MB, a few busy channels is plenty.`,
         );
       }
       raw = await blob.text();

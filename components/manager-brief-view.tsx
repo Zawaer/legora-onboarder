@@ -91,7 +91,7 @@ export default function ManagerBriefView({
         const body = (await res.json()) as { brief?: ManagerBrief; error?: string };
         if (!alive) return;
         if (!res.ok || !body.brief) {
-          setError(body.error ?? `${res.status} — could not compose the brief.`);
+          setError(body.error ?? `${res.status}, could not compose the brief.`);
           return;
         }
         setBrief(body.brief);
@@ -151,7 +151,7 @@ export default function ManagerBriefView({
           </h1>
           <p className="max-w-[70ch] text-[15.5px] leading-[1.65] text-muted">
             The highest-return onboarding intervention anyone has published is a
-            short note to the <em>manager</em> before the start date — not
+            short note to the <em>manager</em> before the start date, not
             another portal for the hire. It needs a human with a spare hour who
             notices a start date. A company hiring tens of people a month does not
             have that human, so this composes it instead: four things, each one
@@ -322,7 +322,7 @@ export default function ManagerBriefView({
 
                   {brief.buddy.wroteTheWorkedExample && (
                     <Reason label="And">
-                      They wrote the worked example in section 03 — the method{" "}
+                      They wrote the worked example in section 03, the method{" "}
                       {brief.hireName.split(/\s+/)[0]} is being told to copy is theirs.
                     </Reason>
                   )}
@@ -332,7 +332,7 @@ export default function ManagerBriefView({
                   {brief.passedOver && (
                     <div className="mt-5 rounded-lg border border-warn-line bg-warn-soft/50 p-4">
                       <div className="text-[13.5px] font-medium text-warn">
-                        Not {brief.passedOver.name} ({brief.passedOver.slackHandle}) —{" "}
+                        Not {brief.passedOver.name} ({brief.passedOver.slackHandle}), {" "}
                         {brief.passedOver.reason}
                       </div>
                       {brief.passedOver.citations.map((c) => (
@@ -494,7 +494,7 @@ export default function ManagerBriefView({
             Nobody on this page carries a score. Where the brief picks one person over
             another it names both and quotes the reason, because &ldquo;answered the last
             four questions about the extraction pipeline&rdquo; is checkable and
-            &ldquo;best match, 0.87&rdquo; is not — one is a claim about work that happened,
+            &ldquo;best match, 0.87&rdquo; is not, one is a claim about work that happened,
             the other is a claim about a person. Anything the corpus could not support was
             left out rather than softened.
           </p>

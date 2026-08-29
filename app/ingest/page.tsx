@@ -82,7 +82,7 @@ export default function IngestPage() {
           <p className="max-w-[80ch] text-[12.5px] leading-[1.6] text-faint">
             Join and leave events, bot bookkeeping and duplicate messages are
             dropped. Anything the parser cannot read is reported as a warning
-            rather than an error — a partial corpus you were told about is more
+            rather than an error, a partial corpus you were told about is more
             useful than a failed upload. The corpus is capped at 1,500 messages
             or 200,000 characters: the whole thing goes to the model in one
             prompt, with no retrieval step, so size is literally cost. Over the

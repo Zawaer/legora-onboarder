@@ -61,7 +61,7 @@ const Body = z.object({
     )
     .max(
       MAX_JD_CHARS,
-      `Job descriptions are capped at ${MAX_JD_CHARS.toLocaleString()} characters — the whole thing goes to the model in one prompt, so length is literally cost.`,
+      `Job descriptions are capped at ${MAX_JD_CHARS.toLocaleString()} characters, the whole thing goes to the model in one prompt, so length is literally cost.`,
     ),
 });
 

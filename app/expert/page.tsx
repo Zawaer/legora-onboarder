@@ -53,7 +53,7 @@ export default async function ExpertPage({
         <footer className="mt-14 border-t border-line pt-5">
           <p className="max-w-[68ch] text-[12px] leading-[1.65] text-faint">
             Your answer is written back to you before it is stored, and only the version you confirm
-            goes into the corpus — attributed to you, dated, and quotable. Nothing is inferred, added
+            goes into the corpus, attributed to you, dated, and quotable. Nothing is inferred, added
             or smoothed over on the way in.{" "}
             <Link href="/" className="underline underline-offset-2 hover:text-muted">
               What this is

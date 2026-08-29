@@ -46,7 +46,7 @@ export default function TractionBoard({
           </h1>
           <p className="max-w-[72ch] text-[15.5px] leading-[1.65] text-muted">
             Traction is 18 of 50 points. This page reads the payment and letter-of-intent
-            stores on every request — nothing is typed in by hand, nothing is cached, and
+            stores on every request, nothing is typed in by hand, nothing is cached, and
             nothing is rounded up. Stripe test-mode records are listed in full at the
             bottom and counted nowhere above.
           </p>
@@ -263,7 +263,7 @@ export default function TractionBoard({
               <p className="mx-auto mt-7 max-w-[58ch] text-[12.5px] leading-[1.6] text-faint">
                 Attribution rides on the link. Append{" "}
                 <code className="font-mono">?source=</code> to either URL, {" "}
-                {KNOWN_SOURCES.join(", ")} — and this page can then say which channel
+                {KNOWN_SOURCES.join(", ")}, and this page can then say which channel
                 produced the money.
               </p>
             </div>
@@ -278,7 +278,7 @@ export default function TractionBoard({
               </h2>
               <p className="mt-2.5 max-w-[72ch] text-[14px] leading-[1.65] text-muted">
                 “Three customers” is a traction claim. “Three customers, all from one
-                afternoon in the room” is evidence we can do it again — which is the thing
+                afternoon in the room” is evidence we can do it again, which is the thing
                 actually being scored. Every link we hand out carries{" "}
                 <code className="font-mono text-[13px]">?source=</code>, and it survives all
                 the way into the Stripe metadata.
@@ -310,7 +310,7 @@ export default function TractionBoard({
                                   // as a dash than as a hard "0 kr" verdict against it.
                                   row.revenue > 0
                                   ? formatMoney(row.revenue, row.currency)
-                                  : "—"
+                                  : "n/a"
                                 : channels.basis === "customers"
                                   ? `${row.customers} paid`
                                   : `${row.lois} signed`}
@@ -425,7 +425,7 @@ export default function TractionBoard({
                   reason="Stripe test mode"
                   title={`LOI · ${loi.full_name || "unnamed"}${loi.company ? ` · ${loi.company}` : ""}`}
                   meta={`${stamp(loi.created_at)} · via ${loi.source || "unknown"} · intends to ${
-                    loi.intent || "—"
+                    loi.intent || "n/a"
                   }`}
                 />
               ))}
@@ -444,7 +444,7 @@ export default function TractionBoard({
             <li>
               <span className="text-muted">Revenue</span> is the amount captured at
               checkout, as reported by Stripe in minor units. Subscription renewals are not
-              re-counted here — Stripe remains the system of record.
+              re-counted here, Stripe remains the system of record.
             </li>
             <li>
               <span className="text-muted">Live versus test</span> comes from Stripe’s own{" "}

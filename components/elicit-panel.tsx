@@ -211,7 +211,7 @@ export default function ElicitPanel({
             <div className="flex flex-wrap items-center gap-2">
               <Label>Your answer</Label>
               <span className="text-[11.5px] text-faint">
-                Speak it — that&rsquo;s faster than typing, and you can fix the transcript before it sends.
+                Speak it, that&rsquo;s faster than typing, and you can fix the transcript before it sends.
               </span>
             </div>
 
@@ -270,7 +270,7 @@ export default function ElicitPanel({
             </div>
 
             <p className="mt-2 text-[11.5px] leading-[1.55] text-faint">
-              Passing it on costs nothing and is genuinely useful — it goes to the next person who
+              Passing it on costs nothing and is genuinely useful, it goes to the next person who
               has worked on this, and {record.hireName?.split(/\s+/)[0] ?? "they"} finds out either
               way. Type a word in the box first if you want to say who instead.
             </p>
@@ -295,7 +295,7 @@ export default function ElicitPanel({
                 onClick={() => setFollowUp(null)}
                 className="mt-2 text-[12px] text-accent-ink/80 underline-offset-2 hover:underline"
               >
-                Skip — check the write-up instead
+                Skip, check the write-up instead
               </button>
             </div>
           )}
@@ -360,7 +360,7 @@ export default function ElicitPanel({
                         {line}
                         {uncertain && (
                           <span className="ml-2 align-middle text-[11px] text-warn">
-                            — least sure about this one
+, least sure about this one
                           </span>
                         )}
                       </button>
@@ -466,7 +466,7 @@ export default function ElicitPanel({
         <Panel className="px-4 py-4 sm:px-5">
           <Label>Passed on</Label>
           <p className="mt-2 text-[14px] leading-[1.6] text-ink">
-            Thanks — that was useful.
+            Thanks, that was useful.
             {record.declinedReason ? ` (“${record.declinedReason}”)` : ""}
           </p>
           {/*
@@ -527,14 +527,14 @@ function Header({ record }: { record: Elicitation }) {
         It isn&rsquo;t written down anywhere.{" "}
         {record.routing === "roster" ? (
           <span className="text-warn">
-            Nobody has worked on this anywhere in the corpus — you were picked because{" "}
+            Nobody has worked on this anywhere in the corpus, you were picked because{" "}
             {record.expert.name.split(/\s+/)[0]} {record.expertWhy} If that&rsquo;s wrong, passing it
             on is the most useful thing you can do.
           </span>
         ) : record.tier === "peer" ? (
           <>
             You&rsquo;ve worked on this and you&rsquo;re deliberately not the person everyone routes
-            these to — they only get asked if this comes back empty.
+            these to, they only get asked if this comes back empty.
           </>
         ) : (
           <>You came up because of what&rsquo;s already in the corpus: {record.expertWhy}</>
@@ -571,7 +571,7 @@ function TheAsk({ record }: { record: Elicitation }) {
       <div className="flex flex-wrap items-center gap-2 border-b border-line bg-surface-2/60 px-4 py-2.5 sm:px-5">
         <Label>The ask</Label>
         <span className="text-[11.5px] text-faint">
-          Anchored to one thing that actually happened — not &ldquo;describe your process&rdquo;
+          Anchored to one thing that actually happened, not &ldquo;describe your process&rdquo;
         </span>
         <button
           type="button"
@@ -627,14 +627,14 @@ function TheAsk({ record }: { record: Elicitation }) {
                 And what would {record.hireName?.split(/\s+/)[0] ?? "they"} have got wrong there?
               </p>
               <p className="mt-0.5 text-[11px] text-faint">
-                The one that actually helps them — a newcomer can&rsquo;t get this anywhere else
+                The one that actually helps them, a newcomer can&rsquo;t get this anywhere else
               </p>
             </div>
           </li>
         </ul>
 
         <p className="mt-4 border-t border-line pt-3.5 text-[12.5px] leading-[1.6] text-muted">
-          Two or three sentences off the top of your head is plenty — please don&rsquo;t go and look
+          Two or three sentences off the top of your head is plenty, please don&rsquo;t go and look
           anything up. Just what happened: what you saw, what you did. Not why it was right.
         </p>
       </div>
@@ -754,12 +754,12 @@ export function ExpertScreen({
         </h1>
         <p className="max-w-[62ch] text-[14.5px] leading-[1.65] text-muted">
           One specific question about one thing that actually happened. Under a minute, including the
-          bit where you correct what I got wrong — and then it&rsquo;s written down for good, with
+          bit where you correct what I got wrong, and then it&rsquo;s written down for good, with
           your name on it, and nobody has to ask you again.
         </p>
         {captured > 0 && (
           <p className="text-[12.5px] text-ok">
-            {captured} {captured === 1 ? "answer" : "answers"} captured this way so far — all of them
+            {captured} {captured === 1 ? "answer" : "answers"} captured this way so far, all of them
             citable by the agent like any other source.
           </p>
         )}
@@ -943,7 +943,7 @@ export function ElicitStatus({
           <p className="text-[13.5px] leading-[1.55] text-ink">{b.summary}</p>
           <p className="mt-1.5 text-[12px] leading-[1.55] text-muted">
             Escalating gets {b.suggestedPerson ?? "someone"} to unblock this once. Asking them one
-            specific question about a time it came up — under a minute — gets it written into the
+            specific question about a time it came up, under a minute, gets it written into the
             corpus so nobody has to ask again.
           </p>
           <button
@@ -975,14 +975,14 @@ export function ElicitStatus({
             <span className="text-[13px] font-medium text-warn">
               {r.status === "requested"
                 ? `Asked ${r.expert.name}`
-                : `${r.expert.name} answered — checking my write-up with them`}
+                : `${r.expert.name} answered, checking my write-up with them`}
             </span>
             <span className="ml-auto text-[11.5px] text-warn/80">{agoFrom(r.createdAt)}</span>
           </div>
           <p className="mt-1.5 text-[13.5px] leading-[1.55] text-ink">{r.question}</p>
           <p className="mt-1.5 text-[12px] leading-[1.5] text-warn/90">
             Nothing is written down yet. I&rsquo;ll tell you here the moment it comes back and
-            they&rsquo;ve checked it — I&rsquo;m not going to guess at it in the meantime.
+            they&rsquo;ve checked it, I&rsquo;m not going to guess at it in the meantime.
           </p>
           <Link
             href={`/expert?id=${encodeURIComponent(r.id)}`}
@@ -1006,7 +1006,7 @@ export function ElicitStatus({
           </div>
           <p className="mt-1.5 text-[13.5px] leading-[1.55] text-ink">{r.question}</p>
           <p className="mt-1.5 text-[12px] leading-[1.5] text-ok/90">
-            It&rsquo;s in the corpus now, attributed to them. I can cite it like anything else — and so
+            It&rsquo;s in the corpus now, attributed to them. I can cite it like anything else, and so
             can whoever starts next.
           </p>
         </div>

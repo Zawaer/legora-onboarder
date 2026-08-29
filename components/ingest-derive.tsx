@@ -101,7 +101,7 @@ export default function IngestDerive({ result }: { result: IngestResult }) {
             Two model calls over all {result.artifactCount.toLocaleString()} artifacts:
             about two to three minutes, and one to two dollars of inference the first
             time. This same corpus and this same role title, unchanged, is served from
-            cache and costs nothing. Nothing is derived until you press this — and if
+            cache and costs nothing. Nothing is derived until you press this, and if
             the numbers above look wrong, fix the export first, because a derivation
             from the wrong corpus costs the same as one from the right corpus.
           </p>

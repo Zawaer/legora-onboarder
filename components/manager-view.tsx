@@ -77,7 +77,7 @@ export default function ManagerView({
             Blockers. Nothing else.
           </h1>
           <p className="max-w-[70ch] text-[15.5px] leading-[1.65] text-muted">
-            This screen deliberately shows no productivity metrics — no scores,
+            This screen deliberately shows no productivity metrics, no scores,
             no completion rates, no time-on-task. You hire for ownership, and a
             surveillance dashboard gets killed by the culture it is sold into.
             The only thing worth your attention is what somebody is stuck on
@@ -188,7 +188,7 @@ export default function ManagerView({
             people, no percentage complete, and no score attached to anybody.
             The one number on the roster is a count of things standing in
             someone&rsquo;s way, which is a queue to clear and not a mark against
-            them — every other number we could have shown would have measured
+            them, every other number we could have shown would have measured
             the person instead, and none of them would make a single person less
             stuck.
           </p>

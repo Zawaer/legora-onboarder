@@ -35,7 +35,7 @@ export default function AdjoiningScopeList({ items }: { items: AdjoiningScope[] 
         <Label>Where two ramps touch</Label>
         <span className="tnum text-[11px] text-faint">{items.length}</span>
         <span className="ml-auto hidden text-[11.5px] text-faint sm:block">
-          not a blocker — nothing is waiting on you here
+          not a blocker, nothing is waiting on you here
         </span>
       </div>
 
@@ -43,7 +43,7 @@ export default function AdjoiningScopeList({ items }: { items: AdjoiningScope[] 
         More than one person is ramping at this company, so the plans were
         written against each other: nobody was handed work somebody else already
         holds. Where the scope still runs alongside, the plan says so in the
-        task itself. These are those sentences, unedited — both people have
+        task itself. These are those sentences, unedited, both people have
         already read them.
       </p>
 
