@@ -23,6 +23,11 @@ export default function SiteHeader({
             reachable from one small link at the very bottom of a long page.
             They are navigation, so they sit in the navigation.
 
+            /pitch is deliberately NOT here. It is the traction evidence board
+            and it reads zeros to anyone who is not a judge, which is exactly
+            the wrong thing to show a prospect who followed a link from an
+            email. The page still exists; it is handed out directly.
+
             Hidden below sm and left in the footer there instead: four links
             plus a CTA do not fit on a phone, and a hamburger for five items is
             more machinery than the problem deserves. */}
@@ -31,7 +36,6 @@ export default function SiteHeader({
             <>
               <NavLink href="/manager">Manager view</NavLink>
               <NavLink href="/pricing">Pricing</NavLink>
-              <NavLink href="/pitch">Traction</NavLink>
               <NavLink href="/loi">Letter of intent</NavLink>
             </>
           )}

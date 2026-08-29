@@ -745,9 +745,6 @@ export default async function Home() {
             {/* The evidence board. It is the page that has to be findable
                 without being told about it — a claim nobody can reach is
                 indistinguishable from one we did not make. */}
-            <Link href="/pitch" className="text-muted hover:text-ink">
-              Traction
-            </Link>
             <Link href="/loi" className="text-muted hover:text-ink">
               Letter of intent
             </Link>
