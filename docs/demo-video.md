@@ -81,3 +81,24 @@ Then type a question into the chat and let the answer land.
       link set to "restricted". If a judge can't open it, it does not exist.
 - [ ] Paste into the submission form early — you can resubmit as many times as
       you like before 10:00, and the last version before the cutoff is judged.
+
+---
+
+## Two different videos — do not confuse them
+
+**The submission video is a screen recording.** The form asks for "a short video
+showing your product actually working". An animated explainer does not satisfy
+that, and substituting one risks the requirement outright. Record it yourself,
+this evening, from the live site.
+
+**Visually's video is for distribution**, not submission. Nasa Dadkoush (founder,
+Visually — at this hackathon) has offered to generate one for us manually. That
+belongs on the LinkedIn posts, which are judged on *real distribution* and carry
+20 rubric points plus two marketing prizes, and on the landing page. A
+professionally animated 30 seconds will out-reach a text post by a wide margin.
+
+**Never let a required deliverable depend on someone else's Saturday.** He is
+building at the same hackathon. Treat his video as upside that may not arrive.
+
+Brief not sent yet — deliberately. Send once the demo is recorded and we know
+exactly what we are describing.
