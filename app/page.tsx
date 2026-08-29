@@ -64,20 +64,20 @@ const BEATS = [
 
 const STEPS = [
   {
-    k: "Ingest",
-    d: "Reads the company's actual Slack, docs and tickets. It is never given a job description, because at a company inventing roles as it hires for them, none exists.",
+    k: "Monday, 9am",
+    d: "They open one link. Their name, their role, and — worked out from what the team has actually been writing to each other — what the job is here. Nobody had to write it down first.",
   },
   {
-    k: "Derive",
-    d: "Reconstructs what the role really is, out of verbatim quotes it has verified against the source — each with its channel, its author and the date it was written.",
+    k: "The first hour",
+    d: "Real work, not a reading list. A live task with a real deadline: why it matters, what finished looks like, and the context to do it without interrupting anyone.",
   },
   {
-    k: "Ramp",
-    d: "Writes two days of real work: why each task matters here, the context to do it unsupervised, what done looks like, and who to ask.",
+    k: "All week",
+    d: "They ask anything, as often as they like, and get answers out of the company's own messages. When nobody has written the answer down, it says so instead of inventing one.",
   },
   {
-    k: "Escalate",
-    d: "Answers from company context all day. Raises a human only when it genuinely cannot proceed — with who to ask and an honest minutes-to-unblock.",
+    k: "Before it costs anything",
+    d: "If they are about to do something the team already decided against, it says so unprompted — and shows them the message where it was decided, by name and date.",
   },
 ];
 
@@ -122,9 +122,9 @@ export default async function Home() {
             </h1>
 
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              It reads a company&rsquo;s real Slack, docs and tickets, works out
-              what a brand-new role actually is, and drives the new hire through
-              their first two days of real work.
+              Your new hire opens one link on Monday and finds real work
+              already waiting — with the context to do it, and somewhere to ask
+              the forty questions they would never ask a person twice.
             </p>
 
             <StartDemo feed={feed} />
@@ -275,9 +275,9 @@ export default async function Home() {
         {/* ── how it works ── */}
         <section className="border-b border-line py-14 lg:py-20">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <Label>How it works</Label>
+            <Label>What their first days look like</Label>
             <span className="text-[12.5px] text-faint">
-              four steps, no human in the loop until step four
+              their manager is interrupted once, not thirty times
             </span>
           </div>
           <ol className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
