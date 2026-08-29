@@ -66,7 +66,7 @@ const BEATS = [
 const STEPS = [
   {
     k: "Monday, 9am",
-    d: "They open one link. Their name, their role, and — worked out from what the team has actually been writing to each other — what the job is here. Nobody had to write it down first.",
+    d: "They open one link. Their name, their role, and what the job actually is here, worked out from what the team has been writing to each other. Nobody had to write it down first.",
   },
   {
     k: "The first hour",
@@ -80,11 +80,11 @@ const STEPS = [
     // that decide whether someone gets going at all. It is a better description
     // of the problem than "they can ask as often as they like" because it names
     // the cost being removed rather than the quantity being permitted.
-    d: "Asking a colleague takes nerve. Asking this doesn't — so they ask the fortieth question as easily as the first, and get answers out of the company's own messages. When nobody has written the answer down, it says so instead of inventing one.",
+    d: "Asking a colleague takes nerve. Asking this doesn't, so they ask the fortieth question as easily as the first, and get answers out of the company's own messages. When nobody has written the answer down, it says so instead of inventing one.",
   },
   {
     k: "Before it costs anything",
-    d: "If they are about to do something the team already decided against, it says so unprompted — and shows them the message where it was decided, by name and date.",
+    d: "If they are about to do something the team already decided against, it says so unprompted, and shows them the message where it was decided, by name and date.",
   },
 ];
 
@@ -143,7 +143,7 @@ export default async function Home() {
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
               VANAV reads your Slack, docs and tickets, builds the onboarding
               plan that doesn&rsquo;t exist yet, and runs the new hire through
-              their first two real days of work — answering from your own
+              their first two real days of work, answering from your own
               material instead of from the person next to them.
             </p>
 
@@ -332,9 +332,9 @@ export default async function Home() {
                   <Wordmark />
                 </div>
                 <p className="mt-2.5 text-[15px] leading-[1.6] text-ink">
-                  So the onboarding has to derive the role itself — from the
-                  evidence the company has already produced — run the first two
-                  days of real work, and interrupt a human only when it truly
+                  So the onboarding has to work the role out itself, from the
+                  evidence the company has already produced, then run the first
+                  two days of real work and interrupt a human only when it truly
                   cannot proceed.
                 </p>
               </div>
@@ -521,7 +521,7 @@ export default async function Home() {
                 </h2>
                 <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
                   When the answer genuinely isn&rsquo;t written down, the agent
-                  asks the one person who would know — once — and writes the
+                  asks the one person who would know, once, and writes the
                   confirmed answer back into the company&rsquo;s own record,
                   attributed and dated. Everyone who hits the same gap afterwards
                   gets it from there.
@@ -607,7 +607,7 @@ export default async function Home() {
                 Two planners read the same messages and both land on the same
                 unglamorous, high-value ticket. So the second one reads what the
                 first already wrote down, and where the scope genuinely runs
-                alongside, it says so in the task itself — by name.
+                alongside, it says so in the task itself, by name.
               </p>
             </div>
 
@@ -637,6 +637,63 @@ export default async function Home() {
                 Where two ramps touch, on the manager screen
                 <span aria-hidden>&rarr;</span>
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── what it cannot see ──
+            Added after the sharpest outside critique we got: a role inferred
+            from Slack is ambiguous, because much of what a job actually is
+            gets said face to face. That is true, and the product already
+            answers it: the coverage panel states what was missing before it
+            states anything else. The answer existed and the page never made
+            it, which meant the objection landed unopposed. ── */}
+        <section data-reveal className="border-b border-line py-14 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+            <div className="flex flex-col gap-5">
+              <Label>What it cannot see</Label>
+              <h2 className="max-w-[18ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.025em] text-balance sm:text-[38px]">
+                Half of any job is never written down.
+              </h2>
+              <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
+                It reads Slack, documents, tickets and meeting notes. It does
+                not read the corridor, the call, or the thing your best engineer
+                only ever says out loud. So before it tells you anything, it
+                tells you what it read and what it never saw.
+              </p>
+              <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
+                The bar is not knowing the job perfectly. Nobody does on day
+                one. The bar is beating a blank page, which is what a new hire
+                gets today.
+              </p>
+            </div>
+
+            <div
+              className="self-start overflow-hidden rounded-xl border border-line-strong bg-surface"
+              style={{ boxShadow: "var(--shadow)" }}
+            >
+              <div className="flex items-center gap-2 border-b border-line bg-surface-2/70 px-5 py-3">
+                <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-accent" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
+                  Shown before the role, not after
+                </span>
+              </div>
+              <div className="flex flex-col divide-y divide-line">
+                <p className="px-5 py-3.5 text-[14px] leading-[1.55]">
+                  <span className="font-medium">Read.</span>{" "}
+                  <span className="text-muted">
+                    63 messages, 14 people, 22 days.
+                  </span>
+                </p>
+                <p className="px-5 py-3.5 text-[14px] leading-[1.55]">
+                  <span className="font-medium">Not read.</span>{" "}
+                  <span className="text-muted">No DMs. No meetings. No calls.</span>
+                </p>
+                <p className="px-5 py-3.5 text-[13px] leading-[1.6] text-muted">
+                  A manager who can see the gap fills it in one sentence. One
+                  who cannot is being guessed at.
+                </p>
+              </div>
             </div>
           </div>
         </section>
