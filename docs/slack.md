@@ -89,40 +89,64 @@ handshake. It is the only transport that reliably survives a conference network.
    - **`app_mention`** — `@Onboarder` in a channel
 9. **Save Changes** (bottom right).
 
-### 5. Create the slash command
+### 5. Turn on the Messages tab — do not skip this one
 
-10. Left sidebar → **Features → Slash Commands** → **Create New Command**:
+Scopes and event subscriptions decide what the bot may *read*. They do not
+decide whether Slack lets a human **type into the DM at all**. That is a
+separate switch, it is on a different page, and with it off the hire opens the
+bot's DM and finds the message box replaced by *"Sending messages to this app
+has been turned off."* No `message.im` event is ever emitted, so the bot looks
+dead while every scope and subscription is correct — the worst possible shape
+for a bug ten minutes before a demo.
+
+Slack's own App Home guide lists it as a required step alongside the scope and
+the event: *"Under **Show Tab**, switch on the **Messages Tab** toggle"*
+(<https://docs.slack.dev/surfaces/app-home>).
+
+10. Left sidebar → **Features → App Home** → scroll to **Show Tabs**.
+11. Switch the **Messages Tab** toggle **on**, and — underneath it — tick
+    **"Allow users to send Slash commands and messages from the messages tab"**.
+
+    The toggle alone is not enough: it shows the tab, the checkbox is what makes
+    the input box writable. Both. If Slack was already open, quit and reopen it —
+    the desktop client caches this.
+
+### 6. Create the slash command
+
+12. Left sidebar → **Features → Slash Commands** → **Create New Command**:
     - Command: `/onboard`
     - Short description: `Start your ramp`
     - Usage hint: `[role title]`
     - Leave Request URL **empty** — Socket Mode delivers it.
-11. **Save**.
+13. **Save**.
 
-### 6. Install to the workspace
+### 7. Install to the workspace
 
-12. Left sidebar → **Settings → Install App** → **Install to Workspace** →
+14. Left sidebar → **Settings → Install App** → **Install to Workspace** →
     **Allow**.
-13. **Copy the `xoxb-…` Bot User OAuth Token.** This is `SLACK_BOT_TOKEN`.
+15. **Copy the `xoxb-…` Bot User OAuth Token.** This is `SLACK_BOT_TOKEN`.
 
 > Every time you change scopes you must come back here and **reinstall**.
 > Scopes added but not reinstalled do nothing, and the error Slack gives you is
 > `missing_scope` with no indication that reinstalling is the fix.
 
-### 7. Make a manager channel and invite the bot
+### 8. Make a manager channel and invite the bot
 
-14. In Slack, create a channel — `#onboarding-blockers` is a good name for a
+16. In Slack, create a channel — `#onboarding-blockers` is a good name for a
     demo, because the audience can read the purpose off the tab.
-15. In that channel, type: **`/invite @Onboarder`**
+17. In that channel, type: **`/invite @Onboarder`**
 
     Do not skip this. A bot that is not a member of a channel cannot post to it,
     and the error (`not_in_channel`) arrives at the exact moment your escalation
     was supposed to appear on screen.
-16. Get the channel ID: click the channel name → **About** → the `C…` value at
-    the bottom → copy. Use the ID rather than `#name`; a rename keeps the ID.
+18. Get the channel ID: click the channel name → **About** → the `C…` value at
+    the bottom → copy. Use the ID, not `#name`: a rename keeps the ID, and
+    Slack's own guidance for `chat.postMessage` is to "always use channel-like
+    IDs instead" of names.
 
-### 8. Configure and run
+### 9. Configure and run
 
-17. In `.env.local` (create it from `.env.example` if it does not exist):
+19. In `.env.local` (create it from `.env.example` if it does not exist):
 
     ```bash
     ANTHROPIC_API_KEY=sk-ant-…
@@ -131,7 +155,7 @@ handshake. It is the only transport that reliably survives a conference network.
     SLACK_MANAGER_CHANNEL=C09XXXXXXXX
     ```
 
-18. Two terminals. The bot is a **separate process** from the web app and needs
+20. Two terminals. The bot is a **separate process** from the web app and needs
     it running — see "How it fits together" below.
 
     ```bash
@@ -153,8 +177,9 @@ handshake. It is the only transport that reliably survives a conference network.
       …
     ```
 
-19. In Slack, DM the bot (find **Onboarder** under **Apps**) and type `start`,
-    or run `/onboard` from anywhere.
+21. In Slack, DM the bot (find **Onboarder** under **Apps**) and type `start`,
+    or run `/onboard` from anywhere. If the DM has no message box, step 5 is
+    not done.
 
 ---
 
@@ -238,8 +263,15 @@ genuinely succeeded.
 
 ### "`missing_scope`, or the bot ignores my DMs"
 
-Two different causes with the same shape:
+Three different causes with the same shape. Check them in this order, because
+the third one is the only one that is invisible from the terminal:
 
+- **The Messages tab is off** (step 5). Look at the DM in Slack. If there is no
+  message box — just *"Sending messages to this app has been turned off"* — no
+  event is being suppressed, none is being *generated*. Nothing you do to scopes
+  or subscriptions will change that. **Features → App Home → Show Tabs →
+  Messages Tab** on, plus the **"Allow users to send Slash commands and messages
+  from the messages tab"** checkbox under it. Then quit and reopen Slack.
 - **Scope added but never reinstalled.** Adding a scope under *OAuth &
   Permissions* does nothing until you go to **Settings → Install App →
   Reinstall to Workspace**. The existing `xoxb-` token carries the *old* scope
@@ -250,8 +282,8 @@ Two different causes with the same shape:
   `app_mentions:read` and the **`app_mention`** event.
 
 Quick check: `SLACK_LOG_LEVEL=debug npm run slack` prints every event Slack
-delivers. If typing in the DM prints nothing at all, it is the event
-subscription, not the scope.
+delivers. If typing in the DM prints nothing at all, it is the Messages tab or
+the event subscription — not the scope.
 
 ### "`invalid_auth` on startup"
 
@@ -276,6 +308,7 @@ Regenerate it under **Basic Information → App-Level Tokens** with that scope.
 
 | Symptom | Cause |
 | --- | --- |
+| The bot's DM has no message box at all | The Messages tab is off, or its "allow users to send…" checkbox is unticked — step 5 |
 | `Cannot reach the Onboarder API at http://localhost:3000` | `npm run dev` is not running, or is on another port — set `ONBOARDER_API_URL` |
 | Every turn errors with an Anthropic message | `ANTHROPIC_API_KEY` missing or rejected; it is the *Next* process that needs it |
 | `/onboard` says "dispatch_failed" | The slash command was created but the app was not reinstalled afterwards |

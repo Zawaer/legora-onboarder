@@ -221,24 +221,46 @@ async function withThinking(client, dmChannel, mode, work) {
     blocks: thinkingBlocks(0, mode),
   });
   const startedAt = Date.now();
+
+  // The answer and the tick both edit the *same* message, so they race. A tick
+  // fired at t=29.9s is still in flight when the turn finishes at t=30.0s, and
+  // whichever `chat.update` Slack applies last wins — which means the finished
+  // answer can be overwritten by a frozen "Still going… · 30s" bubble that
+  // never updates again. Slack has no compare-and-swap on `ts`; the only fix is
+  // to make the two writers mutually exclusive here. `pending` serialises the
+  // ticks, and `finished` stops new ones being queued, so awaiting `pending`
+  // before the first real edit guarantees no thinking-update is outstanding.
+  let finished = false;
+  let pending = Promise.resolve();
   const ticker = setInterval(() => {
+    if (finished) return;
     const seconds = Math.round((Date.now() - startedAt) / 1000);
-    client.chat
-      .update({
-        channel: dmChannel,
-        ts: placeholder.ts,
-        text: "Thinking…",
-        blocks: thinkingBlocks(seconds, mode),
-      })
-      .catch(() => {
-        /* a dropped tick is cosmetic; never let it kill the turn */
-      });
+    pending = pending.then(() => {
+      if (finished) return undefined;
+      return client.chat
+        .update({
+          channel: dmChannel,
+          ts: placeholder.ts,
+          text: "Thinking…",
+          blocks: thinkingBlocks(seconds, mode),
+        })
+        .catch(() => {
+          /* a dropped tick is cosmetic; never let it kill the turn */
+        });
+    });
   }, 5000);
+
+  /** Stop ticking and wait for any edit already on the wire to land. */
+  async function settle() {
+    finished = true;
+    clearInterval(ticker);
+    await pending.catch(() => {});
+  }
 
   let replace = { channel: dmChannel, ts: placeholder.ts };
   try {
     const actions = await work();
-    clearInterval(ticker);
+    await settle();
     for (const action of actions) {
       replace = await send(client, action, dmChannel, replace);
     }
@@ -249,18 +271,19 @@ async function withThinking(client, dmChannel, mode, work) {
       await client.chat.delete({ channel: replace.channel, ts: replace.ts }).catch(() => {});
     }
   } catch (err) {
-    clearInterval(ticker);
+    await settle();
     const message =
       err instanceof OnboarderApiError ? err.message : (err?.message ?? "Unexpected error.");
     console.error("[slack]", err);
-    await client.chat
-      .update({
-        channel: dmChannel,
-        ts: placeholder.ts,
-        text: "Something went wrong.",
-        blocks: errorBlocks(message),
-      })
-      .catch(() => {});
+    // Only edit the placeholder if it is still a placeholder. Once `send` has
+    // turned it into the agent's actual answer, `replace` is undefined and
+    // editing that `ts` would delete a delivered answer to show an error about
+    // a *later* message — losing the one thing the hire was waiting for.
+    const notice = { text: "Something went wrong.", blocks: errorBlocks(message) };
+    await (replace
+      ? client.chat.update({ channel: replace.channel, ts: replace.ts, ...notice })
+      : client.chat.postMessage({ channel: dmChannel, ...notice })
+    ).catch(() => {});
   }
 }
 

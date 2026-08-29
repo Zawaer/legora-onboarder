@@ -29,6 +29,14 @@ export type Block = SlackTypes.KnownBlock;
 const SECTION_TEXT_LIMIT = 3000;
 const HEADER_TEXT_LIMIT = 150;
 const MAX_BLOCKS = 50;
+// A section's `fields` are *not* governed by the 3000 that applies to its
+// `text`. Slack documents them separately: "Maximum number of items is 10.
+// Maximum length for the `text` in each item is 2000 characters."
+// (docs.slack.dev/reference/block-kit/blocks/section-block). Clipping these to
+// 3000 would sail past the harness and come back as `invalid_blocks` from the
+// one message that matters most — the escalation card.
+const FIELD_TEXT_LIMIT = 2000;
+const MAX_FIELDS = 10;
 /** Leaves room for the "…" and for a multibyte tail. */
 const SECTION_CHUNK = 2800;
 
@@ -276,7 +284,9 @@ export function blockerBlocks(
   if (facts.length > 0) {
     blocks.push({
       type: "section",
-      fields: facts.map((text) => ({ type: "mrkdwn" as const, text: clip(text, SECTION_TEXT_LIMIT) })),
+      fields: facts
+        .slice(0, MAX_FIELDS)
+        .map((text) => ({ type: "mrkdwn" as const, text: clip(text, FIELD_TEXT_LIMIT) })),
     });
   }
 

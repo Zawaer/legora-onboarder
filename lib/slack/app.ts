@@ -32,6 +32,7 @@ import {
   type Block,
   blockerBlocks,
   blockerFallback,
+  capBlocks,
   channelRef,
   context,
   fallback,
@@ -43,6 +44,7 @@ import {
   splitOpening,
   taskBlocks,
   taskFallback,
+  toMrkdwn,
 } from "./format";
 
 // ─────────────────────────────────────────────────────────────────── types
@@ -150,7 +152,7 @@ export async function handleStart(deps: SlackDeps, input: StartInput): Promise<O
   const out: Outbound[] = [];
 
   if (intro.trim()) {
-    out.push({ kind: "dm", text: fallback(intro), blocks: prose(intro) });
+    out.push({ kind: "dm", text: fallback(intro), blocks: capBlocks(prose(intro)) });
   }
 
   if (task) {
@@ -235,13 +237,17 @@ export async function handleUserMessage(deps: SlackDeps, input: MessageInput): P
     replyBlocks.push(
       context(
         `:triangular_flag_on_post: I couldn't settle this from your team's own material, so I've flagged it in ` +
-          `${channelRef(deps.managerChannel)}${escalation.suggestedPerson ? ` for ${escalation.suggestedPerson}` : ""}` +
+          // `channelRef` emits `<#C…>`, which is mrkdwn we mean literally, so it
+          // goes in after the escape. The suggested person is model output and
+          // must not: a stray `<` or `&` in a name is markup Slack will try to
+          // parse, and it swallows the rest of the line when it fails.
+          `${channelRef(deps.managerChannel)}${escalation.suggestedPerson ? ` for ${toMrkdwn(escalation.suggestedPerson)}` : ""}` +
           `${typeof escalation.minutesToUnblock === "number" ? ` — about ${escalation.minutesToUnblock} min of their time` : ""}.`,
       ),
     );
   }
 
-  const out: Outbound[] = [{ kind: "dm", text: fallback(reply), blocks: replyBlocks }];
+  const out: Outbound[] = [{ kind: "dm", text: fallback(reply), blocks: capBlocks(replyBlocks) }];
 
   // Did they just finish something? Hand them the next piece of work rather
   // than waiting to be asked for it.
