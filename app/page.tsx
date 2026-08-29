@@ -73,7 +73,13 @@ const STEPS = [
   },
   {
     k: "All week",
-    d: "They ask anything, as often as they like, and get answers out of the company's own messages. When nobody has written the answer down, it says so instead of inventing one.",
+    // "Asking takes nerve" is a partner at a Nordic law firm's framing, given
+    // unprompted when we asked what makes a new hire's first weeks hard. He
+    // listed being "appropriately brave and fearless" as one of the three things
+    // that decide whether someone gets going at all. It is a better description
+    // of the problem than "they can ask as often as they like" because it names
+    // the cost being removed rather than the quantity being permitted.
+    d: "Asking a colleague takes nerve. Asking this doesn't — so they ask the fortieth question as easily as the first, and get answers out of the company's own messages. When nobody has written the answer down, it says so instead of inventing one.",
   },
   {
     k: "Before it costs anything",
