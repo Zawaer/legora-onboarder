@@ -136,22 +136,31 @@ export default async function Home() {
         {/* ── hero ── */}
         <section className="grid gap-12 border-b border-line py-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16 lg:py-24">
           <div className="flex flex-col gap-7">
-            <h1 className="max-w-[19ch] text-[40px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[62px]">
-              Onboarding for a job that has never existed.
+            <h1 className="max-w-[20ch] text-[40px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[62px]">
+              Your senior people are the onboarding plan. That&rsquo;s what it
+              costs.
             </h1>
-
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              Because of AI, more and more companies are growing headcount
-              faster than they ever have. Roles that never existed before have
-              to be filled — and filled quickly.
-            </p>
-            <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              VANAV reads a company&rsquo;s real Slack, docs and tickets,
-              works out what a brand-new role actually is, and drives the new
-              hire through their first two days of real work.
+              VANAV reads your Slack, docs and tickets, builds the onboarding
+              plan that doesn&rsquo;t exist yet, and runs the new hire through
+              their first two real days of work — answering from your own
+              material instead of from the person next to them.
             </p>
 
-            <StartDemo feed={feed} />
+            {/* Waitlist first: it is the conversion action now that there is
+                no checkout, and it is the one thing a convinced reader can do.
+                The demo sits beside it as the secondary — still one click, but
+                it no longer competes with the ask. */}
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/#waitlist"
+                className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-ink px-6 text-[15px] font-medium text-paper transition-opacity hover:opacity-90"
+              >
+                Join the waitlist
+                <span aria-hidden>→</span>
+              </Link>
+              <StartDemo feed={feed} secondary />
+            </div>
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
               <Link

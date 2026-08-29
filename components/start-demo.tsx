@@ -31,7 +31,15 @@ export type FeedItem = {
   snippet: string;
 };
 
+/**
+ * The label says what the visitor gets, not what the system does. "Derive the
+ * Legal Engineer role" was the codebase's own verb on the most-read button on
+ * the site: a first-time reader does not know what deriving a role is, and the
+ * one who does has already decided. "See how it works" is what they are
+ * actually about to do.
+ */
 export default function StartDemo({
+  secondary = false,
   companySlug = "lexhav",
   roleTitle = "Legal Engineer",
   companyName = "Lexhav",
@@ -44,6 +52,8 @@ export default function StartDemo({
   hireName = "Rebecca Hartley",
   feed = [],
 }: {
+  /** Renders as an outline button beside a primary action. */
+  secondary?: boolean;
   companySlug?: string;
   roleTitle?: string;
   companyName?: string;
@@ -111,7 +121,11 @@ export default function StartDemo({
           type="button"
           onClick={start}
           disabled={running}
-          className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-lg bg-ink px-6 text-[15px] font-medium text-paper transition-all hover:opacity-90 disabled:cursor-progress"
+          className={`group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-lg px-6 text-[15px] font-medium transition-all disabled:cursor-progress ${
+            secondary
+              ? "border border-line-strong bg-surface text-ink hover:border-ink"
+              : "bg-ink text-paper hover:opacity-90"
+          }`}
         >
           {running && (
             <span
@@ -131,7 +145,7 @@ export default function StartDemo({
                 />
               </svg>
             )}
-            {running ? "Deriving the role…" : `Derive the ${roleTitle} role`}
+            {running ? "Reading the workspace…" : "See how it works"}
           </span>
         </button>
 
