@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="VANAV">
+  <!--
+    The mark at favicon scale.
+
+    The lockup's vana is 24 dots across a 438x62 box — a 7:1 trail. Scaled into
+    a square that becomes a fine zigzag, and at 16px it is a smudge. So this is
+    not the wave squeezed down: it is one rising segment of it, sampled to five
+    dots that are large relative to the canvas, with the same single point
+    picked out in brass and drawn larger. The idea survives (a trail, one point
+    on it), the geometry does not, because at 16px only the idea is legible.
+
+    Literal hex rather than tokens: an icon file is served outside the document
+    and has no access to the CSS variables. Paper ground so the mark reads on
+    dark browser chrome as well as light.
+  -->
+  <rect width="64" height="64" rx="12" fill="#eceee4" />
+  <g fill="#172420">
+    <circle cx="9" cy="45.5" r="4.4" />
+    <circle cx="20.5" cy="41" r="4.4" />
+    <circle cx="43.5" cy="23" r="4.4" />
+    <circle cx="55" cy="18.5" r="4.4" />
+  </g>
+  <circle cx="32" cy="32" r="6.4" fill="#a97a32" />
+</svg>

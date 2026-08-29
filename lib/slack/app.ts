@@ -291,7 +291,7 @@ export async function handleUserMessage(deps: SlackDeps, input: MessageInput): P
 }
 
 /**
- * `@Vanav` in a channel.
+ * `@VANAV` in a channel.
  *
  * The conversation belongs in a DM — it is one person's ramp, and half of it is
  * them admitting what they do not know. So a mention acknowledges in-thread and

@@ -37,9 +37,9 @@ const EMPTY = {
 };
 
 const inputClass =
- "w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900";
+ "w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-faint focus:border-ink";
 
-const labelClass = "text-sm font-medium text-neutral-700";
+const labelClass = "text-sm font-medium text-ink";
 
 export function LoiForm({
   product,
@@ -157,12 +157,12 @@ export function LoiForm({
         <input {...field("signed_name")} required />
       </div>
 
-      <p className="text-xs text-neutral-500">
+      <p className="text-xs text-faint">
         This is a statement of intent, not a binding contract.
       </p>
 
       {error ? (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-warn">
           {error}
         </p>
       ) : null}
@@ -170,7 +170,7 @@ export function LoiForm({
       <button
         type="submit"
         disabled={state === "sending"}
-        className="rounded-lg bg-neutral-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700 disabled:opacity-50"
+        className="rounded-lg bg-ink px-5 py-3 text-sm font-medium text-paper transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {state === "sending" ? "Signing…" : "Sign"}
       </button>
@@ -196,18 +196,18 @@ function SignedLoi({ loi, product }: { loi: Signed; product: string }) {
   const at = [loi.role, loi.company].filter(Boolean).join(" at ");
 
   return (
-    <div className="flex w-full flex-col gap-5 rounded-xl border border-neutral-200 bg-white p-6">
-      <h2 className="text-sm font-medium uppercase tracking-widest text-neutral-500">
+    <div className="flex w-full flex-col gap-5 rounded-xl border border-line bg-surface p-6">
+      <h2 className="text-sm font-medium uppercase tracking-widest text-faint">
         Letter of intent
       </h2>
 
-      <p className="text-pretty leading-relaxed text-neutral-900">
+      <p className="text-pretty leading-relaxed text-ink">
         I, <strong>{loi.full_name}</strong>
         {at ? <>, {at},</> : ","} have used <strong>{product}</strong> on{" "}
         {new Intl.DateTimeFormat("sv-SE", { dateStyle: "long" }).format(date)}.
       </p>
 
-      <p className="text-pretty leading-relaxed text-neutral-900">
+      <p className="text-pretty leading-relaxed text-ink">
         I intend to <strong>{loi.intent}</strong>
         {loi.blocker ? (
           <>
@@ -218,18 +218,18 @@ function SignedLoi({ loi, product }: { loi: Signed; product: string }) {
         .
       </p>
 
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-faint">
         This is a statement of intent, not a binding contract.
       </p>
 
-      <div className="flex flex-col gap-1 border-t border-neutral-200 pt-4 text-sm text-neutral-900">
+      <div className="flex flex-col gap-1 border-t border-line pt-4 text-sm text-ink">
         <span>
           Signed: <strong>{loi.signed_name}</strong>
         </span>
-        <span className="text-neutral-500">{loi.email}</span>
+        <span className="text-muted">{loi.email}</span>
         {/* Server clock, rendered verbatim. This line is why the screenshot is
             evidence rather than a claim. */}
-        <span className="font-mono text-xs text-neutral-500">
+        <span className="font-mono text-xs text-faint">
           {stamp}
         </span>
       </div>

@@ -35,17 +35,7 @@ export default function TractionBoard({
 
   return (
     <div className="min-h-dvh">
-      <SiteHeader
-        right={
-          <>
-            <NavLink href="/manager">Manager view</NavLink>
-            <NavLink href="/loi">Letter of intent</NavLink>
-            <NavLink href="/#waitlist" emphasis>
-              Pricing
-            </NavLink>
-          </>
-        }
-      />
+      <SiteHeader />
 
       <main className="mx-auto max-w-[1100px] px-5 py-10 sm:px-8 lg:py-14">
         {/* ── the claim ── */}

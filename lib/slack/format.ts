@@ -294,7 +294,7 @@ export function blockerBlocks(
 
   blocks.push(
     context(
-      "Vanav answers from your Slack, docs and tickets and posts nothing when it can. " +
+      "VANAV answers from your Slack, docs and tickets and posts nothing when it can. " +
         "This one it could not settle without a person.",
     ),
   );

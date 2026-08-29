@@ -1,9 +1,15 @@
-import Link from "next/link";
+import SiteHeader from "@/components/site-header";
 import { LoiForm } from "@/components/loi-form";
 import { normaliseSource } from "@/lib/source";
 import { PRODUCT } from "@/lib/product";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: `Letter of intent · ${PRODUCT}`,
+  description:
+    "A one-minute statement of intent: what you would use it for, and the one thing that has to be true first. Not a binding contract.",
+};
 
 type Params = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -21,27 +27,26 @@ export default async function LoiPage({ searchParams }: { searchParams: Params }
   const source = normaliseSource(params.source, "room");
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-xl flex-col justify-center gap-8 px-6 py-16">
-      {/* Linked from the site header, so it needs a way back. Kept to one line:
-          the phone is usually in someone else's hand on this screen. */}
-      <Link
-        href="/"
-        className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
-      >
-        &larr; Vanav
-      </Link>
+    // The site header is the way back — this page used to carry its own
+    // one-line "← VANAV" link because it had no header at all, and two home
+    // links stacked twenty pixels apart read as an unfinished page rather than
+    // a considerate one.
+    <div className="min-h-dvh bg-paper text-ink">
+      <SiteHeader />
 
-      <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight text-neutral-900">
-          Would you put this in front of your next cohort?
-        </h1>
-        <p className="text-pretty text-neutral-600">
-          If you would pay for {PRODUCT} but not today, say so here. It takes a
-          minute, and the “…once” line tells us exactly what to build next.
-        </p>
-      </div>
+      <main className="mx-auto flex w-full max-w-xl flex-col gap-8 px-6 py-14 sm:py-20">
+        <div className="flex flex-col gap-3">
+          <h1 className="text-3xl font-semibold tracking-tight text-ink">
+            Would you put this in front of your next cohort?
+          </h1>
+          <p className="text-pretty text-muted">
+            If you would pay for {PRODUCT} but not today, say so here. It takes a
+            minute, and the “…once” line tells us exactly what to build next.
+          </p>
+        </div>
 
-      <LoiForm product={PRODUCT} source={source} />
-    </main>
+        <LoiForm product={PRODUCT} source={source} />
+      </main>
+    </div>
   );
 }

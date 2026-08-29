@@ -5,7 +5,7 @@ import { Label } from "@/components/ui";
 import { WAITLIST_BOOKING_URL } from "@/lib/waitlist";
 
 export const metadata = {
-  title: "Pricing",
+  title: "Pricing · VANAV",
   description:
     "Priced per hire onboarded, because that is the number that is growing at our customers.",
 };

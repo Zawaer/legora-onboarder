@@ -91,7 +91,7 @@ export function loadSlackConfig(env: EnvLike): SlackConfig {
     problems.push(
       "SLACK_MANAGER_CHANNEL is not set.\n" +
         "  This is where escalations go. Use the channel ID (open the channel → its name → About → the C… at\n" +
-        "  the bottom), or #channel-name for a public channel. Invite the bot to it: /invite @Vanav.",
+        "  the bottom), or #channel-name for a public channel. Invite the bot to it: /invite @VANAV.",
     );
   } else if (!/^([CG][A-Z0-9]{6,}|#[a-z0-9_-]{1,80})$/.test(managerChannel)) {
     problems.push(

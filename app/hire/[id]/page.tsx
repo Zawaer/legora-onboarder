@@ -7,6 +7,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Day 1 · VANAV",
+  description:
+    "A new hire's first day of real work: each task in order, the quotes from the company's own corpus behind it, and the colleague to ask when the traces run out.",
 };
 
 /**
