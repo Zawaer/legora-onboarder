@@ -203,6 +203,23 @@
       animation-timeline: view();
       animation-range: entry 0% exit 100%;
     }
+
+    /* An element carrying both needs both animations declared together. The
+       shorthand is not additive: written as two rules the later one silently
+       replaces the earlier, which is exactly what happened here. The panel
+       drifted and never entered, and nothing reported it because a cancelled
+       animation is not an error. Two names, two timelines, two ranges. */
+    [data-parallax][data-reveal] {
+      animation: reveal-up linear both, drift linear both;
+      animation-timeline: view(), view();
+      animation-range: entry 0% cover 22%, entry 0% exit 100%;
+    }
+    [data-parallax][data-reveal="right"] {
+      animation-name: reveal-right, drift;
+    }
+    [data-parallax][data-reveal="scale"] {
+      animation-name: reveal-scale, drift;
+    }
   }
 }
 
