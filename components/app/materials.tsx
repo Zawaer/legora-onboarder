@@ -302,11 +302,12 @@ export default function Materials({
    *
    * The window is opened before the await and pointed afterwards. Opening it
    * after would happen outside the click gesture, and every popup blocker
-   * would eat it.
+   * would eat it. No "noopener" in the feature string, because passing it
+   * makes window.open return null and there would be nothing left to point.
    */
   async function open(material: Material) {
     if (!db) return;
-    const w = window.open("", "_blank", "noopener,noreferrer");
+    const w = window.open("about:blank", "_blank");
     const { data, error } = await db.storage
       .from("materials")
       .createSignedUrl(material.storage_path, 60);
@@ -374,7 +375,7 @@ export default function Materials({
               visible surface, and it takes the focus ring on the input's
               behalf because an sr-only element cannot show one itself.
             */}
-            <label className="inline-flex h-10 cursor-pointer items-center rounded-lg bg-ink px-4 text-[14px] font-medium text-paper transition-opacity hover:opacity-90 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink">
+            <label className="inline-flex h-10 cursor-pointer items-center rounded-lg bg-ink px-4 text-[14px] font-medium text-paper transition-opacity hover:opacity-90 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink">
               <input
                 type="file"
                 multiple
@@ -429,7 +430,7 @@ export default function Materials({
                       onClick={() =>
                         setQueue((q) => q.filter((x) => x.key !== item.key))
                       }
-                      className="shrink-0 rounded px-1.5 text-[12px] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                      className="shrink-0 rounded px-1.5 text-[12px] text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                     >
                       Dismiss
                     </button>
@@ -487,7 +488,7 @@ export default function Materials({
                     <button
                       type="button"
                       onClick={() => void open(m)}
-                      className="max-w-full truncate text-left text-[14px] font-medium text-ink underline decoration-line-strong underline-offset-2 hover:decoration-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                      className="max-w-full truncate text-left text-[14px] font-medium text-ink underline decoration-line-strong underline-offset-2 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                     >
                       {m.file_name}
                     </button>
@@ -509,7 +510,7 @@ export default function Materials({
                       type="button"
                       onClick={() => void remove(m)}
                       disabled={busyId === m.id}
-                      className="shrink-0 rounded-md px-2 py-1 text-[12.5px] text-muted transition-colors hover:bg-warn-soft hover:text-warn focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:opacity-50"
+                      className="shrink-0 rounded-md px-2 py-1 text-[12.5px] text-muted transition-colors hover:bg-warn-soft hover:text-warn focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:opacity-50"
                     >
                       {busyId === m.id ? "Removing" : "Remove"}
                     </button>

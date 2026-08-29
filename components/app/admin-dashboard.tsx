@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Label } from "@/components/ui";
 import DraftQueue from "@/components/app/draft-queue";
+import Materials from "@/components/app/materials";
 import { browserClient, type Company, type Member } from "@/lib/supabase";
 
 export default function AdminDashboard({
@@ -45,6 +46,22 @@ export default function AdminDashboard({
         <Label>Draft queue</Label>
         <div className="mt-4">
           <DraftQueue companyId={member.company_id} canDecide={isAdmin} />
+        </div>
+      </section>
+
+      {/* Material sits between the queue and the members list on purpose: it
+          is the answer to the sharpest criticism this product gets, which is
+          that a role inferred from chat alone is ambiguous because much of a
+          job is agreed out loud. What a company uploads here is the part that
+          was written down somewhere other than Slack.
+
+          canUpload is admin-only because it also gates Remove. The route
+          independently lets any member POST and restricts DELETE to admins, so
+          the two disagree deliberately in the safe direction. */}
+      <section>
+        <Label>Onboarding material</Label>
+        <div className="mt-4">
+          <Materials companyId={member.company_id} canUpload={isAdmin} />
         </div>
       </section>
 

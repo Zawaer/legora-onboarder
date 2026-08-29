@@ -139,9 +139,9 @@ export async function DELETE(request: Request) {
 
   // Body first, query string as a fallback. Some clients drop a body on
   // DELETE, and losing a delete to a transport detail is a bad afternoon.
-  const raw = await request.json().catch(() => null);
-  const id = raw ?? { id: new URL(request.url).searchParams.get("id") ?? undefined };
-  const parsed = DeleteBody.safeParse(id);
+  const raw = (await request.json().catch(() => null)) as { id?: unknown } | null;
+  const id = raw?.id ?? new URL(request.url).searchParams.get("id") ?? undefined;
+  const parsed = DeleteBody.safeParse({ id });
   if (!parsed.success) {
     return NextResponse.json({ error: "Nothing to delete." }, { status: 400 });
   }
