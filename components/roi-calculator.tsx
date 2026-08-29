@@ -113,10 +113,29 @@ export default function RoiCalculator() {
   const breakEven = perPoint > 0 ? (plan.cost - soft) / perPoint : 0;
 
   return (
-    <div
-      className="overflow-hidden rounded-xl border border-line-strong bg-surface"
-      style={{ boxShadow: "var(--shadow)" }}
-    >
+    <details className="group">
+      <summary className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted hover:text-ink">
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          className="chev h-3 w-3 shrink-0 transition-transform duration-150"
+          aria-hidden
+        >
+          <path
+            d="M6 3.5 10.5 8 6 12.5"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        See the full calculation
+      </summary>
+
+      <div
+        className="mt-5 overflow-hidden rounded-xl border border-line-strong bg-surface"
+        style={{ boxShadow: "var(--shadow)" }}
+      >
         <div className="flex items-center justify-between gap-4 border-b border-line bg-surface-2/70 px-5 py-3">
           <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
             <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-accent" />
@@ -258,3 +277,7 @@ your plan                                ${eur(plan.cost)}/year`}
             </>
           )}
         </div>
+      </div>
+    </details>
+  );
+}

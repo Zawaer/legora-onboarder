@@ -1,54 +1,46 @@
 @import "tailwindcss";
 
 /* ── palette ───────────────────────────────────────────────────────────────
-   Black, white and grey, and two colours that are allowed to exist because
-   they carry information: something needs a person, something is done.
+   Warm off-white paper, dark grey ink, and two colours that exist only
+   because they carry information: something needs a person, something is
+   done. Nothing else earns a hue.
 
-   It was forest green and brass until outside feedback said the site read as
-   obviously generated, and named the colour and font choices first. That was
-   fair. A restrained monochrome is harder to get wrong and it puts the weight
-   back on the type and the spacing, which is where it belongs.
+   Grey rather than black, and warm rather than neutral. Pure #000 on pure
+   #fff is a screen convention; ink on paper has never been either, and the
+   half-step away from both is most of what reads as classic here. The greys
+   carry a little of the paper's warmth so they sit in the same family instead
+   of looking like a separate cool palette laid on top.
 
-   The accent is black. In a monochrome palette a citation is marked by rule
-   and weight rather than hue, and that is the stronger signal precisely
-   because nothing else on the page is competing for attention.
+   The accent is the ink. In a palette with no colour, a citation is marked by
+   rule and weight, and that is a stronger signal than a hue precisely because
+   nothing else on the page is competing for the eye.
 
-   --faint is #6d6d76 rather than the #71717a it wants to be: it drives .label
-   at 12px uppercase, which needs the 4.5:1 small-text floor against the header
-   strips as well as against the page, and #71717a missed it at 4.40.        */
+   --faint is #6b6960 rather than the lighter grey it wants to be: it drives
+   .label at 12px uppercase, which needs the 4.5:1 small-text floor against the
+   header strips as well as the page, and anything lighter missed it.       */
 
 :root {
-  --paper: #ffffff;
+  --paper: #f8f7f4;
   --surface: #ffffff;
-  --surface-2: #f4f4f5;
-  --ink: #09090b;
-  --muted: #52525b;
-  /* Darkened from #71717a, which failed at 4.40:1 on surface-2. --faint
-     drives .label at 12px uppercase, so it needs the small-text floor on
-     the header strips as well as on the page. */
-  --faint: #6d6d76;
-  --line: #e4e4e7;
-  --line-strong: #d4d4d8;
+  --surface-2: #eeede8;
+  --ink: #2b2a27;
+  --muted: #5c5b55;
+  --faint: #6b6960;
+  --line: #dedcd5;
+  --line-strong: #c6c4bb;
 
-  /* The accent is black. In a monochrome palette a citation is marked by
-     weight and rule, not by hue, and that is a stronger signal than a colour
-     because nothing else on the page competes with it. */
-  --accent: #09090b;
-  --accent-ink: #18181b;
-  --accent-soft: #f4f4f5;
+  --accent: #2b2a27;
+  --accent-ink: #3a3934;
+  --accent-soft: #eeede8;
 
-  /* The only two colours in the product, and they are the only two that carry
-     information: something needs a person, something is done. Kept deliberately
-     desaturated so they read as signal rather than decoration, and so a
-     /manager screen full of them still looks like a working tool. */
-  --warn: #9f1239;
-  --warn-soft: #fff1f2;
-  --warn-line: #fecdd3;
-  --ok: #14532d;
-  --ok-soft: #f0fdf4;
-  --ok-line: #bbf7d0;
+  --warn: #8a3324;
+  --warn-soft: #f9f0ee;
+  --warn-line: #e5cec8;
+  --ok: #3d5943;
+  --ok-soft: #eef2ee;
+  --ok-line: #ccd8ce;
 
-  --shadow: 0 1px 2px rgb(9 9 11 / 0.04), 0 8px 24px -16px rgb(9 9 11 / 0.16);
+  --shadow: 0 1px 2px rgb(43 42 39 / 0.05), 0 8px 24px -16px rgb(43 42 39 / 0.18);
 }
 
 :root[data-theme="dark"] {
@@ -124,24 +116,24 @@
 }
 
 .band-ink {
-  --paper: #09090b;
-  --surface: #18181b;
-  --surface-2: #27272a;
-  --ink: #fafafa;
-  --muted: #d4d4d8;
-  --faint: #a1a1aa;
-  --line: rgb(250 250 250 / 0.14);
-  --line-strong: rgb(250 250 250 / 0.26);
-  --accent: #fafafa;
-  --accent-ink: #fafafa;
-  --accent-soft: #27272a;
-  --warn: #fda4af;
-  --warn-soft: #2a1015;
-  --warn-line: #4c1d24;
-  --ok: #86efac;
-  --ok-soft: #0d2216;
-  --ok-line: #1d4a2e;
-  --shadow: 0 1px 0 rgb(0 0 0 / 0.3);
+  --paper: #2b2a27;
+  --surface: #363531;
+  --surface-2: #41403b;
+  --ink: #f8f7f4;
+  --muted: #d5d3cc;
+  --faint: #a8a69d;
+  --line: rgb(248 247 244 / 0.14);
+  --line-strong: rgb(248 247 244 / 0.26);
+  --accent: #f8f7f4;
+  --accent-ink: #f8f7f4;
+  --accent-soft: #41403b;
+  --warn: #e0a99e;
+  --warn-soft: #33201c;
+  --warn-line: #573a33;
+  --ok: #a8c4ae;
+  --ok-soft: #1f2b22;
+  --ok-line: #3d5943;
+  --shadow: 0 1px 0 rgb(0 0 0 / 0.25);
   background: var(--paper);
   color: var(--ink);
 }
@@ -150,12 +142,12 @@
    sits in the same family as everything else instead of arriving as a third
    unrelated hue. */
 .band-sand {
-  --paper: #f4f4f5;
-  --surface: #ffffff;
-  --surface-2: #e4e4e7;
-  --line: #d4d4d8;
-  --line-strong: #a1a1aa;
-  --shadow: 0 1px 0 rgb(9 9 11 / 0.05);
+  --paper: #eeede8;
+  --surface: #f8f7f4;
+  --surface-2: #dedcd5;
+  --line: #c6c4bb;
+  --line-strong: #a9a79d;
+  --shadow: 0 1px 0 rgb(43 42 39 / 0.05);
   background: var(--paper);
   color: var(--ink);
 }
@@ -269,8 +261,8 @@
   50% { opacity: 1; transform: scale(1); }
 }
 @keyframes viz-breathe {
-  0%, 100% { box-shadow: 0 20px 48px rgb(9 9 11 / 0.06); }
-  40% { box-shadow: 0 24px 56px rgb(9 9 11 / 0.09); }
+  0%, 100% { box-shadow: 0 20px 48px rgb(43 42 39 / 0.06); }
+  40% { box-shadow: 0 24px 56px rgb(43 42 39 / 0.09); }
 }
 
 @keyframes reveal {

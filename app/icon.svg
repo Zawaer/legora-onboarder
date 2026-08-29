@@ -13,12 +13,12 @@
     and has no access to the CSS variables. Paper ground so the mark reads on
     dark browser chrome as well as light.
   -->
-  <rect width="64" height="64" rx="12" fill="#ffffff" />
-  <g fill="#09090b">
+  <rect width="64" height="64" rx="12" fill="#f8f7f4" />
+  <g fill="#2b2a27">
     <circle cx="9" cy="45.5" r="4.4" />
     <circle cx="20.5" cy="41" r="4.4" />
     <circle cx="43.5" cy="23" r="4.4" />
     <circle cx="55" cy="18.5" r="4.4" />
   </g>
-  <circle cx="32" cy="32" r="8.00" fill="#09090b" />
+  <circle cx="32" cy="32" r="8.00" fill="#2b2a27" />
 </svg>
