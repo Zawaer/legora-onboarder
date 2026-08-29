@@ -134,7 +134,7 @@ export default async function Home() {
 
       <main className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
         {/* ── hero ── */}
-        <section className="grid gap-12 border-b border-line py-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16 lg:py-24">
+        <section data-reveal className="grid gap-12 border-b border-line py-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16 lg:py-24">
           <div className="flex flex-col gap-7">
             <h1 className="max-w-[20ch] text-[40px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[62px]">
               Your senior people are the onboarding plan. That&rsquo;s what it
@@ -224,7 +224,7 @@ export default async function Home() {
         </section>
 
         {/* ── the three facts ── */}
-        <section className="border-b border-line py-14 lg:py-20">
+        <section data-reveal className="border-b border-line py-14 lg:py-20">
           <Label>Why this happens</Label>
           <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-3">
             {BEATS.map((b) => (
@@ -250,7 +250,7 @@ export default async function Home() {
         </section>
 
         {/* ── the conclusion ── */}
-        <section className="border-b border-line py-14 lg:py-20">
+        <section data-reveal className="border-b border-line py-14 lg:py-20">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
             <div className="flex flex-col gap-5">
               <Label>So what&rsquo;s left</Label>
@@ -306,48 +306,50 @@ export default async function Home() {
         </section>
 
         {/* ── how it works ── */}
-        <section className="py-14 lg:py-20">
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <Label>What their first days look like</Label>
-            <span className="text-[12.5px] text-faint">
-              their manager is interrupted once, not thirty times
-            </span>
-          </div>
-          <ol className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s, i) => (
-              <li key={s.k} className="flex flex-col gap-3 bg-surface p-6">
-                <span className="tnum font-mono text-[11px] text-faint">
-                  0{i + 1}
-                </span>
-                <h3 className="text-[16px] font-semibold tracking-[-0.01em]">
-                  {s.k}
-                </h3>
-                <p className="text-[13.5px] leading-[1.6] text-muted">{s.d}</p>
-              </li>
-            ))}
-          </ol>
+        <section data-reveal className="band band-ink">
+          <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12 py-14 lg:py-20">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <Label>What their first days look like</Label>
+              <span className="text-[12.5px] text-faint">
+                their manager is interrupted once, not thirty times
+              </span>
+            </div>
+            <ol className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+              {STEPS.map((s, i) => (
+                <li key={s.k} className="flex flex-col gap-3 bg-surface p-6">
+                  <span className="tnum font-mono text-[11px] text-faint">
+                    0{i + 1}
+                  </span>
+                  <h3 className="text-[16px] font-semibold tracking-[-0.01em]">
+                    {s.k}
+                  </h3>
+                  <p className="text-[13.5px] leading-[1.6] text-muted">{s.d}</p>
+                </li>
+              ))}
+            </ol>
 
-          {/* The two entry points that used to be two-word labels in the
-              header. A stranger cannot decode "Your own data" or "JD check";
-              they can decode a sentence about what happens when they click.
-              These are the only inbound links to /ingest and /jd, so they are
-              in the body rather than the footer. */}
-          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13.5px]">
-            <Link
-              href="/ingest"
-              className="inline-flex items-center gap-1.5 font-medium text-accent-ink underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
-            >
-              Run it on your own Slack
-              <span aria-hidden>&rarr;</span>
-            </Link>
-            <span className="hidden h-3 w-px bg-line sm:block" />
-            <Link
-              href="/jd"
-              className="inline-flex items-center gap-1.5 text-muted hover:text-ink"
-            >
-              Check a job ad against your team&rsquo;s messages
-              <span aria-hidden>&rarr;</span>
-            </Link>
+            {/* The two entry points that used to be two-word labels in the
+                header. A stranger cannot decode "Your own data" or "JD check";
+                they can decode a sentence about what happens when they click.
+                These are the only inbound links to /ingest and /jd, so they are
+                in the body rather than the footer. */}
+            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13.5px]">
+              <Link
+                href="/ingest"
+                className="inline-flex items-center gap-1.5 font-medium text-accent-ink underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
+              >
+                Run it on your own Slack
+                <span aria-hidden>&rarr;</span>
+              </Link>
+              <span className="hidden h-3 w-px bg-line sm:block" />
+              <Link
+                href="/jd"
+                className="inline-flex items-center gap-1.5 text-muted hover:text-ink"
+              >
+                Check a job ad against your team&rsquo;s messages
+                <span aria-hidden>&rarr;</span>
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -367,7 +369,7 @@ export default async function Home() {
             where the originality points live, and it is the beat that lands in
             a demo — so it gets shown rather than claimed, with the real quote
             from the seeded corpus. ── */}
-        <section className="border-b border-line py-14 lg:py-20">
+        <section data-reveal className="border-b border-line py-14 lg:py-20">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
             <div className="flex flex-col gap-5">
               <Label>Nobody asked it to check</Label>
@@ -422,7 +424,7 @@ export default async function Home() {
             human". Expert attention is the one input this product can actually
             run out of, so the question of which questions are allowed to spend
             it is the design decision, not a detail. `lib/web/contract.ts`. ── */}
-        <section className="border-b border-line py-14 lg:py-20">
+        <section data-reveal className="border-b border-line py-14 lg:py-20">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <Label>Which questions are allowed to cost a person</Label>
             <span className="text-[12.5px] text-faint">
@@ -472,76 +474,78 @@ export default async function Home() {
             and it was missing from the site entirely. Argued structurally with
             a ledger rather than with an invented statistic — every "cost of a
             bad hire" figure in this market traces back to vendor marketing. ── */}
-        <section className="border-b border-line py-14 lg:py-20">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
-            <div className="flex flex-col gap-5">
-              <Label>What compounds</Label>
-              <h2 className="max-w-[20ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.025em] text-balance sm:text-[38px]">
-                The tenth hire asks nothing the first nine already answered.
-              </h2>
-              <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
-                When the answer genuinely isn&rsquo;t written down, the agent
-                asks the one person who would know — once — and writes the
-                confirmed answer back into the company&rsquo;s own record,
-                attributed and dated. Everyone who hits the same gap afterwards
-                gets it from there.
-              </p>
+        <section data-reveal className="band band-sand">
+          <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12 py-14 lg:py-20">
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+              <div className="flex flex-col gap-5">
+                <Label>What compounds</Label>
+                <h2 className="max-w-[20ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.025em] text-balance sm:text-[38px]">
+                  The tenth hire asks nothing the first nine already answered.
+                </h2>
+                <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
+                  When the answer genuinely isn&rsquo;t written down, the agent
+                  asks the one person who would know — once — and writes the
+                  confirmed answer back into the company&rsquo;s own record,
+                  attributed and dated. Everyone who hits the same gap afterwards
+                  gets it from there.
+                </p>
+              </div>
+
+              <div className="flex flex-col self-start divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+                {[
+                  {
+                    who: "1st hire",
+                    what: "Hits a gap nobody wrote down. The agent asks the person who knows.",
+                    cost: "~60 seconds of theirs",
+                    first: true,
+                  },
+                  {
+                    who: "2nd hire",
+                    what: "Same question. Answered from the record, attribution intact.",
+                    cost: "nobody interrupted",
+                  },
+                  {
+                    who: "3rd hire",
+                    what: "Same question.",
+                    cost: "nobody interrupted",
+                  },
+                ].map((r) => (
+                  <div
+                    key={r.who}
+                    className="grid grid-cols-[74px_minmax(0,1fr)] items-baseline gap-x-4 gap-y-1 bg-surface px-5 py-3.5 sm:grid-cols-[84px_minmax(0,1fr)_auto]"
+                  >
+                    <span className="font-mono text-[11px] tracking-wide text-faint uppercase">
+                      {r.who}
+                    </span>
+                    <span
+                      className={`text-[14px] leading-[1.55] ${
+                        r.first ? "text-ink" : "text-muted"
+                      }`}
+                    >
+                      {r.what}
+                    </span>
+                    <span
+                      className={`col-start-2 font-mono text-[11.5px] whitespace-nowrap sm:col-start-3 sm:text-right ${
+                        r.first ? "text-accent-ink" : "text-faint"
+                      }`}
+                    >
+                      {r.cost}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="flex flex-col self-start divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
-              {[
-                {
-                  who: "1st hire",
-                  what: "Hits a gap nobody wrote down. The agent asks the person who knows.",
-                  cost: "~60 seconds of theirs",
-                  first: true,
-                },
-                {
-                  who: "2nd hire",
-                  what: "Same question. Answered from the record, attribution intact.",
-                  cost: "nobody interrupted",
-                },
-                {
-                  who: "3rd hire",
-                  what: "Same question.",
-                  cost: "nobody interrupted",
-                },
-              ].map((r) => (
-                <div
-                  key={r.who}
-                  className="grid grid-cols-[74px_minmax(0,1fr)] items-baseline gap-x-4 gap-y-1 bg-surface px-5 py-3.5 sm:grid-cols-[84px_minmax(0,1fr)_auto]"
-                >
-                  <span className="font-mono text-[11px] tracking-wide text-faint uppercase">
-                    {r.who}
-                  </span>
-                  <span
-                    className={`text-[14px] leading-[1.55] ${
-                      r.first ? "text-ink" : "text-muted"
-                    }`}
-                  >
-                    {r.what}
-                  </span>
-                  <span
-                    className={`col-start-2 font-mono text-[11.5px] whitespace-nowrap sm:col-start-3 sm:text-right ${
-                      r.first ? "text-accent-ink" : "text-faint"
-                    }`}
-                  >
-                    {r.cost}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <p className="mt-7 max-w-[62ch] text-[15.5px] leading-[1.65] text-muted">
+              Your senior people are interrupted{" "}
+              <span className="font-medium text-ink">
+                once per unknown, not once per hire
+              </span>
+              . With three people starting the same month that is one question
+              instead of three; at thirty it is the difference between a tool and
+              a second job.
+            </p>
           </div>
-
-          <p className="mt-7 max-w-[62ch] text-[15.5px] leading-[1.65] text-muted">
-            Your senior people are interrupted{" "}
-            <span className="font-medium text-ink">
-              once per unknown, not once per hire
-            </span>
-            . With three people starting the same month that is one question
-            instead of three; at thirty it is the difference between a tool and
-            a second job.
-          </p>
         </section>
 
         {/* ── two starters at once ──
@@ -549,7 +553,7 @@ export default async function Home() {
             more: the second planner reads the first one's plan before it
             writes. The sentence in the card is generated output from the live
             fixtures, not copy. `lib/agent/cohort.ts`. ── */}
-        <section className="border-b border-line py-14 lg:py-20">
+        <section data-reveal className="border-b border-line py-14 lg:py-20">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <Label>When two people start the same week</Label>
             <span className="text-[12.5px] text-faint">
@@ -601,7 +605,7 @@ export default async function Home() {
         </section>
 
         {/* ── what it refuses to do ── */}
-        <section className="py-14 lg:py-20">
+        <section data-reveal className="py-14 lg:py-20">
           <Label>What it deliberately refuses to do</Label>
           <div className="mt-8 grid gap-8 sm:grid-cols-3 sm:gap-10">
             {REFUSALS.map((r) => (

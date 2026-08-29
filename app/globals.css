@@ -103,6 +103,98 @@
     Menlo, Consolas, monospace;
 }
 
+/* ── full-bleed colour bands ──────────────────────────────────────────────
+   A long page on one ground reads as one undifferentiated column. Bands give
+   it rhythm and let a reader place themselves — but only if they are rare. A
+   page that changes colour at every section is stripes, and stripes mean
+   nothing. Two bands on this page, both on sections that earn the emphasis.
+
+   `.band` breaks out of the constrained column with negative inline margins;
+   the child re-centres to the same measure so banded and unbanded content line
+   up exactly. body already sets overflow-x: hidden, which absorbs the
+   scrollbar width that 100vw includes.
+
+   The colour classes re-declare the palette tokens rather than restyling
+   anything. Because `@theme inline` resolves `text-ink` to `var(--ink)` at use
+   time, every child component inverts automatically — no dark variants, no
+   per-element overrides, and a component dropped into a band keeps working. */
+.band {
+  margin-inline: calc(50% - 50vw);
+}
+
+.band-ink {
+  --paper: #172420;
+  --surface: #1e2d25;
+  --surface-2: #24352c;
+  --ink: #eceee4;
+  --muted: #c4cbc1;
+  --faint: #9db4a6;
+  --line: rgb(236 238 228 / 0.16);
+  --line-strong: rgb(236 238 228 / 0.3);
+  --accent: #d2a055;
+  --accent-ink: #e6ba74;
+  --accent-soft: #2a2113;
+  --ok: #7fc79a;
+  --ok-soft: #13291f;
+  --ok-line: #234533;
+  --warn: #e79079;
+  --warn-soft: #2f1913;
+  --warn-line: #4f2e21;
+  --shadow: 0 1px 0 rgb(0 0 0 / 0.25);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Warm sand, pulled from the brass accent rather than picked separately, so it
+   sits in the same family as everything else instead of arriving as a third
+   unrelated hue. */
+.band-sand {
+  --paper: #e8dfcd;
+  --surface: #f1ebde;
+  --surface-2: #ded3bd;
+  --line: rgb(40 30 16 / 0.14);
+  --line-strong: rgb(40 30 16 / 0.26);
+  --shadow: 0 1px 0 rgb(40 30 16 / 0.05);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ── scroll reveal ────────────────────────────────────────────────────────
+   Content is visible by default and the animation is added only where the
+   browser supports it. The usual approach — hide everything, then reveal with
+   IntersectionObserver — means a JS failure leaves a blank page, and this gets
+   demoed on venue wifi in front of people. Progressive enhancement is the only
+   version of this worth shipping.
+
+   A rise and a fade rather than a slide from the sides: horizontal entrances
+   read as templated, and at this width they also fight the eye's return to the
+   left margin on every line. Twelve pixels is enough to register as motion
+   without becoming the thing you notice.
+
+   `entry 0% cover 18%` finishes the animation early, so a section is fully
+   settled well before it reaches reading position — nobody should be waiting
+   on a fade to finish before they can read. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal] {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 18%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 * {
   border-color: var(--line);
 }
