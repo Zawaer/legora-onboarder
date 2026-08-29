@@ -5,6 +5,7 @@ import { normaliseSource } from "@/lib/source";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { isLiveMode } from "@/lib/livemode";
 import { saveLoi } from "@/lib/store";
+import { notify } from "@/lib/notify";
 import type { Loi } from "@/lib/types";
 
 const Body = z.object({
@@ -57,6 +58,25 @@ export async function POST(request: Request) {
   // `vercel logs | grep LOI_SIGNED` reconstructs every signature even if the
   // file store is wiped between requests.
   console.log(`LOI_SIGNED ${JSON.stringify(loi)}`);
+
+  // Slack, in parallel with the disk write. The log line above is the backup of
+  // record, but logs age out and "grep the deployment logs" is a poor way to
+  // find out a letter of intent was signed. This is the channel that actually
+  // tells somebody, while it still matters.
+  //
+  // Not awaited before the response for the same reason the disk failure is
+  // swallowed: the client renders the signed artefact from this response and
+  // that screenshot is the proof. Nothing we do for our own benefit should be
+  // able to delay or block it.
+  void notify(
+    `*Letter of intent signed*\n` +
+      `*${loi.full_name}* — ${loi.role}, ${loi.company}\n` +
+      `Intends to: ${loi.intent}\n` +
+      `Blocked on: ${loi.blocker}\n` +
+      `${loi.email} · signed "${loi.signed_name}" · via ${loi.source}` +
+      (loi.livemode ? "" : "\n_test mode — does not count as traction_"),
+    { kind: "loi", ...loi },
+  );
 
   try {
     await saveLoi(loi);

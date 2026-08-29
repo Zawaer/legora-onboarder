@@ -8,6 +8,7 @@
  */
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { isNotifyConfigured, notify, notifyUrl } from "@/lib/notify";
 
 export type Signup = {
   email: string;
@@ -25,15 +26,15 @@ const FILE = path.join(process.cwd(), "data", "waitlist.json");
  * reading the deployment's environment.
  */
 export function waitlistSinkStatus(): { webhook: boolean; host: string | null } {
-  const url = process.env.WAITLIST_WEBHOOK_URL?.trim();
-  if (!url) return { webhook: false, host: null };
+  const url = notifyUrl();
+  if (!isNotifyConfigured() || !url) return { webhook: false, host: null };
   try {
     return { webhook: true, host: new URL(url).host };
   } catch {
-    // Present but unparseable — that is a different fault from absent.
     return { webhook: true, host: "invalid-url" };
   }
 }
+
 
 /**
  * Post to whatever is on the other end of WAITLIST_WEBHOOK_URL. Shaped as a
@@ -42,29 +43,12 @@ export function waitlistSinkStatus(): { webhook: boolean; host: string | null } 
  * JSON works, because `email` and `company` are sent as plain fields too.
  */
 async function toWebhook(signup: Signup): Promise<boolean> {
-  const url = process.env.WAITLIST_WEBHOOK_URL?.trim();
-  if (!url) return false;
-
-  const line =
+  return notify(
     `*New waitlist signup*\n${signup.email}` +
-    (signup.company ? `\n${signup.company}` : "") +
-    (signup.source ? `\n_via ${signup.source}_` : "");
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 5_000);
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ text: line, ...signup }),
-      signal: controller.signal,
-    });
-    return res.ok;
-  } catch {
-    return false;
-  } finally {
-    clearTimeout(timer);
-  }
+      (signup.company ? `\n${signup.company}` : "") +
+      (signup.source ? `\n_via ${signup.source}_` : ""),
+    { kind: "waitlist", ...signup },
+  );
 }
 
 /** Local development, where the disk is real and durable. */
