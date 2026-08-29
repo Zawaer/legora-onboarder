@@ -46,10 +46,12 @@ export default function Chat({
     setMessages(seedMessages);
   }, [seedMessages]);
 
+  /* Stick to the bottom once the conversation is live, but leave the opening
+     brief pinned to the top on arrival — it is the first thing to read. */
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    el.scrollTop = el.scrollHeight;
+    el.scrollTop = touched.current ? el.scrollHeight : 0;
   }, [messages, pending]);
 
   useEffect(() => {

@@ -107,7 +107,8 @@ export async function deriveRoleWithGrounding(
 ): Promise<DeriveResult> {
   const raw = await generate({
     system: SYSTEM,
-    user: buildCorpusPrompt(company, roleTitle),
+    corpus: renderCorpus(company),
+    user: `The role being hired for is: ${roleTitle}\n\nReconstruct what this role actually is at ${company.name}, citing artifact ids and verbatim quotes.`,
     schema: DerivedRoleSchema,
     label: `derive role "${roleTitle}" at ${company.name}`,
   });
@@ -134,15 +135,20 @@ function knownPerson(company: Company, name: string): boolean {
 }
 
 /**
- * The whole corpus, verbatim, in one user turn.
+ * The whole corpus, verbatim, in one block.
  *
  * No pre-filtering and no embedding search. The corpus for one company is a few
  * thousand tokens, and the signal we need — three people talking past each
  * other across two channels a week apart — is precisely the signal a top-k
  * retriever destroys, because no single chunk of it looks relevant on its own.
  * Chunking here would be optimising away the only hard part of the problem.
+ *
+ * Byte-stability is a requirement, not a nicety: this string is the cached
+ * prompt prefix for every step of the agent, so the artifact order is sorted
+ * rather than incidental and nothing time-varying is interpolated into it. One
+ * `new Date()` in here and the cache silently never hits again.
  */
-export function buildCorpusPrompt(company: Company, roleTitle: string): string {
+export function renderCorpus(company: Company): string {
   const artifacts = [...company.artifacts]
     .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
     .map(renderArtifact)
@@ -167,10 +173,6 @@ export function buildCorpusPrompt(company: Company, roleTitle: string): string {
     `<corpus count="${company.artifacts.length}">`,
     artifacts,
     `</corpus>`,
-    ``,
-    `The role being hired for is: ${roleTitle}`,
-    ``,
-    `Reconstruct what this role actually is at ${company.name}, citing artifact ids and verbatim quotes.`,
   ].join("\n");
 }
 

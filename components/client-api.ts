@@ -126,6 +126,12 @@ export function asBlockers(body: unknown): Blocker[] {
 export async function startDerivation(input: {
   companySlug: string;
   roleTitle: string;
+  /**
+   * Who is actually starting. Optional because the product shouldn't require it,
+   * but the demo always passes one — "New hire" with "NH" initials reads as an
+   * unfinished stub on a projector, and this screen is shown to customers.
+   */
+  name?: string;
 }): Promise<{ id: string }> {
   const res = await fetch("/api/derive", {
     method: "POST",

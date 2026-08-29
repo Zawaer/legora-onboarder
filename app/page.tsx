@@ -1,7 +1,42 @@
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
-import StartDemo from "@/components/start-demo";
+import StartDemo, { type FeedItem } from "@/components/start-demo";
 import { Label, Wordmark } from "@/components/ui";
+
+export const dynamic = "force-dynamic";
+
+/**
+ * Real lines from the seeded corpus, shown while the derivation runs.
+ *
+ * A two-minute spinner is dead air; a two-minute feed of the actual messages
+ * being read is the argument. Loaded lazily so a broken seed degrades the
+ * waiting state rather than the page.
+ */
+async function corpusFeed(): Promise<FeedItem[]> {
+  try {
+    const { getCompany, DEFAULT_COMPANY_SLUG } = await import("@/lib/seed");
+    const company = getCompany(DEFAULT_COMPANY_SLUG);
+    const artifacts = company?.artifacts ?? [];
+    if (artifacts.length === 0) return [];
+
+    // Spread across the corpus rather than taking the first N, so the feed
+    // reads like a sweep of the whole company and not one channel.
+    const step = Math.max(1, Math.floor(artifacts.length / 24));
+    return artifacts
+      .filter((_, i) => i % step === 0)
+      .slice(0, 24)
+      .map((a) => ({
+        kind: a.kind,
+        source:
+          a.channel ??
+          (a.title ? a.title.slice(0, 26) : a.kind),
+        author: a.author,
+        snippet: a.text.replace(/\s+/g, " ").trim().slice(0, 120),
+      }));
+  } catch {
+    return [];
+  }
+}
 
 const BEATS = [
   {
@@ -61,7 +96,9 @@ const REFUSALS = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const feed = await corpusFeed();
+
   return (
     <div className="min-h-dvh">
       <SiteHeader />
@@ -91,7 +128,7 @@ export default function Home() {
               only when it genuinely can&rsquo;t unblock them.
             </p>
 
-            <StartDemo />
+            <StartDemo feed={feed} />
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
               <Link
@@ -129,30 +166,30 @@ export default function Home() {
                 <div>
                   <Label>Evidence</Label>
                   <blockquote className="mt-2.5 border-l-2 border-accent pl-3.5 text-[14.5px] leading-[1.55] font-medium">
-                    &ldquo;We keep losing a day per deal turning the lawyer&rsquo;s
-                    review notes into something the model can actually
-                    use.&rdquo;
+                    &ldquo;the person starting sept 1 is ex-M&amp;A, 6 years,
+                    london… no coding at all. what i genuinely dont have is
+                    anything to hand them on day one&rdquo;
                   </blockquote>
                   <p className="mt-2.5 font-mono text-[11.5px] text-accent-ink">
-                    #eng-legal-engineering · Elin H. · 14 Mar
+                    #legal-eng · Elin Sandberg · 27 Aug
                   </p>
                 </div>
                 <div className="border-t border-line pt-4">
                   <Label>Day 1 · first task</Label>
                   <p className="mt-2 text-[14.5px] leading-snug font-medium">
-                    Turn last week&rsquo;s M&amp;A review notes into a working
-                    prompt spec
+                    Write the list of every place we are wrong on three Nordkap
+                    SPAs
                   </p>
                   <p className="mt-2 border-l-2 border-ok/50 pl-3 text-[13px] leading-[1.55] text-muted">
-                    <span className="text-ink">Done when</span> the spec runs
-                    clean against three sample contracts and Elin can read it
-                    without you present.
+                    <span className="text-ink">Done when</span> a doc exists in
+                    the Legal Engineering space with one numbered row per
+                    divergence, each citing the clause it came from.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 border-t border-line pt-4 text-[12px] text-faint">
                   <span className="h-1.5 w-1.5 rounded-full bg-ok" />
-                  Six claims, six sources. Two open questions flagged, not
-                  invented.
+                  Every claim carries its source. Eight open questions
+                  flagged, not invented.
                 </div>
               </div>
             </div>

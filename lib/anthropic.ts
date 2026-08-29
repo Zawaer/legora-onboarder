@@ -44,6 +44,16 @@ export class UnparseableModelOutputError extends Error {
 }
 
 let cached: Anthropic | null = null;
+let lastUsage: GenerationUsage | null = null;
+
+/**
+ * Usage from the most recent generation. Read `cacheReadTokens`: if it stays at
+ * zero across back-to-back calls something is quietly invalidating the corpus
+ * prefix, and the only symptom otherwise is a slower, more expensive demo.
+ */
+export function getLastUsage(): GenerationUsage | null {
+  return lastUsage;
+}
 
 export function getClient(): Anthropic {
   if (!process.env.ANTHROPIC_API_KEY) throw new MissingApiKeyError();
@@ -56,7 +66,12 @@ export function getClient(): Anthropic {
 export type GenerateOptions<S extends z.ZodType> = {
   /** Stable instructions. Goes in `system` so the prefix stays cacheable. */
   system: string;
-  /** Volatile per-company content. Goes in the user turn, after the prefix. */
+  /**
+   * The company corpus. Identical on every call for a given company, so it is
+   * sent as its own leading user turn behind a cache breakpoint. See `generate`.
+   */
+  corpus?: string;
+  /** The volatile ask. Goes last, after every cache breakpoint. */
   user: string;
   schema: S;
   /** Used only in error messages, so a failure names the step that failed. */
@@ -64,6 +79,14 @@ export type GenerateOptions<S extends z.ZodType> = {
   maxTokens?: number;
   /** Prior conversation, oldest first. Used by the supervision loop. */
   history?: Anthropic.MessageParam[];
+};
+
+/** What the last `generate` call actually cost, for latency/caching diagnostics. */
+export type GenerationUsage = {
+  inputTokens: number;
+  cacheCreationTokens: number;
+  cacheReadTokens: number;
+  outputTokens: number;
 };
 
 /**
@@ -76,6 +99,7 @@ export type GenerateOptions<S extends z.ZodType> = {
  */
 export async function generate<S extends z.ZodType>({
   system,
+  corpus,
   user,
   schema,
   label,
@@ -84,15 +108,41 @@ export async function generate<S extends z.ZodType>({
 }: GenerateOptions<S>): Promise<z.infer<S>> {
   const client = getClient();
 
+  // Prefix order is tools -> system -> messages, and caching is a prefix match,
+  // so the corpus goes in its OWN leading user turn rather than being glued to
+  // the ask. The corpus is ~15k tokens and byte-identical across every call for
+  // a company; the role title, the plan request and the hire's latest message
+  // are a few hundred tokens that change constantly. Concatenating them would
+  // put a volatile tail inside the cached block and the cache would never hit.
+  //
+  // It also has to sit BEFORE the conversation history, not after it: history
+  // grows by two messages a turn, and anything downstream of a growing block is
+  // permanently uncacheable.
+  const messages: Anthropic.MessageParam[] = [];
+  if (corpus) {
+    messages.push({
+      role: "user",
+      content: [{ type: "text", text: corpus, cache_control: { type: "ephemeral" } }],
+    });
+  }
+  messages.push(...history, { role: "user", content: user });
+
   const stream = client.messages.stream({
     model: MODEL,
     max_tokens: maxTokens,
     system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-    messages: [...history, { role: "user", content: user }],
+    messages,
     output_config: { format: zodOutputFormat(schema) },
   });
 
   const message = await stream.finalMessage();
+
+  lastUsage = {
+    inputTokens: message.usage.input_tokens,
+    cacheCreationTokens: message.usage.cache_creation_input_tokens ?? 0,
+    cacheReadTokens: message.usage.cache_read_input_tokens ?? 0,
+    outputTokens: message.usage.output_tokens,
+  };
 
   // A refusal is an HTTP 200 with no usable content. Reading `.parsed_output`
   // without checking would surface as a confusing null further downstream.

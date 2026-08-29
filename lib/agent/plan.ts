@@ -14,6 +14,7 @@
 
 import { z } from "zod/v4";
 import { generate } from "@/lib/anthropic";
+import { renderCorpus } from "@/lib/agent/derive";
 import type { Company, DerivedRole, Person, RampDay, RampPlan, RampTask } from "@/lib/types";
 
 const TaskSchema = z.object({
@@ -79,6 +80,12 @@ askIfStuck names one real person from the roster: the one whose stated ownership
 export async function buildRampPlan(company: Company, role: DerivedRole): Promise<RampPlan> {
   const raw = await generate({
     system: SYSTEM,
+    // The corpus rides along here too. The system prompt tells the model to
+    // start the hire on work the team has visibly been putting off — which is
+    // an empty instruction if it can only see the derived summary. It costs a
+    // couple of seconds of prefill and it is what makes the `context` field
+    // specific enough to work from without tapping anyone on the shoulder.
+    corpus: renderCorpus(company),
     user: buildPlanPrompt(company, role),
     schema: PlanSchema,
     label: `ramp plan for "${role.title}" at ${company.name}`,
@@ -166,10 +173,6 @@ function buildPlanPrompt(company: Company, role: DerivedRole): string {
     .join("\n");
 
   return [
-    `<company name="${company.name}">`,
-    company.description,
-    `</company>`,
-    ``,
     `<people>`,
     roster,
     `</people>`,

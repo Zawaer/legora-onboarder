@@ -12,9 +12,10 @@ import SiteHeader, { NavLink } from "./site-header";
 import { Label, Pill } from "./ui";
 
 const DERIVING_COPY = [
-  "Reading the company's Slack, docs and tickets",
-  "Working out what this role actually is",
+  "Reading the company's Slack, docs, tickets and meeting notes",
+  "Working out what this role actually is here",
   "Checking every claim against a verbatim quote",
+  "Separating what was decided from what was never settled",
   "Writing two days of real work",
 ];
 
@@ -90,7 +91,7 @@ export default function HireView({
   const company = companyName ?? local?.name ?? hire.companySlug;
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col lg:h-dvh lg:min-h-0 lg:overflow-hidden">
       <SiteHeader
         right={
           <>
@@ -103,7 +104,7 @@ export default function HireView({
       />
 
       {/* ── who this is ── */}
-      <div className="sticky top-14 z-20 border-b border-line bg-paper/85 backdrop-blur-md">
+      <div className="sticky top-14 z-20 shrink-0 border-b border-line bg-paper/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3 sm:px-8">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft text-[12px] font-semibold text-accent-ink">
             {(hire.name ?? "?")
@@ -149,8 +150,8 @@ export default function HireView({
       </div>
 
       {/* ── the workspace ── */}
-      <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 sm:px-8 lg:h-[calc(100dvh-113px)] lg:overflow-hidden">
-        <div className="grid h-full gap-8 py-8 lg:grid-cols-2 lg:gap-10">
+      <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 sm:px-8 lg:min-h-0 lg:overflow-hidden">
+        <div className="grid h-full gap-8 py-8 lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-10">
           {/* left: the derived role + its evidence */}
           <section className="scroll-thin min-h-0 lg:overflow-y-auto lg:pr-2">
             {deriving ? (
@@ -161,7 +162,8 @@ export default function HireView({
                     {DERIVING_COPY[tick % DERIVING_COPY.length]}…
                   </p>
                   <p className="mt-1.5 text-[12px] text-accent-ink/80">
-                    This page fills in on its own. Usually 20&ndash;60 seconds.
+                    This page fills in on its own — no need to reload. Usually
+                    about two minutes.
                   </p>
                 </div>
                 <RoleCardSkeleton />
@@ -190,8 +192,8 @@ export default function HireView({
             <Chat
               hireId={hire.id}
               seedMessages={seed}
-              hireName={(hire.name ?? "You").split(/\s+/)[0]}
-              channel={`#onboarding-${(hire.name ?? "hire").split(/\s+/)[0].toLowerCase()}`}
+              hireName={firstName(hire.name)}
+              channel={channelFor(hire.name, hire.roleTitle)}
               onHire={(next) => setHire(next)}
               className="h-[540px] shrink-0 lg:h-auto lg:min-h-0 lg:flex-[0.95]"
             />
@@ -200,6 +202,29 @@ export default function HireView({
       </main>
     </div>
   );
+}
+
+/* ── naming ───────────────────────────────────────────────────────────── */
+
+function slug(v: string) {
+  return v
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function firstName(name?: string) {
+  const first = (name ?? "").trim().split(/\s+/)[0];
+  return first && !/^new$/i.test(first) ? first : "You";
+}
+
+/** A placeholder name shouldn't produce `#onboarding-new`. */
+function channelFor(name?: string, roleTitle?: string) {
+  const clean = (name ?? "").trim();
+  if (clean && !/^new\s*hire$/i.test(clean)) {
+    return `#onboarding-${slug(clean.split(/\s+/)[0])}`;
+  }
+  return `#onboarding-${slug(roleTitle ?? "hire") || "hire"}`;
 }
 
 /* ── whole-page states ────────────────────────────────────────────────── */

@@ -37,6 +37,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod/v4";
 import { generate } from "@/lib/anthropic";
 import { resolveOwner } from "@/lib/agent/plan";
+import { renderCorpus } from "@/lib/agent/derive";
 import type {
   Blocker,
   ChatMessage,
@@ -173,7 +174,8 @@ export async function respond(
 
   const raw = await generate({
     system: SYSTEM,
-    user: buildTurnPrompt(hire, company, task, userText),
+    corpus: renderCorpus(company),
+    user: buildTurnPrompt(hire, task, userText),
     schema: ResponseSchema,
     label: `supervision turn for ${hire.name}`,
     history: recentHistory(hire),
@@ -243,24 +245,17 @@ function recentHistory(hire: HireState): Anthropic.MessageParam[] {
   }));
 }
 
+/**
+ * The volatile tail: who this is, what they are on, what they just said. The
+ * company description, roster and corpus are NOT repeated here — they are in
+ * the cached prefix, and restating them would double the corpus in the request
+ * while making the cheap half of the prompt expensive.
+ */
 function buildTurnPrompt(
   hire: HireState,
-  company: Company,
   task: RampTask | undefined,
   userText: string,
 ): string {
-  const roster = company.people
-    .map((p) => `- ${p.name} (${p.slackHandle}) — ${p.role}, ${p.team}. Owns: ${p.owns.join("; ") || "unspecified"}`)
-    .join("\n");
-
-  const corpus = [...company.artifacts]
-    .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-    .map(
-      (a) =>
-        `<artifact id="${a.id}" kind="${a.kind}"${a.channel ? ` channel="${a.channel}"` : ""} author="${a.author}" at="${a.timestamp}"${a.title ? ` title="${a.title}"` : ""}>\n${a.text}\n</artifact>`,
-    )
-    .join("\n\n");
-
   const role = hire.derivedRole;
 
   const openBlockers = hire.blockers
@@ -269,18 +264,6 @@ function buildTurnPrompt(
     .join("\n");
 
   return [
-    `<company name="${company.name}">`,
-    company.description,
-    `</company>`,
-    ``,
-    `<people>`,
-    roster,
-    `</people>`,
-    ``,
-    `<corpus count="${company.artifacts.length}">`,
-    corpus,
-    `</corpus>`,
-    ``,
     role
       ? [
           `<derived_role title="${role.title}">`,

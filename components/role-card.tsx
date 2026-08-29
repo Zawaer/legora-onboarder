@@ -53,7 +53,12 @@ function KindIcon({ kind }: { kind?: Artifact["kind"] }) {
 
 function sourceLine(a?: Artifact, fallbackId?: string) {
   if (!a) return fallbackId ?? "unattributed source";
-  if (a.channel) return a.channel.startsWith("#") ? a.channel : `#${a.channel}`;
+  if (a.channel) {
+    // Only Slack gets a hash. A meeting called "All-hands" is not a channel.
+    return a.kind === "slack" && !a.channel.startsWith("#")
+      ? `#${a.channel}`
+      : a.channel;
+  }
   if (a.title) return a.title;
   return a.kind;
 }
