@@ -138,16 +138,7 @@ export default function ManagerBriefView({
 
   return (
     <div className="min-h-dvh">
-      <SiteHeader
-        right={
-          <>
-            <NavLink href="/manager">Blockers</NavLink>
-            <NavLink href="/" emphasis>
-              Derive a role
-            </NavLink>
-          </>
-        }
-      />
+      <SiteHeader />
 
       <main className="mx-auto max-w-[1100px] px-5 py-10 sm:px-8 lg:py-14">
         {/* ── the design statement ── */}
@@ -214,20 +205,20 @@ export default function ManagerBriefView({
               href="/"
               className="mt-6 inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[14px] font-medium text-paper hover:opacity-90"
             >
-              Derive a role
+              See how it works
             </Link>
           </div>
         ) : hires !== null && hires.length === 0 ? (
           <div className="my-10 rounded-xl border border-dashed border-line bg-surface px-6 py-16 text-center">
             <p className="text-[16px] font-medium">Nobody is starting yet.</p>
             <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-muted">
-              Derive a role from the landing page and the brief for that hire appears here.
+              Start the demo from the landing page and the brief for that hire appears here.
             </p>
             <Link
               href="/"
               className="mt-6 inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[14px] font-medium text-paper hover:opacity-90"
             >
-              Derive a role
+              See how it works
             </Link>
           </div>
         ) : !brief ? (

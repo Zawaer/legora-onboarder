@@ -291,7 +291,7 @@ function FullPageState({
               href="/"
               className="mt-6 inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[14px] font-medium text-paper hover:opacity-90"
             >
-              Derive a role
+              See how it works
             </Link>
           </div>
         )}

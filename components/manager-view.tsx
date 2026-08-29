@@ -65,20 +65,7 @@ export default function ManagerView({
 
   return (
     <div className="min-h-dvh">
-      <SiteHeader
-        right={
-          <>
-            {/* The pre-start half of this screen. Reachable from here because
-                the two are one job: what lands before day 1, and what is in
-                the way after it. */}
-            <NavLink href="/manager/brief">Manager brief</NavLink>
-            <NavLink href="/loi">Letter of intent</NavLink>
-            <NavLink href="/" emphasis>
-              Derive a role
-            </NavLink>
-          </>
-        }
-      />
+      <SiteHeader />
 
       <main className="mx-auto max-w-[1100px] px-5 py-10 sm:px-8 lg:py-14">
         {/* ── the design statement ── */}
@@ -171,14 +158,14 @@ export default function ManagerView({
               <p className="text-[16px] font-medium">Nobody is onboarding yet.</p>
               <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-muted">
                 {error
-                  ? "The onboarding service didn't return a roster. Derive a role to create one."
-                  : "Derive a role from the landing page and this screen fills in as the hire works."}
+                  ? "The onboarding service didn't return a roster. Start the demoole to create one."
+                  : "Start the demo from the landing page and this screen fills in as the hire works."}
               </p>
               <Link
                 href="/"
                 className="mt-6 inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[14px] font-medium text-paper hover:opacity-90"
               >
-                Derive a role
+                See how it works
               </Link>
             </div>
           ) : (
