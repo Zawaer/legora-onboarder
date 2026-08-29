@@ -26,8 +26,8 @@ import { loadCompany } from "@/lib/agent/knowledge";
 import { deriveRoleWithGrounding } from "@/lib/agent/derive";
 import { buildRampPlan } from "@/lib/agent/plan";
 import { openingMessage } from "@/lib/agent/supervise";
-import { getHire, putHire } from "@/lib/agent/hires";
-import { listDerivations, readDerivation, writeDerivation } from "@/lib/agent/cache";
+import { getHire, listHires, putHire } from "@/lib/agent/hires";
+import { listDerivations, readDerivation, writeDerivation, normaliseRoleTitle } from "@/lib/agent/cache";
 import { computeCoverage } from "@/lib/agent/coverage";
 import { toApiError } from "@/lib/anthropic";
 import type { DerivedRole, HireState, RampPlan, TaskStatus } from "@/lib/types";
@@ -140,6 +140,49 @@ export async function POST(request: Request) {
       grounding = { kept: derived.grounding.keptCount, dropped: derived.grounding.droppedCount };
       ({ derivedAt } = await writeDerivation(company, roleTitle, { role, plan, grounding }));
       cached = false;
+    }
+
+    /*
+     * Reuse a hire that already exists for this company and role, rather than
+     * minting a new id every time.
+     *
+     * On serverless this is not an optimisation, it is the difference between
+     * the primary CTA working and not. `putHire` writes to a per-instance store;
+     * the POST that creates a hire and the navigation to `/hire/<id>` that
+     * follows it are two separate requests and are routinely served by two
+     * different instances. The second one has never heard of the id the first
+     * one minted, so the user lands on "That workspace isn't here" about half a
+     * second after a successful derivation. Reproduced on the deployed site.
+     *
+     * Matching on company + normalised role finds the hire that ships in the
+     * bundle (`lib/seed/hires.ts`), which exists on every instance by
+     * construction. Returned unchanged, so the conversation already on it
+     * survives — for the demo that is the point, since the exchange worth
+     * showing is already there.
+     *
+     * This does not fix the same race for a freshly ingested company, which has
+     * no bundled hire to land on. That needs durable storage rather than a
+     * lookup, and is the first thing to fix if a customer is going to use it.
+     */
+    const priorForRole = hireId
+      ? undefined
+      : (await listHires()).find(
+          (h) =>
+            h.companySlug === companySlug &&
+            normaliseRoleTitle(h.roleTitle) === normaliseRoleTitle(roleTitle),
+        );
+
+    if (priorForRole && !fresh) {
+      return NextResponse.json(
+        {
+          hire: priorForRole,
+          cached,
+          derivedAt,
+          grounding,
+          coverage: computeCoverage(company),
+        },
+        { status: 200 },
+      );
     }
 
     const existing = hireId ? await getHire(hireId) : undefined;
