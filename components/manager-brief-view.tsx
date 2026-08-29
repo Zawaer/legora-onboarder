@@ -23,7 +23,7 @@ import type {
 import { asHires } from "./client-api";
 import type { HireState } from "@/lib/types";
 import SiteHeader, { NavLink } from "./site-header";
-import { Label, Panel, Pill, SyntheticNote, type SyntheticCorpus } from "./ui";
+import { Label, Panel, Pill, type SyntheticCorpus } from "./ui";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
@@ -154,7 +154,6 @@ export default function ManagerBriefView({
         <header className="flex flex-col gap-5 border-b border-line pb-10">
           {/* The brief names a buddy and five people to meet. None of them
               exist, and that is said here rather than discovered later. */}
-          {synthetic && <SyntheticNote {...synthetic} />}
           <Label>Manager brief</Label>
           <h1 className="max-w-[20ch] text-[32px] leading-[1.08] font-semibold tracking-[-0.028em] text-balance sm:text-[40px]">
             Forty-eight hours before they start.

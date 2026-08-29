@@ -201,7 +201,11 @@ export default function RampPlanView({
                 task={t}
                 index={ti}
                 status={taskStatus[t.id] ?? "not_started"}
-                defaultOpen={di === 0 && ti === 0}
+                // Nothing opens by itself. Expanded, the first task alone
+                // puts two paragraphs of prose at the top of the column and
+                // pushes the chat — the part you actually work in — off the
+                // bottom of the screen.
+                defaultOpen={false}
               />
             ))}
           </div>

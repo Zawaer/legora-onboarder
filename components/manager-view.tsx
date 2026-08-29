@@ -9,7 +9,7 @@ import BlockerList, { type HireRef } from "./blocker-list";
 import { fetchHires } from "./client-api";
 import ResolutionCounters from "./resolution-counters";
 import SiteHeader, { NavLink } from "./site-header";
-import { Label, SyntheticNote, initials, type SyntheticCorpus } from "./ui";
+import { Label, initials, type SyntheticCorpus } from "./ui";
 
 export default function ManagerView({
   synthetic,
@@ -85,7 +85,6 @@ export default function ManagerView({
         <header className="flex flex-col gap-5 border-b border-line pb-10">
           {/* Every name below this line was written. Said here, above the
               fold and next to the names, rather than in a footer. */}
-          {synthetic && <SyntheticNote {...synthetic} />}
           <Label>Manager view</Label>
           <h1 className="max-w-[18ch] text-[32px] leading-[1.08] font-semibold tracking-[-0.028em] text-balance sm:text-[40px]">
             Blockers. Nothing else.

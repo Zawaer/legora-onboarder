@@ -36,7 +36,7 @@ export function Wordmark({ muted = false }: { muted?: boolean }) {
     <span className="inline-flex items-center gap-2">
       <Mark className="h-[18px] w-[18px]" />
       <span
-        className={`text-[15px] font-semibold tracking-[-0.01em] ${
+        className={`text-[15px] font-semibold uppercase tracking-[0.06em] ${
           muted ? "text-muted" : "text-ink"
         }`}
       >

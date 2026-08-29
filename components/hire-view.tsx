@@ -10,7 +10,7 @@ import { fetchHire } from "./client-api";
 import RampPlanView from "./ramp-plan";
 import RoleCard, { RoleCardSkeleton } from "./role-card";
 import SiteHeader, { NavLink } from "./site-header";
-import { Label, Pill, SyntheticNote, type SyntheticCorpus } from "./ui";
+import { Label, Pill, type SyntheticCorpus } from "./ui";
 
 const DERIVING_COPY = [
   "Reading the company's Slack, docs, tickets and meeting notes",
@@ -171,7 +171,6 @@ export default function HireView({
           workspace below rather than off the bottom of the viewport. */}
       {synthetic && (
         <div className="mx-auto w-full max-w-[1400px] shrink-0 px-5 pt-5 sm:px-8">
-          <SyntheticNote {...synthetic} />
         </div>
       )}
 
@@ -206,7 +205,7 @@ export default function HireView({
 
           {/* right: the work, and the conversation about it */}
           <section className="flex min-h-0 flex-col gap-6 lg:gap-5">
-            <div className="scroll-thin min-h-0 shrink-0 lg:flex-[1.05] lg:overflow-y-auto lg:pr-2">
+            <div className="scroll-thin min-h-0 shrink-0 lg:flex-[0.8] lg:overflow-y-auto lg:pr-2">
               <RampPlanView plan={hire.plan} taskStatus={hire.taskStatus ?? {}} />
 
               {/* Honest state on anything the corpus could not answer: which
@@ -235,7 +234,7 @@ export default function HireView({
               hireName={firstName(hire.name)}
               channel={channelFor(hire.name, hire.roleTitle)}
               onHire={(next) => setHire(next)}
-              className="h-[540px] shrink-0 lg:h-auto lg:min-h-0 lg:flex-[0.95]"
+              className="h-[540px] shrink-0 lg:h-auto lg:min-h-[380px] lg:flex-[1.2]"
             />
           </section>
         </div>
@@ -286,7 +285,6 @@ function FullPageState({
           from any screenshot of the page opening. */}
       {synthetic && (
         <div className="mx-auto w-full max-w-[1400px] px-5 pt-5 sm:px-8">
-          <SyntheticNote {...synthetic} />
         </div>
       )}
       <main className="mx-auto grid w-full max-w-[1400px] flex-1 place-items-center px-5 py-24">

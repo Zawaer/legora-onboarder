@@ -253,7 +253,7 @@ export const BAKED_HIRES: HireState[] = [
     "blockers": [
       {
         "id": "69b78712-1fd6-4b21-8072-37b25b254737",
-        "hireId": "a17442f4-bc5d-4bc9-b973-274a5cfb0ce6",
+        "hireId": "demo-legal-engineer",
         "taskId": "d1-t1",
         "summary": "The Nordkap change-of-control workspace is not visible under the new SSO account, so the source SPAs cannot be opened.",
         "raisedAt": "2026-08-29T00:16:46.177Z",
