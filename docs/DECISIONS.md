@@ -104,11 +104,29 @@ error detection as a product gap, and the ElevenLabs voice briefing for
 managers. **Deferred:** team-composition drafts — that is team design, a
 different product, and it dilutes a sharp pitch.
 
-## 7. Tracks: Outbuild, AI Agents, Wildcard, Edtech B2C
+## 7. Track: AI Agents. One only — the rules changed.
 
-Ticking more can only help — each track is scored on its own weighting. Outbuild
-carries the points. AI Agents is why the derivation must be genuine rather than
-a template. Edtech B2C is a stretch but free to tick.
+Decided Saturday ~11:50. We can no longer tick several tracks, so this is a real
+choice. Full reasoning and the scoring table in `docs/track.md`.
+
+**Why:** AI Agents weights us inversely to our weakness — the lowest traction
+weight of any track (12 vs Outbuild's 18) and the highest problem-validation
+weight (14). Traction is what we have none of with a day left; problem
+validation is what we banked on Friday night and cannot lose.
+
+Its 14-point band is a sentence we satisfy almost word for word: *"painful,
+frequent and validated problem where an AI agent is clearly the right
+solution."*
+
+**Not Wildcard**, despite the higher ceiling — its 50 rests on one subjective
+20-point originality call, and a serious B2B tool loses that to something
+genuinely strange. **Not Outbuild**, which puts 36% of the score on the thing we
+are worst at. **Not Edtech**, which wants student or teacher validation we do
+not have.
+
+**The afternoon target changes accordingly:** 8 of 12 traction points needs
+*"multiple pilots"*, not payments. One payment and two pilot agreements, not
+three paying customers.
 
 ## 8. Facts that survive a judge Googling them
 
