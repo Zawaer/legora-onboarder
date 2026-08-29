@@ -122,9 +122,14 @@ export default async function Home() {
             </h1>
 
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              Your new hire opens one link on Monday and finds real work
-              already waiting — with the context to do it, and somewhere to ask
-              the forty questions they would never ask a person twice.
+              Because of AI, more and more companies are growing headcount
+              faster than they ever have. Roles that never existed before have
+              to be filled — and filled quickly.
+            </p>
+            <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
+              Onboarder reads a company&rsquo;s real Slack, docs and tickets,
+              works out what a brand-new role actually is, and drives the new
+              hire through their first two days of real work.
             </p>
 
             <StartDemo feed={feed} />
@@ -188,31 +193,6 @@ export default async function Home() {
               </div>
             </div>
           </aside>
-        </section>
-
-        {/* ── why now ──
-            The page argued that the problem exists but never that it is new,
-            and a reader can reasonably think onboarding has always been hard.
-            Kept to two sentences: the claim that survives scrutiny is not that
-            AI makes companies grow (fast-growing companies are not new) but
-            that it invents the jobs, which is what removes the predecessor. */}
-        <section className="border-b border-line py-12 lg:py-16">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-16">
-            <Label>Why now</Label>
-            <div className="flex flex-col gap-4">
-              <p className="max-w-[30ch] text-[26px] leading-[1.18] font-semibold tracking-[-0.022em] text-balance sm:text-[32px]">
-                Fast-growing companies aren&rsquo;t new. Jobs nobody has ever
-                held are.
-              </p>
-              <p className="max-w-[58ch] text-[15.5px] leading-[1.65] text-muted">
-                &ldquo;Legal engineer&rdquo; didn&rsquo;t exist three years ago.
-                Neither did &ldquo;forward deployed engineer&rdquo;. The work is
-                new, so the role is new, so there is nobody to shadow and nothing
-                to hand anyone &mdash; and companies are filling these roles
-                faster than they can work out what they are.
-              </p>
-            </div>
-          </div>
         </section>
 
         {/* ── the three facts ── */}
