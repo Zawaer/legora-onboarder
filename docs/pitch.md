@@ -35,6 +35,35 @@ judges will know the difference.
 **This is the load-bearing thirty seconds of the pitch.** You are closing three
 doors so the fourth is the only one open. Do not soften it.
 
+### If you get a follow-up, these two lines are the sharpest we have
+
+Credit to Viia for both. Use them in Q&A, or swap them in above if the room
+looks unconvinced.
+
+> **"Documentation existing doesn't help, because they don't know what to search
+> for. They don't know what they don't know."**
+
+That is the single cleanest reason enterprise search loses here. Retrieval needs
+a query, and a query needs you to already know the shape of the answer.
+
+> **"Normally 'how we do things here' passes from the people who've been there to
+> the people who haven't. When everyone started last week, there's nobody to
+> absorb it from."**
+
+This is the one that makes hypergrowth *qualitatively* different rather than
+just more of the same. The mechanism that normally transmits tacit knowledge
+requires a ratio of veterans to newcomers, and at fifty hires a week that ratio
+inverts. It isn't that onboarding got harder — it's that the thing that used to
+do the job silently no longer exists.
+
+Two more worth having in your pocket:
+
+- **Nobody sequences the work.** Twenty things land at once and no one says in
+  what order, because the manager is running twenty other new people.
+- **Mistakes surface late.** Someone can do a thing wrong for weeks before
+  anyone notices. That's normally caught by a manager reviewing work — which
+  works at five to eight reports and not at fifty a week.
+
 ## 1:05–2:05 — Demo (one minute, rehearsed, no live derivation)
 
 Onboarding an ex-M&A lawyer into a **Legal Engineer** role — a job that did not

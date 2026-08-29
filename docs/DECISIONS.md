@@ -66,6 +66,36 @@ for a judge to read.
 doc for Legal Engineer. If a document defined the role, the derivation would
 prove nothing. Keep it that way.
 
+## 6b. OPEN — personality profiling (Viia's proposal). Team decides.
+
+Proposal: Big Five test at the start, reports to management after a period,
+team-composition suggestions from member strengths.
+
+**Recommendation: don't, and here is why — but this is a team call, not a
+locked decision.**
+
+1. It inverts our positioning. The manager screen says, in writing, that it
+   shows blockers and never scores, because a surveillance-shaped tool gets
+   killed by the culture it is sold into. Psychometric profiles reported upward
+   are the most surveillance-shaped feature available. We cannot argue both.
+2. Joe is a People Enablement Partner. Personality testing tied to employee
+   monitoring is a category HR professionals have strong, informed views on.
+   It is a plausible way to lose our warmest lead.
+3. EU legal exposure. Inferred personality data about employees runs into GDPR
+   and employment-law questions we cannot resolve in a weekend, and a judge who
+   knows that will ask.
+
+**What the idea is actually reaching for is right**: adapt to the individual.
+We can do that from observed behaviour in the work itself — what they ask,
+where they stall, what they already know cold. Better signal than a
+questionnaire, no consent regime, and consistent with everything else we say.
+
+**Adopted from the same message:** the "they don't know what they don't know"
+and "nobody left to absorb culture from" framings (now in `pitch.md`), delayed
+error detection as a product gap, and the ElevenLabs voice briefing for
+managers. **Deferred:** team-composition drafts — that is team design, a
+different product, and it dilutes a sharp pitch.
+
 ## 7. Tracks: Outbuild, AI Agents, Wildcard, Edtech B2C
 
 Ticking more can only help — each track is scored on its own weighting. Outbuild
