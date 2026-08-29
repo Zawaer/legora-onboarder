@@ -229,7 +229,7 @@ export async function respond(
   // divergence visually separable from the answer — it is a different kind of
   // thing and should not be smuggled into a paragraph as if the agent had been
   // asked about it.
-  if (drift) {
+  if (drift && !alreadyMade(raw.reply, drift)) {
     result.drift = drift;
     result.reply = `${raw.reply}\n\n${renderDriftNote(drift, company)}`;
     if (drift.needsHuman) result.driftBlocker = driftBlocker(drift);
@@ -266,6 +266,34 @@ export async function respond(
   }
 
   return result;
+}
+
+/**
+ * Did the reply already make this exact point?
+ *
+ * The two calls are concurrent, which is what keeps the turn fast — but it also
+ * means neither can see the other. When the hire *states an approach*, both
+ * models are looking at the same message and the same corpus, so the reply
+ * frequently reaches for the same passage the drift check did, and the hire
+ * gets one message that quotes Marta at length and then quotes Marta again
+ * under a heading. That reads as a bug, and it is the register this feature
+ * least survives: a note that repeats what you just read is nagging.
+ *
+ * The drift prompt already rules out "something the hire has already been told
+ * in this conversation" — this is the mechanism for the half of it the model
+ * cannot see. Matched on the artifact id and on the opening of the quote,
+ * because the reply cites both ways.
+ *
+ * Fails toward silence, which is the documented preferred outcome: the worst
+ * case is a real divergence the hire reads once in the reply instead of twice.
+ */
+function alreadyMade(reply: string, drift: DriftNote): boolean {
+  const haystack = reply.toLowerCase();
+  return drift.evidence.some((e) => {
+    if (e.artifactId && haystack.includes(e.artifactId.toLowerCase())) return true;
+    const opening = e.quote.trim().slice(0, 60).toLowerCase();
+    return opening.length >= 24 && haystack.includes(opening);
+  });
 }
 
 /**

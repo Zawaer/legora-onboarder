@@ -50,6 +50,10 @@
  */
 
 import type { Blocker, HireState } from "@/lib/types";
+// Reused, not reimplemented — the same guard `lib/agent/drift.ts` runs, and for
+// the same reason. `lib/slack/format.ts` has no runtime imports, so this stays
+// a pure module. See `sayable` below.
+import { findAssessmentLanguage } from "@/lib/slack/format";
 
 export type Brief = {
   /** The spoken script. Plain prose: no markdown, no bullets, no URLs. */
@@ -128,6 +132,11 @@ function spellMinutes(mins: number): string {
 
   const hours = Math.floor(value / 60);
   const rest = value % 60;
+  // Past ninety-nine hours `spellNumber` hands back bare digits, and a digit
+  // reaching the speech model is the exact failure this file exists to avoid
+  // ("1666 hours and forty minutes"). Nothing honest is lost by capping: an
+  // estimate that large is not a real estimate.
+  if (hours > 99) return "more than four days";
   const hourPart = hours === 1 ? "one hour" : `${spellNumber(hours)} hours`;
   if (rest === 0) return hourPart;
   return `${hourPart} and ${rest === 1 ? "one minute" : `${spellNumber(rest)} minutes`}`;
@@ -150,6 +159,12 @@ function spellMinutes(mins: number): string {
  * Guessing wrong out loud is worse than letting the model guess.
  */
 function forTheEar(raw: string): string {
+  // Typed as required, but this reads model output that has been round-tripped
+  // through a JSON file on disk. A single missing `summary` used to throw here,
+  // which /api/brief turns into a 500 and the panel renders as a skeleton that
+  // never resolves — the one failure the route's own docblock promises cannot
+  // happen. A missing string is silence, not a crash.
+  if (typeof raw !== "string") return "";
   return raw
     .replace(/https?:\/\/\S+/gi, "")
     .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1") // markdown links keep their words
@@ -162,6 +177,39 @@ function forTheEar(raw: string): string {
 
 function countWords(text: string): number {
   return text.split(/\s+/).filter(Boolean).length;
+}
+
+/**
+ * The surveillance guard, on the spoken path. Fail closed.
+ *
+ * Everything above the fold in this file says the briefing never rates a
+ * person — but until this existed, nothing in the code enforced it. Three of
+ * the strings spoken aloud are not written here: `Blocker.summary` and the ramp
+ * task title are Opus output, and `DerivedRole.openQuestions` is Opus output
+ * about what the company has not decided. The system prompt forbids assessment
+ * language and the schema has no field for it; neither is a mechanism. A single
+ * "she is struggling with the SSO setup" in a summary was read out verbatim,
+ * and audio is the surface where that costs the most — it gets played on a
+ * speaker with somebody else in the room.
+ *
+ * Drops the fragment rather than rewriting it, exactly as `lib/agent/drift.ts`
+ * does: silently editing a judgement into something acceptable is how the ban
+ * stops meaning anything, and it hides the regression. Every caller here is
+ * dropping an optional clause, so the briefing stays grammatical and still
+ * names who is blocked and who can clear it.
+ *
+ * Not applied to people's names (`hireName`, `suggestedPerson`): those are
+ * roster entries, not model prose, and muting somebody's name to satisfy a
+ * keyword match would be a worse briefing than the one it prevents.
+ */
+function sayable(text: string, where: string): string {
+  if (!text) return "";
+  const flagged = findAssessmentLanguage(text);
+  if (flagged) {
+    console.warn(`[brief] dropped ${where} containing assessment language: "${flagged}"`);
+    return "";
+  }
+  return text;
 }
 
 /**
@@ -188,6 +236,15 @@ function firstClause(text: string, maxWords: number): string {
     }
     out = acc;
   }
+
+  // Clause boundaries are a preference, not a guarantee. A summary written as
+  // one long unpunctuated run has no comma to cut at, so the loop above returns
+  // it whole — which is how a single blocker produced a 355-word "briefing"
+  // that walks straight past MAX_WORDS, spends ElevenLabs credits per character
+  // and cannot be rescued by the ladder (the ladder drops context, never the
+  // obstacle). Cut at a word count as the backstop.
+  const words = out.split(/\s+/).filter(Boolean);
+  if (words.length > maxWords) out = words.slice(0, maxWords).join(" ");
 
   return `${out.replace(/[\s.,;:—–-]+$/, "")}.`;
 }
@@ -314,7 +371,7 @@ const QUESTION_OPENER = /^(who|what|whether|which|where|when|how|why)\b/i;
  * capital, because it is probably a proper noun.
  */
 function asClause(text: string): string {
-  const clause = firstClause(text, 22);
+  const clause = sayable(firstClause(text, 22), "an open question");
   if (!clause) return "";
   return QUESTION_OPENER.test(clause)
     ? clause.charAt(0).toLowerCase() + clause.slice(1)
@@ -333,7 +390,7 @@ function asClause(text: string): string {
  */
 function speakBlocker(item: OpenItem, spokenName: string, withTask: boolean): string {
   const { blocker } = item;
-  const obstacle = firstClause(blocker.summary, 24);
+  const obstacle = sayable(firstClause(blocker.summary, 24), "a blocker summary");
   const person = blocker.suggestedPerson ? firstName(blocker.suggestedPerson) : null;
   const mins =
     typeof blocker.minutesToUnblock === "number" && blocker.minutesToUnblock > 0
@@ -344,7 +401,7 @@ function speakBlocker(item: OpenItem, spokenName: string, withTask: boolean): st
   if (obstacle) parts.push(obstacle);
 
   if (withTask && item.taskTitle) {
-    const task = firstClause(item.taskTitle, 16);
+    const task = sayable(firstClause(item.taskTitle, 16), "a ramp task title");
     if (task) parts.push(`It is holding up the task called ${task}`);
   }
 
@@ -409,9 +466,15 @@ function compose(input: Ingredients, take: Take, now: number): string {
     if (index === 0) {
       const hours = hoursWaiting(item.blocker.raisedAt, now);
       if (hours >= 2) {
-        lines.push(
-          `That one has been waiting ${spellNumber(hours)} ${hours === 1 ? "hour" : "hours"}.`,
-        );
+        // Same rule as `spellMinutes`: never let a bare digit reach the speech
+        // model. Over four days the hour count stops being the useful fact
+        // anyway — "waiting 5772 hours" is noise where "five days" is a prompt
+        // to act.
+        const waited =
+          hours < 100
+            ? `${spellNumber(hours)} hours`
+            : `${spellNumber(Math.min(99, Math.floor(hours / 24)))} days`;
+        lines.push(`That one has been waiting ${waited}.`);
       }
     }
   });
@@ -538,7 +601,11 @@ export function composeBrief(
   // Oldest first. Whoever has been stuck longest has lost the most time, and
   // that is the only ordering that is about the work rather than about the
   // person — no urgency scores, no triage ranking of hires.
-  open.sort((a, b) => a.blocker.raisedAt.localeCompare(b.blocker.raisedAt));
+  // `?? ""` rather than a bare `.localeCompare`: a blocker that reached disk
+  // without a `raisedAt` would otherwise throw here, and a throw in this
+  // function is a 500 from /api/brief and a briefing panel that spins forever.
+  // `components/blocker-list.tsx` already tolerates the same missing field.
+  open.sort((a, b) => (a.blocker.raisedAt ?? "").localeCompare(b.blocker.raisedAt ?? ""));
 
   const minutes = open.reduce((sum, i) => sum + (i.blocker.minutesToUnblock ?? 0), 0);
 

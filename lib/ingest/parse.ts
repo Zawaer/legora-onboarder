@@ -847,7 +847,19 @@ function assemble(
 
   type Staged = Artifact & { sortKey: string };
   const staged: Staged[] = [];
-  const perChannel = new Map<string, number>();
+  /**
+   * Counter keyed on the *id prefix*, not the channel.
+   *
+   * `slugPart` is lossy — it lowercases, collapses punctuation and cuts at 24
+   * characters — so two genuinely different channels (`#eng_legal` and
+   * `#eng-legal`, or two names that differ only past character 24) share one
+   * prefix. Counting per channel then hands both of them `-001` and the corpus
+   * ships two artifacts with the same id, which `groundEvidence` resolves
+   * last-one-wins: a correct citation against the first is silently dropped as
+   * unverifiable. Counting per prefix makes the emitted id unique by
+   * construction.
+   */
+  const perIdPrefix = new Map<string, number>();
   const seenKeys = new Set<string>();
   let duplicates = 0;
 
@@ -891,15 +903,16 @@ function assemble(
         undated += 1;
       }
 
-      const n = (perChannel.get(channel) ?? 0) + 1;
-      perChannel.set(channel, n);
       const kind = message.kind ?? kindFor(format);
+      const idPrefix = `${kind}-${slugPart(channel)}`;
+      const n = (perIdPrefix.get(idPrefix) ?? 0) + 1;
+      perIdPrefix.set(idPrefix, n);
 
       staged.push({
         // Readable and stable: `slack-legal-eng-004`. The model has to copy
         // these back verbatim as citations, so they need to be short and
         // unambiguous, and they must not move if the same corpus is re-read.
-        id: `${kind}-${slugPart(channel)}-${String(n).padStart(3, "0")}`,
+        id: `${idPrefix}-${String(n).padStart(3, "0")}`,
         kind,
         channel,
         author,
