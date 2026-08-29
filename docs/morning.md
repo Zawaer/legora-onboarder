@@ -58,6 +58,36 @@ live.**
    `getUserMedia` has never run.
 3. **Press play on `/manager`** (~1 min) — the audio generates correctly server
    side, but browser playback of the blob URL is untested.
+4. **Open `/hire/[id]` and look at the chat** (~1 min) — the agent writes light
+   markdown and both surfaces were printing it raw, so the opening brief showed
+   literal `**asterisks**` around the first task. Now rendered properly, but the
+   chat is client-side so I could only verify it typechecks and is bundled, not
+   that it looks right.
+
+## What overnight QA caught that would have gone live
+
+Worth knowing, because each one only shows up in front of an audience:
+
+- **The Slack DM was unusable.** Setup never enabled the App Home Messages tab,
+  so the hire physically could not type. And the failure is silent — no event is
+  generated at all, so every scope check passes and debug logging prints
+  nothing. Both DM turns of the demo run through that composer.
+- **The no-scoring rule was not actually enforced on the voice path.** It held in
+  the drift detector but the briefing composer had it only in a comment. Four
+  vectors got scoring language into spoken audio — the worst possible surface,
+  since a briefing gets played on a speaker with other people in the room.
+- **Duplicate artifact ids silently broke grounding.** Two channels whose names
+  collapse to the same slug both got `-001`, so a *correct* quote from the first
+  one failed verification and was dropped as fabricated — degrading exactly the
+  proof the product sells.
+- **Every uncached derivation would have died on Vercel.** `maxDuration` was 60
+  against a 140-186 second job, and `next dev` does not enforce it, so it passes
+  every rehearsal and fails only on the deployed URL.
+- **A corpus with no author names** was accepted, offered for derivation, and
+  then crashed three minutes and ~$2 in. Now refused at the door.
+- **The Slack thinking-indicator could permanently overwrite the answer** — the
+  ticker and the reply both edit the same message and Slack applies whichever
+  lands last.
 
 ## Money
 
