@@ -73,11 +73,11 @@ export default function RoiCalculator() {
   const [open, setOpen] = useState(false);
 
   // Assumptions. All editable, all defaulted low.
-  const [dayRate, setDayRate] = useState(460);
+  const [dayRate, setDayRate] = useState(400);
   const [daysSaved, setDaysSaved] = useState(4);
-  const [questions, setQuestions] = useState(12);
+  const [questions, setQuestions] = useState(40);
   const [minutes, setMinutes] = useState(10);
-  const [seniorRate, setSeniorRate] = useState(75);
+  const [seniorRate, setSeniorRate] = useState(50);
 
   const hiresPerYear = hiresPerWeek * 52;
   const cost = hiresPerYear * PRICE_PER_HIRE;
@@ -245,8 +245,10 @@ export default function RoiCalculator() {
 
             <p className="mt-3 text-[12.5px] leading-[1.6] text-muted sm:col-span-2">
               <span className="text-ink">Where these come from.</span> The daily
-              cost is a fully-loaded figure for an engineer at a company of this
-              size in the Nordics. Days saved defaults to 4 against a two-week
+              cost is built from Swedish salary data plus the 31.42% employer
+              contribution — roughly EUR 39/hour for a developer and EUR 50 for a
+              senior, so EUR 400 a day rather than the rounder number we started
+              with. Days saved defaults to 4 against a two-week
               ramp — the low end, not the ceiling. The questions figure is the
               one thing here the product measures rather than assumes: it counts
               every question resolved from your own material or from the web
@@ -254,8 +256,12 @@ export default function RoiCalculator() {
               <code className="font-mono text-[12px] text-accent-ink">
                 /api/resolutions
               </code>
-              . Ten minutes per interruption is conservative; the research on
-              context switching puts the true cost higher.
+              . Ten minutes per interruption is deliberately conservative: the
+              widely-quoted &ldquo;23 minutes to refocus&rdquo; is not in the
+              paper it gets attributed to, so we use a number that survives
+              being checked. Parnin and Rugaber, instrumenting 10,000 real
+              programming sessions, found only 10% resumed coding within a
+              minute of an interruption.
             </p>
           </div>
         )}
