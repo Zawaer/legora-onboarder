@@ -16,6 +16,7 @@ import { z } from "zod/v4";
 import { generate } from "@/lib/anthropic";
 import { renderCorpus } from "@/lib/agent/derive";
 import { rankExperts } from "@/lib/agent/experts.impl";
+import type { CohortPeer } from "@/lib/agent/cohort";
 import type { Company, DerivedRole, Person, RampDay, RampPlan, RampTask } from "@/lib/types";
 
 const TaskSchema = z.object({
@@ -70,6 +71,39 @@ Day 1 is orientation through production: tasks whose byproduct is understanding,
 askIfStuck names one real person from the roster: the one whose stated ownership actually covers this task. Not the manager by default. Not the same person every time if the tasks span different areas.`;
 
 /**
+ * The extra rules that only apply when somebody else is already ramping here.
+ *
+ * Appended to SYSTEM rather than folded into it, so a company with exactly one
+ * starter gets the prompt it got before any of this existed, byte for byte —
+ * and so the difference between "planned alone" and "planned alongside" is one
+ * readable block instead of a conditional threaded through prose.
+ *
+ * The cost, stated rather than hidden: the system prompt is part of the cached
+ * prefix, so a cohort run and a solo run do not share a prompt-cache entry and
+ * the corpus behind it is re-created once per variant. That is the right trade.
+ * The alternative is putting the division rule in the volatile user turn, where
+ * it lands after fifteen thousand tokens of corpus and reads like a footnote —
+ * and this rule is the one that stops two people being handed the same ticket.
+ */
+const COHORT_RULES = `
+
+OTHER PEOPLE ARE STARTING HERE AT THE SAME TIME
+
+The <already_assigned> block in the user message lists the other people currently ramping at this company and the work each of them is already holding. Read it as a ledger of what is taken. Nobody has agreed anything with you and nobody is going to answer you: those plans are already written and they will not change because of what you write now. All of the dividing is yours to do.
+
+1. NEVER ASSIGN WORK SOMEBODY IN THAT BLOCK ALREADY HOLDS. Not the same task reworded, not "the other half" of it unless the corpus itself already splits it that way. If the obvious first task for this role is taken, it is taken — go back to the corpus and find the next-best genuinely outstanding piece of work. There will be one: a corpus of this size always holds more unfinished work than two people can clear in four days. A second-best real task is worth more than a first-best duplicate, because a duplicate ends with two people discovering each other in the same file on Wednesday.
+
+2. WHERE THE SCOPE ADJOINS, SAY SO — inside the task's own \`context\` field, naming the person. One plain sentence: what the other starter is holding, what this hire is on instead, and what to check before touching the thing they share. Like this:
+
+   "Anna has the Nordkap schedule; you're on the Ardent variants — check with her before touching the shared playbook."
+
+   Write that sentence wherever two tasks touch the same ticket, document, playbook, customer, dataset or person. Do not write it where the scope does not actually adjoin — an invented adjacency is worse than none. This sentence is the most valuable thing in the plan, because the one collision a new hire cannot see coming is another new hire.
+
+3. NEVER INVENT A COLLEAGUE. Every name you write comes from the <people> roster or from <already_assigned>. Nobody else works here.
+
+Do not rank, compare, or characterise the other starters: not their seniority, not their pace, not who got the more interesting work, not who is further along. You are dividing work between people, not grading them.`;
+
+/**
  * Build the plan.
  *
  * Task ids and the `askIfStuck` name are assigned here rather than trusted from
@@ -77,17 +111,28 @@ askIfStuck names one real person from the roster: the one whose stated ownership
  * stable, and a fabricated colleague is the same class of failure as a
  * fabricated quote — it sends a new hire to Slack-message someone who does not
  * work here.
+ *
+ * `peers` is what the other people mid-ramp at this company are already
+ * holding. Optional, and empty is the same as absent: with no peers the system
+ * prompt and the user prompt are byte-identical to what they were before
+ * cohorts existed, so every caller that has never heard of this keeps getting
+ * exactly the plan it got yesterday. See lib/agent/cohort.ts for what this
+ * mechanism is and — more importantly — what it is not.
  */
-export async function buildRampPlan(company: Company, role: DerivedRole): Promise<RampPlan> {
+export async function buildRampPlan(
+  company: Company,
+  role: DerivedRole,
+  peers: CohortPeer[] = [],
+): Promise<RampPlan> {
   const raw = await generate({
-    system: SYSTEM,
+    system: peers.length > 0 ? SYSTEM + COHORT_RULES : SYSTEM,
     // The corpus rides along here too. The system prompt tells the model to
     // start the hire on work the team has visibly been putting off — which is
     // an empty instruction if it can only see the derived summary. It costs a
     // couple of seconds of prefill and it is what makes the `context` field
     // specific enough to work from without tapping anyone on the shoulder.
     corpus: renderCorpus(company),
-    user: buildPlanPrompt(company, role),
+    user: buildPlanPrompt(company, role, peers),
     schema: PlanSchema,
     label: `ramp plan for "${role.title}" at ${company.name}`,
   });
@@ -178,7 +223,34 @@ function clampEstimate(mins: number): number {
   return Math.min(240, Math.max(15, Math.round(mins)));
 }
 
-function buildPlanPrompt(company: Company, role: DerivedRole): string {
+/**
+ * The ledger of what is already taken.
+ *
+ * Returns nothing at all when nobody else is ramping, which is what keeps the
+ * solo prompt byte-identical: an empty array contributes no lines to the join.
+ *
+ * Placed after `</role>` and immediately before the ask, because it is the last
+ * thing the model should be holding when it starts choosing tasks.
+ */
+function renderPeers(company: Company, peers: CohortPeer[]): string[] {
+  if (peers.length === 0) return [];
+
+  const lines = peers.flatMap((p) => [
+    `- ${p.name} — ${p.roleTitle}. Already holding:`,
+    ...(p.taskTitles.length > 0
+      ? p.taskTitles.map((t) => `    · ${t}`)
+      : [`    · (plan not written yet)`]),
+  ]);
+
+  return [
+    `<already_assigned note="Other people mid-ramp at ${company.name} right now. This work is taken; it is not available to hand out again.">`,
+    ...lines,
+    `</already_assigned>`,
+    ``,
+  ];
+}
+
+function buildPlanPrompt(company: Company, role: DerivedRole, peers: CohortPeer[] = []): string {
   const roster = company.people
     .map((p) => `- ${p.name} (${p.slackHandle}) — ${p.role}, ${p.team}. Owns: ${p.owns.join("; ") || "unspecified"}`)
     .join("\n");
@@ -208,6 +280,7 @@ function buildPlanPrompt(company: Company, role: DerivedRole): string {
     ...role.openQuestions.map((q) => `- ${q}`),
     `</role>`,
     ``,
+    ...renderPeers(company, peers),
     `Write day 1 and day 2. Real work only. The person starts tomorrow and nobody has time to sit with them.`,
   ].join("\n");
 }

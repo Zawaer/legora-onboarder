@@ -27,6 +27,7 @@ import { deriveRoleWithGrounding } from "@/lib/agent/derive";
 import { buildRampPlan } from "@/lib/agent/plan";
 import { openingMessage } from "@/lib/agent/supervise";
 import { getHire, listHires, putHire } from "@/lib/agent/hires";
+import { cohortPeers } from "@/lib/agent/cohort";
 import { listDerivations, readDerivation, writeDerivation, normaliseRoleTitle } from "@/lib/agent/cache";
 import { computeCoverage } from "@/lib/agent/coverage";
 import { toApiError } from "@/lib/anthropic";
@@ -112,6 +113,24 @@ export async function POST(request: Request) {
     let derivedAt: string;
     let cached: boolean;
 
+    /*
+     * Everyone else. Read once, used twice: the planner needs it so two people
+     * starting the same week are not handed the same ticket, and the reuse
+     * lookup further down needs the same list. One read, so the two cannot
+     * disagree about who exists.
+     *
+     * This is a ledger read, not a conversation with another agent — see
+     * lib/agent/cohort.ts, which says so at length and explains the two limits
+     * that come with it.
+     *
+     * Worth knowing: a cache hit skips planning entirely, so a cached plan
+     * reflects the cohort as it stood when it was derived. In practice the
+     * `priorForRole` reuse below catches the case that matters (same company,
+     * same role, hire already exists), and `?fresh=1` is how you re-plan
+     * against the cohort as it is now.
+     */
+    const hires = await listHires();
+
     // A hit is only a hit if it came from the corpus we are holding now —
     // readDerivation compares a hash, so editing the seed invalidates the entry
     // without anyone having to remember to.
@@ -136,7 +155,11 @@ export async function POST(request: Request) {
         );
       }
 
-      plan = await buildRampPlan(company, role);
+      plan = await buildRampPlan(
+        company,
+        role,
+        cohortPeers(hires, { companySlug, excludeHireId: hireId }),
+      );
       grounding = { kept: derived.grounding.keptCount, dropped: derived.grounding.droppedCount };
       ({ derivedAt } = await writeDerivation(company, roleTitle, { role, plan, grounding }));
       cached = false;
@@ -166,7 +189,7 @@ export async function POST(request: Request) {
      */
     const priorForRole = hireId
       ? undefined
-      : (await listHires()).find(
+      : hires.find(
           (h) =>
             h.companySlug === companySlug &&
             normaliseRoleTitle(h.roleTitle) === normaliseRoleTitle(roleTitle),
