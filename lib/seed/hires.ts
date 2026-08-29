@@ -263,5 +263,194 @@ export const BAKED_HIRES: HireState[] = [
         "resolved": false
       }
     ]
+  },
+  {
+    "id": "demo-legal-evaluation-engineer",
+    "name": "Hannah Whitfield",
+    "roleTitle": "Legal Evaluation Engineer",
+    "companySlug": "lexhav",
+    "startedAt": "2026-08-29T14:23:18.130Z",
+    "derivedRole": {
+      "title": "Legal Evaluation Engineer",
+      "summary": "This is the person who owns the ground truth Lexhav's accuracy claims rest on: the labelled eval sets behind the harness Priya built, and the legal judgement that decides whether a miss is a model failure or a wrong label. Right now that work is done by four legal engineers (Johan, Marta, Daniel, Camille) in the evenings between client escalations, which is why the Korean bilingual-column bug was found by a live pilot instead of by an eval set, and why the prompt review queue hit 23 with an oldest item from 29 July. The hire sits between Legal Engineering and Applied ML: contract-literate enough to say which of 200 candidate labels is correct and whether precision or recall should win on a diligence task, close enough to the harness to turn every client-found escalation (ESC-882's 30 Italian documents, LE-2205's eleven Korean ones) into a set that regresses loudly next time.",
+      "evidence": [
+        {
+          "artifactId": "slack-eng-platform-037",
+          "quote": "eval harness is now the bottleneck and its a people bottleneck not a compute one. i need ~200 clauses labelled correct/incorrect by someone who actually knows, by thursday, and there is nobody",
+          "why": "The most direct statement of the vacancy: the constraint is qualified human labelling, not compute, and nobody holds it."
+        },
+        {
+          "artifactId": "doc-eval-runbook-036",
+          "quote": "The actual bottleneck: I can generate 200 candidate labels in four minutes and they are worth exactly nothing until someone qualified reviews them. Right now that is Johan, Marta, Daniel and Camille, in the evenings. Every accuracy figure we have ever quoted to a customer traces back to that.",
+          "why": "Names the four people currently absorbing this work off the side of their desks and the commercial stake in it."
+        },
+        {
+          "artifactId": "slack-eng-platform-038",
+          "quote": "ill do 60 tonight. but this is the actual constraint on everything we do and we keep treating it like an errand. every single accuracy number we have ever quoted to a client traces back to someone sitting down with a pdf at 22:00",
+          "why": "A senior legal engineer explicitly frames labelling as under-owned work being treated as an errand."
+        },
+        {
+          "artifactId": "slack-legal-eng-049",
+          "quote": "also we have to fix the fact that he found this on a live pilot and not on our own eval set, that is the actual bug 😬",
+          "why": "Elin defines the failure this role prevents: correctness problems surfacing at customers because coverage gaps in eval sets go unowned."
+        },
+        {
+          "artifactId": "slack-legal-eng-015",
+          "quote": "hot take: you moving the threshold is strictly better than me moving the threshold, because you know which of the errors actually matter. i genuinely cannot tell a materiality qualifier from a hole in the ground. i can make the number go up on whatever you tell me to count, thats the whole job",
+          "why": "Priya draws the exact seam this role sits on — the ML side can optimise any metric but cannot decide what to count."
+        },
+        {
+          "artifactId": "doc-prompt-review-028",
+          "quote": "Not covered here: who is allowed to approve. Currently Elin, Johan, Daniel. This is a bottleneck and we know.",
+          "why": "The prompt review gate the eval numbers feed into is a named, acknowledged three-person bottleneck."
+        },
+        {
+          "artifactId": "ticket-esc-882-035",
+          "quote": "(c) an eval set of 30 italian documents added to the harness so this regresses loudly next time",
+          "why": "Shows the escalation-to-regression-set pipeline that currently only happens when an individual legal engineer remembers to do it."
+        },
+        {
+          "artifactId": "meeting-pairing-039",
+          "quote": "the useful part, honestly: priya had been trying to fix (3) with retrieval for two days. it was a drafting-knowledge problem and it took twenty minutes once someone who had written these clauses looked at the misses.",
+          "why": "Demonstrates the specific value of a contract-literate person doing structured error analysis on eval output rather than an ML engineer guessing."
+        }
+      ],
+      "responsibilities": [
+        "Own the labelled ground truth behind the eval harness — clearing Priya's candidate-label queues (~200 at a time) so accuracy figures quoted to customers stop tracing back to legal engineers reviewing PDFs at 22:00.",
+        "Own eval set coverage per jurisdiction and document type: the 30 Italian documents from ESC-882, Camille's 20 French, growing bilingual-kr past the eleven documents Priya flags as 'too small to trust', and deciding which sets are under the ~50-document 'treat the number as a vibe' line.",
+        "Run structured error analysis on misses the way Johan did in the Nordkap pairing session — classifying why each miss is a miss and separating model failure from wrong label from a prompt that described the label instead of the concept.",
+        "Enforce checklist items 5 and 6 of the prompt review process: before/after recall AND precision in every PR, and the precision-vs-recall trade call that differs between diligence and drafting work.",
+        "Take load off the prompt review queue (23 at its peak, oldest from 29 July, 9 after a push) and help unblock the Elin/Johan/Daniel approval bottleneck ahead of the September and October cohorts.",
+        "Turn client-found correctness failures — Ardent's zero hits on Italian APAs, Ji-won's Korean governing-column finding — into regression coverage so the next civil-law or bilingual jurisdiction fails in the harness rather than in front of a partner.",
+        "Work with Priya on eval-run reliability, including the eval runner in Platform's smoke tests after PLAT-1190 silently killed an overnight run."
+      ],
+      "firstWeekOutcomes": [
+        "Priya's outstanding label batch cleared by someone other than Johan in the evening, with the disagreements written down rather than just resolved.",
+        "A stated, defensible position on which live eval sets are trustworthy and which are vibes — specifically bilingual-kr at 11 documents and fin.credit-agreement at 61 — and what it would take to fix each.",
+        "At least one existing 'miss' re-examined and found to be a wrong label rather than a model failure, with the label corrected in the harness.",
+        "The Italian and French additions to dd.assignment verified as actually regressing loudly, not just committed.",
+        "A named answer to the question Ji-won's bilingual writeup raises: which currently-live playbooks have jurisdiction or layout assumptions with no eval coverage at all."
+      ],
+      "keyPeople": [
+        {
+          "name": "Priya Raghunathan",
+          "why": "Owns the harness, the retrieval work behind LE-2214 and LE-2205, and is the person explicitly blocked on qualified labels — this role exists to unblock her."
+        },
+        {
+          "name": "Elin Sandberg",
+          "why": "Sets the rule that whoever writes a spec must have negotiated the clause, owns the prompt review checklist and the approval bottleneck this role is meant to relieve."
+        },
+        {
+          "name": "Johan Lindqvist",
+          "why": "Currently absorbs the most labelling and threshold work; his Nordkap error-analysis method is the closest thing to a template for this job."
+        },
+        {
+          "name": "Marta Nowak",
+          "why": "Her ESC-882 writeup defines the house standard for diagnosing a jurisdiction failure — read the documents first, never start from our output — and she built the Italian eval set."
+        },
+        {
+          "name": "Ji-won Park",
+          "why": "Source of the bilingual governing-language finding and the APAC coverage gaps that have no eval representation; also the person whose regional findings need to reach the harness faster."
+        }
+      ],
+      "openQuestions": [
+        "Reporting line is genuinely unsettled: the work is Priya's bottleneck (Applied ML) but the judgement is Elin's team's (Legal Engineering). Nothing in the corpus assigns this person to either.",
+        "Whether this person can approve prompt reviews. Today approval is Elin, Johan, Daniel only, acknowledged as a bottleneck — adding a fourth approver is the obvious fix but has not been proposed by anyone.",
+        "How much tooling access they get. Tobias will approve playbook repo write ('approving all 7') but has drawn a hard line at the extraction service; Daniel argues legal engineers should be able to make two-line schema changes themselves. Camille points out this is partly a skills question, not a preference one: 'half of us cannot read python'.",
+        "Whether the role is an ex-lawyer who learns the harness or an ML person who learns contracts. Priya's runbook says you don't need Python; Elin's hire for 1 Sept has 'no coding at all'. The corpus never states which side of that line this hire is on.",
+        "Whether this person is on client calls when an eval finding becomes an escalation. Anders and Elin went round twice in the Ardent retro and recorded no decision; both were to write half a page and by 28 Aug 'neither written'.",
+        "Whether they own the jurisdiction variants layer Camille has now raised three times ('no owner assigned. nina to scope') or merely supply eval coverage to whoever eventually does. WF-411 is still UNASSIGNED and Elin said 'cannot staff it this month'.",
+        "Whether they own labelling throughput as a service to the whole company — Rahul's Tokyo pilot and the third region asking for legal-eng time suggest demand well beyond eval — or strictly the harness."
+      ]
+    },
+    "plan": {
+      "role": "Legal Evaluation Engineer",
+      "days": [
+        {
+          "day": 1,
+          "theme": "Establish what the eval numbers are actually worth",
+          "tasks": [
+            {
+              "id": "d1-t1",
+              "title": "Write the trust register for every live eval set",
+              "why": "Priya's own runbook says any set under ~50 documents is 'a vibe', but nobody has ever written down which of our live sets clear that line — and accuracy figures from these sets get quoted to customers.",
+              "context": "The harness lives with Applied ML; Priya Raghunathan's runbook 'Eval harness — how to run it (and why the numbers move)' (Notion / Applied ML, 19 Aug) is the only documentation. Ping Priya for a harness account — the runbook explicitly says you do not need Python to run it, the command is `just eval --set=<name> --rev=HEAD` and it prints recall, precision, a per-document breakdown and a diff against the last run. Live sets as of the runbook: ma.spa.* (120 docs), dd.assignment (86, +30 Italian added by Marta the week of ESC-882), fin.credit-agreement (61), bilingual-kr (11). Run each one, record actual current document counts rather than trusting the runbook numbers, and give each set a verdict: trustworthy, borderline, or vibe — plus the specific number of additional documents and which jurisdictions/document types would move it above the line. Two decisions are already made and should not be relitigated: the ~50-document line is Priya's and it stands, and the precision-vs-recall trade differs by task type per item 6 of the prompt review checklist (diligence favours recall, drafting favours precision) — so state per set which side of that it is on. Rebecca Hartley is working through the Nordkap SPAs and a ma.spa.change-of-control label batch this week; the register is a count-and-verdict exercise, so record the state of the ma.spa.* sets and do not re-label anything in them. Do not touch the extraction service — Tobias has drawn a hard line there; nothing in this task needs it.",
+              "doneWhen": "A one-page 'Eval set trust register' posted in #legal-eng listing every live set with its real document count, a trustworthy/borderline/vibe verdict, and for each non-trustworthy set the number and type of documents needed to fix it.",
+              "askIfStuck": "Priya Raghunathan",
+              "estimateMins": 120
+            },
+            {
+              "id": "d1-t2",
+              "title": "Prove the 30 Italian documents in dd.assignment actually fail loudly",
+              "why": "ESC-882 promised 'an eval set of 30 italian documents added to the harness so this regresses loudly next time' — committed, but nobody has checked that removing the fix would actually make the number move.",
+              "context": "Background: Ardent Partners (Milan) ran the standard assignment playbook over 12 Italian asset purchase agreements and got zero hits; the client found it, not us. Marta Nowak's writeup 'Italian assignment / change-of-control drafting — what we got wrong' (Notion / Escalations, 26 Aug) is the root cause: 7 of 12 had operative transfer language outside any recognised heading, 4 of 12 in annexes, and the section classifier is built on English-law drafting conventions. She shipped an Italian-corpus retrieval override, a variants note, and the 30-document eval addition; ESC-882 closed on the Thursday. The test is simple: run `just eval --set=dd.assignment --rev=HEAD`, then run it again at a revision before the Italian override landed, and compare. If the Italian override coming out does not visibly collapse the number, the 30 documents are decoration, not a regression test — and that is the finding. Also check whether Camille Dufort's 20 French documents ('20 FR to follow' in Marta's writeup, and 'adding 20 french ones to the same eval set' in her ESC-882 comment) are actually in the set yet, or still to follow. Do not add a keyword list for anything — Marta has said explicitly that 'cessione' in a keyword list is not a fix, and that call stands.",
+              "doneWhen": "A comment on ESC-882 with both run outputs pasted, stating plainly whether dd.assignment regresses when the Italian override is absent, and whether Camille's 20 French documents are in the set.",
+              "askIfStuck": "Marta Nowak",
+              "estimateMins": 90
+            },
+            {
+              "id": "d1-t3",
+              "title": "Error-analyse the fin.credit-agreement misses and correct one wrong label",
+              "why": "Priya's runbook says half of all 'misses' are wrong labels, and fin.credit-agreement at 61 documents is the set behind Whitfield Grange's covenant extraction — a 340-fee-earner rollout landing in November.",
+              "context": "Do this the way Johan Lindqvist did it in the 20 Aug Nordkap pairing session (notes: 'Pairing notes — SPA change-of-control prompt'): go through the misses one by one and write down WHY each one is a miss. He found only three kinds, and the biggest was not a model problem at all — the instruction described the label ('change of control') instead of the concept ('transfer of more than 50% of the shares'), and fixing that took recall from 0.71 to 0.88 in twenty minutes. Run `just eval --set=fin.credit-agreement --rev=HEAD` and work the per-document breakdown. Tag every miss as one of: genuine model failure, wrong label in the harness, or instruction-describes-the-label. Context on this set specifically: Daniel Okafor's Whitfield Grange call notes (18 Aug) record that the financial-covenant-headroom field is 'technically right and practically useless' because we return the ratio without the EBITDA definition it is calculated on — that is a missing second field, not a miss, so do not label it as one. Marta's rule applies here too: start from the documents and decide the right answer yourself before looking at what we returned, otherwise you will only ever find the errors we already know about. Correct at least one label in the harness where the label, not the model, was wrong.",
+              "doneWhen": "A doc in #legal-eng listing every miss in the latest fin.credit-agreement run tagged model failure / wrong label / instruction-describes-the-label, with at least one label corrected in the harness and the correction named in the doc.",
+              "askIfStuck": "Daniel Okafor",
+              "estimateMins": 120
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "theme": "Take the labelling bottleneck off other people's evenings, and name the coverage gaps",
+          "tasks": [
+            {
+              "id": "d2-t1",
+              "title": "Clear Priya's dd.assignment candidate-label batch and log the disagreements",
+              "why": "Priya can generate 200 candidate labels in four minutes and they are worth nothing until someone qualified reviews them; right now that is four legal engineers at 22:00, and every accuracy number we quote to a client traces back to it.",
+              "context": "The direct ask is in #eng-platform on 19 Aug: '~200 clauses labelled correct/incorrect by someone who actually knows, by thursday, and there is nobody.' Johan volunteered 60 that evening and called it the actual constraint on everything we do. Ask Priya for the outstanding dd.assignment batch — that is the set carrying the Italian and French additions, so your day-1 work on it is directly useful. The valuable output is not the throughput: it is the written record of where you disagreed with the candidate label and why, because that is what tells Priya whether the harness is measuring the right thing. Rebecca Hartley is delivering a ma.spa.change-of-control label batch back to Priya this week — that set is hers; you are on dd.assignment, so check with her before either of you touches ma.spa.* labels. Where a clause is an Italian or French civil-law variant and you are unsure whether it counts, Marta's writeup and Camille's July French note ('cession de contrat') are the reference; flag rather than guess, and record the flag. Do not silently resolve a hard call — Elin's standing complaint (12 Aug) is people spending a day on something and then not telling anyone what they found.",
+              "doneWhen": "The dd.assignment candidate-label batch returned to Priya with every disagreement listed in an accompanying note giving the document, the candidate label, your label, and the reason.",
+              "askIfStuck": "Priya Raghunathan",
+              "estimateMins": 150
+            },
+            {
+              "id": "d2-t2",
+              "title": "Map which live playbooks have jurisdiction or layout assumptions with no eval coverage",
+              "why": "Ji-won found the Korean governing-column bug on a live pilot instead of on an eval set, and Elin called that 'the actual bug' — but nobody has listed which other playbooks are exposed the same way.",
+              "context": "Three incidents share one shape: Ardent's Italian APAs (heading conventions), Ji-won's bilingual KR/EN documents (layout parser prefers the left-to-right latin block), and Camille's July French cession de contrat. Marta named it in her LE-2205 comment: 'we assumed a document convention that is only a convention where we happen to be from.' There are roughly 90 standard playbooks and ~340 client forks; Nina Ekström owns the library surface in-product and her draft 'Playbook naming + fork conventions' (25 Aug) has the naming shape and the fork sample. Get the list of standard playbooks from Nina, then cross it against the live eval sets from your day-1 trust register, and mark each playbook: has eval coverage in the jurisdictions it is actually being run in / has coverage only for English-law drafting / has none. Item 1 of the prompt review checklist ('does the instruction name the jurisdiction(s) it was written against') is the fastest tell — a playbook that silently assumes English-law drafting and is deployed in Milan, Paris, Madrid or Seoul goes at the top. Rebecca Hartley is holding the wording of the WF-411 fork-config surface; your output is the eval-coverage matrix over the standard library, so if you spot fork-wording issues pass them to her rather than writing config labels. Do not try to also fix the coverage — the artifact is the named list, ranked.",
+              "doneWhen": "A coverage matrix posted in #legal-eng naming every standard playbook with a jurisdiction or layout assumption and no eval coverage for it, ranked by which regions it is currently live in.",
+              "askIfStuck": "Nina Ekström",
+              "estimateMins": 120
+            },
+            {
+              "id": "d2-t3",
+              "title": "Write the plan to grow bilingual-kr past eleven documents",
+              "why": "bilingual-kr is 11 documents, which Priya flags as too small to trust, and it is the only guard against telling a client something confidently wrong about the only version of their contract that binds them.",
+              "context": "Ji-won Park's writeup 'Bilingual KR/EN agreements — we are reading the wrong column' (25 Aug) is the source: in 9 of 11 pilot documents the Korean column is operative and the interpretation clause says so; in 2 of 11 the columns say materially different things (English 'may terminate on 30 days notice' vs Korean 'with the counterparty's written consent'). LE-2205 is P1, assigned to Priya, who is building the governing-language resolution on the same cross-reference primitive as LE-2214. What does not exist is a labelling protocol: for a bilingual document, what exactly is the ground truth — the operative column's text, both columns with a governing-language field, or a flag when they diverge? Write that protocol, then say where the documents come from to get the set past the ~50 line: the Sakabe & Partners Tokyo pilot (ESC-901, Rahul Menon, week 3) and the Seoul tenant are the obvious sources, and checklist item 2 requires real clauses from documents we are allowed to use — so name the permission question rather than assuming it. Ji-won's own caveat stands and should be quoted: 'I would not generalise from eleven. I would also not wait for a hundred.' This is a written proposal with a number and a source, not a research memo.",
+              "doneWhen": "A one-page proposal in #legal-eng giving the bilingual ground-truth label schema, the target document count, the named sources for the documents, and the permission question that has to be answered first.",
+              "askIfStuck": "Ji-won Park",
+              "estimateMins": 90
+            }
+          ]
+        }
+      ]
+    },
+    "taskStatus": {
+      "d1-t1": "not_started",
+      "d1-t2": "not_started",
+      "d1-t3": "not_started",
+      "d2-t1": "not_started",
+      "d2-t2": "not_started",
+      "d2-t3": "not_started"
+    },
+    "messages": [
+      {
+        "id": "4fd02e38-f1f0-4050-a11e-cef94c7546a4",
+        "role": "agent",
+        "text": "Hannah — you're the Legal Evaluation Engineer. I read everything your team has written and worked out what this role actually is here, so you don't have to reverse-engineer it from standups.\n\nDay 1 is \"Establish what the eval numbers are actually worth\". Start here:\n\n**Write the trust register for every live eval set** (~120 min)\nPriya's own runbook says any set under ~50 documents is 'a vibe', but nobody has ever written down which of our live sets clear that line — and accuracy figures from these sets get quoted to customers.\n\nWhat you need to know: The harness lives with Applied ML; Priya Raghunathan's runbook 'Eval harness — how to run it (and why the numbers move)' (Notion / Applied ML, 19 Aug) is the only documentation. Ping Priya for a harness account — the runbook explicitly says you do not need Python to run it, the command is `just eval --set=<name> --rev=HEAD` and it prints recall, precision, a per-document breakdown and a diff against the last run. Live sets as of the runbook: ma.spa.* (120 docs), dd.assignment (86, +30 Italian added by Marta the week of ESC-882), fin.credit-agreement (61), bilingual-kr (11). Run each one, record actual current document counts rather than trusting the runbook numbers, and give each set a verdict: trustworthy, borderline, or vibe — plus the specific number of additional documents and which jurisdictions/document types would move it above the line. Two decisions are already made and should not be relitigated: the ~50-document line is Priya's and it stands, and the precision-vs-recall trade differs by task type per item 6 of the prompt review checklist (diligence favours recall, drafting favours precision) — so state per set which side of that it is on. Rebecca Hartley is working through the Nordkap SPAs and a ma.spa.change-of-control label batch this week; the register is a count-and-verdict exercise, so record the state of the ma.spa.* sets and do not re-label anything in them. Do not touch the extraction service — Tobias has drawn a hard line there; nothing in this task needs it.\n\nDone when: A one-page 'Eval set trust register' posted in #legal-eng listing every live set with its real document count, a trustworthy/borderline/vibe verdict, and for each non-trustworthy set the number and type of documents needed to fix it.\n\nAsk me first — I have your team's Slack, docs and tickets and I can almost certainly answer it. If it turns out to be something only a person can settle, I'll tell you to go to Priya Raghunathan rather than have you guess.",
+        "at": "2026-08-29T14:23:18.131Z",
+        "taskId": "d1-t1"
+      }
+    ],
+    "blockers": []
   }
 ];
