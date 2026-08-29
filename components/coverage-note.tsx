@@ -223,13 +223,24 @@ export default function CoverageNote({
             )}
             {report.roster && (
               <p className="max-w-[68ch] text-[13px] leading-[1.6] text-ink">
-                <span className="tnum">{report.roster.appearing}</span> of the{" "}
-                <span className="tnum">{report.roster.size}</span> people on the roster
-                appear in the corpus as authors
-                {report.roster.silent.length > 0 && (
-                  <>. Never heard from: {report.roster.silent.join(", ")}</>
+                {report.roster.independent ? (
+                  <>
+                    <span className="tnum">{report.roster.appearing}</span> of the{" "}
+                    <span className="tnum">{report.roster.size}</span> people on the
+                    roster appear in the corpus as authors
+                    {report.roster.silent.length > 0 && (
+                      <>. Never heard from: {report.roster.silent.join(", ")}</>
+                    )}
+                    .
+                  </>
+                ) : (
+                  <>
+                    There is no roster independent of this corpus: the{" "}
+                    <span className="tnum">{report.roster.size}</span> names were read
+                    off the messages themselves, so anyone who does this work without
+                    typing in these channels is not on any list here.
+                  </>
                 )}
-                .
               </p>
             )}
           </div>

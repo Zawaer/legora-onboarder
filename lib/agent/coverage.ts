@@ -147,7 +147,7 @@ export type CoverageQualifierId =
   | "single-channel"
   | "concentrated"
   | "gapped-window"
-  | "roster-silence";
+  | "barely-present";
 
 /** A named reason the derivation is standing on less than its confidence implies. */
 export type CoverageQualifier = {
@@ -319,14 +319,19 @@ export function computeCoverage(source: CoverageSource): CoverageReport {
     .sort((x, y) => y.artifacts - x.artifacts || x.name.localeCompare(y.name));
 
   const authorNames = new Set(people.map((p) => p.name));
+  const silent = roster.filter((p) => !authorNames.has(p.name)).map((p) => p.name);
   const rosterBlock = roster.length
     ? {
         size: roster.length,
         appearing: roster.filter((p) => authorNames.has(p.name)).length,
-        silent: roster.filter((p) => !authorNames.has(p.name)).map((p) => p.name),
+        silent,
         barelyPresent: people
           .filter((p) => p.onRoster && p.thinSlice)
           .map((p) => p.name),
+        // A roster naming somebody the corpus never hears from, or stating what
+        // anyone owns, knows something the corpus does not. One built by
+        // listing the authors knows nothing, and says so.
+        independent: silent.length > 0 || roster.some((p) => (p.owns ?? []).length > 0),
       }
     : undefined;
 
@@ -538,7 +543,10 @@ function absencesFor(
               ", ",
             )}.`
           : "The corpus can only hold people who typed. Someone who does this work over a " +
-            "desk or a call is invisible in it, and their absence looks the same as not existing.",
+            "desk or a call is invisible in it, and their absence looks the same as not existing." +
+            (roster && !roster.independent
+              ? " There is no roster independent of this corpus to check that against."
+              : ""),
     },
     {
       what: "Anything outside the window",
@@ -656,14 +664,27 @@ function qualifiersFor(input: {
     });
   }
 
-  if (roster && roster.silent.length + roster.barelyPresent.length > 0) {
-    const quiet = roster.silent.length + roster.barelyPresent.length;
+  // Deliberately computed from the authors rather than the roster, so the same
+  // fact survives wherever a roster was not handed along with the corpus. A
+  // roster only changes the wording and adds the names it hears from never.
+  const barelyPresent = people.filter((p) => p.thinSlice).length;
+  const quiet = barelyPresent + (roster?.independent ? roster.silent.length : 0);
+  const population =
+    roster?.independent && roster.silent.length > 0 ? roster.size : people.length;
+
+  if (quiet > 0) {
     out.push({
-      id: "roster-silence",
-      headline: `${quiet} of ${roster.size} people on the roster appear ${plural(
-        THIN_SLICE,
-        "time",
-      )} or fewer.`,
+      id: "barely-present",
+      headline:
+        roster?.independent && roster.silent.length > 0
+          ? `${quiet} of ${population} people on the roster appear ${plural(
+              THIN_SLICE,
+              "time",
+            )} or fewer in the corpus, ${roster.silent.length} of them never.`
+          : `${quiet} of the ${population} names in the corpus appear ${plural(
+              THIN_SLICE,
+              "time",
+            )} or fewer.`,
       detail:
         "The corpus says nearly nothing about how they work. Someone appearing twice is not " +
         "someone we know anything about, and the derivation should not lean on them.",
@@ -694,9 +715,13 @@ function standingFor(
 export function coverageLines(report: CoverageReport): string[] {
   const lines = [report.headline, report.standingLine];
 
-  if (report.roster) {
+  if (report.roster?.independent) {
     lines.push(
       `Roster: ${report.roster.appearing} of ${report.roster.size} named people appear in it as authors.`,
+    );
+  } else if (report.roster) {
+    lines.push(
+      `There is no roster independent of the corpus: the ${report.roster.size} names were read off the messages themselves.`,
     );
   }
   if (report.span.days > 1) {
