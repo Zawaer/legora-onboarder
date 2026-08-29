@@ -18,6 +18,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { isKvConfigured, kvList, kvSet } from "@/lib/kv";
+import { isSupabaseConfigured, serviceClient } from "@/lib/supabase";
 import path from "node:path";
 import type { Loi, Payment } from "@/lib/types";
 
@@ -84,11 +85,38 @@ async function writeAll<T>(file: string, rows: T[]): Promise<void> {
   }
 }
 
+/**
+ * The `lois` table predates this product - it was built for the previous one,
+ * with exactly these columns - so LOIs land in a real database rather than a
+ * file that Vercel throws EROFS at. Three signed letters were nearly lost that
+ * way this evening and had to be read back out of the deployment logs.
+ */
 export async function listLois(): Promise<Loi[]> {
+  if (isSupabaseConfigured()) {
+    const db = serviceClient();
+    if (db) {
+      const { data, error } = await db
+        .from("lois")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (!error && data) return data as unknown as Loi[];
+      if (error) console.warn(`[store] supabase read failed: ${error.message}`);
+    }
+  }
   return readAll<Loi>(LOIS);
 }
 
 export async function saveLoi(loi: Loi): Promise<Loi> {
+  // Written to the database first and awaited, because this is the one capture
+  // where losing a row costs a signature from a named executive. The file
+  // write below is then a local convenience, and its failure is survivable.
+  if (isSupabaseConfigured()) {
+    const db = serviceClient();
+    if (db) {
+      const { error } = await db.from("lois").upsert(loi as never, { onConflict: "id" });
+      if (error) console.warn(`[store] supabase write failed: ${error.message}`);
+    }
+  }
   return serialise(LOIS, async () => {
     const rows = await readAll<Loi>(LOIS);
     rows.push(loi);
