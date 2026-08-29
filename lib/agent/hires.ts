@@ -37,17 +37,38 @@ function serialise<T>(work: () => Promise<T>): Promise<T> {
   return next;
 }
 
+/**
+ * The demo hire, shipped inside the bundle.
+ *
+ * `FILE` lives under the project directory, which is read-only on serverless, so
+ * the deployed site has no hires at all. Verified against the live deployment:
+ * `/api/hire` returned an empty list, which means `/manager` renders its empty
+ * state and there is no `/hire/[id]` to open — two of the three demo beats blank
+ * on the URL we hand to customers and judges.
+ *
+ * Lowest priority of the three sources, so a real hire always wins and this can
+ * never shadow someone's actual data. Same pattern as `lib/seed/derivations.ts`.
+ */
+import { BAKED_HIRES } from "@/lib/seed/hires";
+
 async function readAll(): Promise<Map<string, HireState>> {
-  if (!diskWritable) return memory;
+  const map = new Map<string, HireState>(BAKED_HIRES.map((h) => [h.id, h]));
+
+  if (!diskWritable) {
+    for (const [id, hire] of memory) map.set(id, hire);
+    return map;
+  }
+
   try {
     const raw = await fs.readFile(FILE, "utf8");
     const parsed = JSON.parse(raw) as HireState[];
-    const map = new Map(parsed.map((h) => [h.id, h]));
-    for (const [id, hire] of memory) if (!map.has(id)) map.set(id, hire);
-    return map;
+    for (const h of parsed) map.set(h.id, h);
   } catch {
-    return memory;
+    // No store yet, or unreadable. The baked demo hire still stands.
   }
+
+  for (const [id, hire] of memory) map.set(id, hire);
+  return map;
 }
 
 async function writeAll(map: Map<string, HireState>): Promise<void> {

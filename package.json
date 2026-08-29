@@ -8,7 +8,8 @@
     "start": "next start",
     "slack": "node scripts/slack-bot.mjs",
     "slack:test": "node lib/slack/harness.mjs",
-    "bake": "node --import ./lib/slack/hook.mjs scripts/bake-derivation.mjs"
+    "bake": "node --import ./lib/slack/hook.mjs scripts/bake-derivation.mjs",
+    "bake:hire": "node --import ./lib/slack/hook.mjs scripts/bake-hire.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
