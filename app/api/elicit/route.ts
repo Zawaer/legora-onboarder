@@ -168,7 +168,16 @@ const CreateBody = z.object({
 const AnswerBody = z.object({
   action: z.literal("answer"),
   id: z.string().min(1),
-  text: z.string().min(1).max(8000),
+  // The cap carries its own sentence. An expert who has just typed or spoken a
+  // long answer and gets back "Invalid request." has lost the one contribution
+  // we asked them for, and has no idea why.
+  text: z
+    .string()
+    .min(1)
+    .max(
+      8000,
+      "That answer is longer than 8,000 characters. Send the part that answers the question — the rest can follow in Slack.",
+    ),
 });
 
 const ConfirmBody = z.object({
@@ -227,7 +236,12 @@ export async function POST(request: Request) {
 
   const parsed = Body.safeParse(raw);
   if (!parsed.success) {
-    return json({ error: "Invalid request.", issues: parsed.error.issues }, 400);
+    // First issue's message, same as /api/jd: the schemas above carry sentences
+    // written for the person on the other end, and the panel renders `error`.
+    return json(
+      { error: parsed.error.issues[0]?.message ?? "Invalid request.", issues: parsed.error.issues },
+      400,
+    );
   }
 
   try {

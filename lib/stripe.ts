@@ -45,9 +45,9 @@ export function planConfig(plan: PlanId): PlanConfig {
 }
 
 /**
- * One place that builds a Checkout session, shared by the button (POST
- * /api/checkout) and the QR code (GET /buy). Both must attribute the payment
- * identically or the source breakdown lies.
+ * The one place that builds a Checkout session. Every sale reaches it through
+ * the QR route (GET /buy), so attribution is set here and nowhere else — two
+ * copies of this would eventually disagree and the source breakdown would lie.
  *
  * There is no user id or email here, and that is deliberate: checkout is
  * anonymous. The person scanning the QR has no account with us and should not

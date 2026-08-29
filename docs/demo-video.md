@@ -69,8 +69,9 @@ Then type a question into the chat and let the answer land.
 ## Rules
 
 - **Do not narrate the UI** ("here you can see a button"). Narrate the argument.
-- **Do not run a live derivation.** Cached is honest — the response carries
-  `cached` and `derivedAt`, and the UI says when it was derived.
+- **Do not run a live derivation.** Cached is honest, but say so on camera —
+  the response carries `cached` and `derivedAt`, and nothing on screen renders
+  them yet, so the honesty has to come from your mouth rather than the UI.
 - **One take is fine.** Slightly rough and confident beats polished and late.
 - Show the real product. No mockups, no slides pretending to be product.
 

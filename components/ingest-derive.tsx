@@ -17,7 +17,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { startDerivation } from "./client-api";
-import { Panel } from "./ui";
+import { Panel, Spinner } from "./ui";
 import type { IngestResult } from "./ingest-form";
 
 /** Seconds into the run, and what is genuinely happening at that point. */
@@ -99,10 +99,11 @@ export default function IngestDerive({ result }: { result: IngestResult }) {
           </h2>
           <p className="max-w-[68ch] text-[13.5px] leading-[1.6] text-muted">
             Two model calls over all {result.artifactCount.toLocaleString()} artifacts:
-            about two to three minutes, and one to two dollars of inference. Nothing
-            is derived until you press this. If the numbers above look wrong, fix the
-            export first — a derivation from the wrong corpus costs the same as a
-            derivation from the right one.
+            about two to three minutes, and one to two dollars of inference the first
+            time. This same corpus and this same role title, unchanged, is served from
+            cache and costs nothing. Nothing is derived until you press this — and if
+            the numbers above look wrong, fix the export first, because a derivation
+            from the wrong corpus costs the same as one from the right corpus.
           </p>
         </div>
 
@@ -197,16 +198,3 @@ export default function IngestDerive({ result }: { result: IngestResult }) {
   );
 }
 
-function Spinner() {
-  return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4 animate-spin" aria-hidden fill="none">
-      <circle cx="8" cy="8" r="6.25" stroke="currentColor" strokeWidth="1.6" opacity="0.25" />
-      <path
-        d="M14.25 8A6.25 6.25 0 0 0 8 1.75"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}

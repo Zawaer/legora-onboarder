@@ -227,6 +227,9 @@ export default function ElicitPanel({
                   }
                 }}
                 rows={5}
+                /* Matches the server's cap, so a long answer is stopped at the
+                   keyboard rather than lost to a 400 after they hit send. */
+                maxLength={8000}
                 placeholder="Tell me what happened — the sequence, what you saw, what you did."
                 className="min-h-[110px] flex-1 resize-y rounded-lg border border-line bg-paper px-3.5 py-3 text-[14.5px] leading-[1.6] outline-none placeholder:text-faint focus:border-line-strong"
               />

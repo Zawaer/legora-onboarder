@@ -1,3 +1,4 @@
+import Link from "next/link";
 import QRCode from "qrcode";
 import { describePlan, PLAN_IDS, type PlanId } from "@/lib/stripe";
 import { normaliseSource } from "@/lib/source";
@@ -59,7 +60,17 @@ export default async function PayPage({ searchParams }: { searchParams: Params }
   ]);
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-10 p-8">
+    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 p-8">
+      {/* "Pricing" in the site header lands here, so a visitor who was not
+          handed the laptop needs a way back out. Absolutely positioned so it
+          costs the QR nothing. */}
+      <Link
+        href="/"
+        className="absolute left-6 top-6 text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+      >
+        &larr; Onboarder
+      </Link>
+
       <div className="flex flex-col items-center gap-3 text-center">
         <span className="font-mono text-sm uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
           {PRODUCT}

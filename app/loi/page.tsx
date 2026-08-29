@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LoiForm } from "@/components/loi-form";
 import { normaliseSource } from "@/lib/source";
 import { PRODUCT } from "@/lib/product";
@@ -21,6 +22,15 @@ export default async function LoiPage({ searchParams }: { searchParams: Params }
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-xl flex-col justify-center gap-8 px-6 py-16">
+      {/* Linked from the site header, so it needs a way back. Kept to one line:
+          the phone is usually in someone else's hand on this screen. */}
+      <Link
+        href="/"
+        className="text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+      >
+        &larr; Onboarder
+      </Link>
+
       <div className="flex flex-col gap-3">
         <h1 className="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
           Would you put this in front of your next cohort?

@@ -29,7 +29,12 @@ async function corpus(): Promise<Corpus> {
     return Object.fromEntries(
       companies.map((c) => [
         c.slug,
-        { name: c.name, artifacts: c.artifacts ?? [] },
+        // The roster travels with the corpus. Without it the coverage panel on
+        // the role card runs roster-blind: no "N of M named people appear in it
+        // as authors", and no way to say whether the roster is independent of
+        // the corpus or was read off the messages themselves — which is the
+        // whole claim that panel exists to make.
+        { name: c.name, artifacts: c.artifacts ?? [], people: c.people ?? [] },
       ]),
     );
   } catch {

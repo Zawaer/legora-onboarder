@@ -640,13 +640,18 @@ function citation(
  * dropped, and the item that depended on it is dropped with it.
  */
 function verify(citations: BriefCitation[], company: Company): BriefCitation[] {
+  // NUL joins the two halves of the key because it is the one character that
+  // cannot occur in an artifact id or a quote, so no pair can collide with
+  // another. Written as an escape rather than a literal byte: a raw NUL in the
+  // source makes grep treat this whole file as binary and skip it silently.
+  const key = (artifactId: string, quote: string) => `${artifactId}\u0000${quote}`;
   const kept = new Set(
     groundEvidence(
       citations.map(({ artifactId, quote, why }) => ({ artifactId, quote, why })),
       company,
-    ).map((e) => `${e.artifactId} ${e.quote}`),
+    ).map((e) => key(e.artifactId, e.quote)),
   );
-  return citations.filter((c) => kept.has(`${c.artifactId} ${c.quote}`));
+  return citations.filter((c) => kept.has(key(c.artifactId, c.quote)));
 }
 
 function verifyOne(c: BriefCitation | null, company: Company): BriefCitation | null {

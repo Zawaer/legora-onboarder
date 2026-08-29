@@ -1,13 +1,15 @@
 /**
  * Thin, defensive client for the agent API.
  *
- * The API routes are written by another agent in parallel, so every reader here
- * accepts the handful of shapes a sane implementation might return rather than
- * hard-coding one. A demo must never blank out because a payload was wrapped in
- * `{ hire: … }` instead of returned bare.
+ * Every reader here accepts the handful of envelopes a payload might arrive in
+ * rather than one exact shape. The routes and this file ship independently —
+ * the Slack surface talks to the same endpoints over HTTP — and a screen that
+ * blanks because a hire came back as `{ hire: … }` instead of bare is a demo
+ * lost to a wrapper key. Tolerant on the way in, strict about what it claims:
+ * a reader that cannot find its field returns empty rather than guessing.
  */
 
-import type { Artifact, Blocker, ChatMessage, HireState } from "@/lib/types";
+import type { Artifact, ChatMessage, HireState } from "@/lib/types";
 
 type Json = Record<string, unknown>;
 
@@ -117,16 +119,6 @@ export function asCompanyName(body: unknown): string | undefined {
   return typeof name === "string" ? name : undefined;
 }
 
-export function asBlockers(body: unknown): Blocker[] {
-  const raw = pick(body, ["blockers"]);
-  if (Array.isArray(raw)) {
-    return raw.filter(
-      (b): b is Blocker => isObj(b) && typeof b.summary === "string",
-    );
-  }
-  return [];
-}
-
 // ───────────────────────────────────────────────────────────────── calls
 
 export async function startDerivation(input: {
@@ -213,10 +205,12 @@ export async function sendChat(hireId: string, text: string) {
   });
   const body = await readJson(res);
   if (!res.ok) throw new Error(errorFrom(body, res));
+  // Blockers are not read off the envelope: the route returns the single
+  // `blocker` it raised this turn, and the authoritative list is already on
+  // `hire.blockers`. One source, so the two can never disagree on screen.
   return {
     messages: asMessages(body),
     reply: asReply(body),
-    blockers: asBlockers(body),
     hire: asHire(body),
   };
 }

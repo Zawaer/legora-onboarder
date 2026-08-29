@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Artifact, ChatMessage, HireState } from "@/lib/types";
+import type { Artifact, ChatMessage, HireState, Person } from "@/lib/types";
 import BlockerList from "./blocker-list";
 import Chat from "./chat";
 import { ElicitStatus } from "./elicit-panel";
@@ -20,7 +20,10 @@ const DERIVING_COPY = [
   "Writing two days of real work",
 ];
 
-export type Corpus = Record<string, { name: string; artifacts: Artifact[] }>;
+export type Corpus = Record<
+  string,
+  { name: string; artifacts: Artifact[]; people?: Person[] }
+>;
 
 export default function HireView({
   hireId,
@@ -170,7 +173,12 @@ export default function HireView({
                 <RoleCardSkeleton />
               </div>
             ) : (
-              <RoleCard role={role} artifacts={sources} companyName={company} />
+              <RoleCard
+                role={role}
+                artifacts={sources}
+                people={local?.people}
+                companyName={company}
+              />
             )}
           </section>
 

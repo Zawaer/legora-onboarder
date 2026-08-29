@@ -164,11 +164,6 @@ export async function getIngestedCompany(slug: string): Promise<Company | undefi
   return (await readAll()).get(slug)?.company;
 }
 
-/** The stored record, with its ingest metadata. Newest first when listed. */
-export async function getIngestedRecord(slug: string): Promise<IngestedCompany | undefined> {
-  return (await readAll()).get(slug);
-}
-
 export async function listIngestedCompanies(): Promise<IngestedCompany[]> {
   return [...(await readAll()).values()].sort((a, b) => b.ingestedAt.localeCompare(a.ingestedAt));
 }

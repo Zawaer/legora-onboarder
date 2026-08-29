@@ -16,7 +16,7 @@
 
 import { whosWho } from "@/lib/agent/experts.impl";
 import type { Artifact, Company } from "@/lib/types";
-import { Label } from "./ui";
+import { Label, initials } from "./ui";
 
 /* ── data ─────────────────────────────────────────────────────────────── */
 
@@ -35,9 +35,12 @@ export default async function WhosWhoPanel({ hireId }: { hireId: string }) {
     if (!hire) return null;
     roleTitle = hire.roleTitle;
 
-    const { getCompany } = await import("@/lib/seed");
-    const { getIngestedCompany } = await import("@/lib/ingest/store");
-    company = getCompany(hire.companySlug) ?? (await getIngestedCompany(hire.companySlug));
+    // Through loadCompany, not the seed lookup: it is the one loader that also
+    // layers in what colleagues have since been asked and confirmed. Resolving
+    // the corpus here instead would make every elicited answer invisible on
+    // this panel while it stayed citable everywhere else.
+    const { loadCompany } = await import("@/lib/agent/knowledge");
+    company = await loadCompany(hire.companySlug);
   } catch {
     return null;
   }
@@ -191,15 +194,6 @@ const SIGNAL_COPY: Record<Row["evidence"][number]["signal"], string> = {
   decided: "called it",
   mentioned: "was in this",
 };
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((n) => n[0] ?? "")
-    .join("")
-    .toUpperCase();
-}
 
 function dayStamp(iso: string): string {
   const d = new Date(iso);

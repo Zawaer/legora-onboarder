@@ -490,10 +490,11 @@ export default function ManagerBriefView() {
 
         <footer className="pt-8 pb-4">
           <p className="max-w-[70ch] text-[13px] leading-[1.65] text-faint">
-            Nobody on this page is scored, ranked or compared. The brief says what a person
-            does and shows you where they did it, because &ldquo;answered the last four
-            questions about the extraction pipeline&rdquo; is checkable and
-            &ldquo;best match, 0.87&rdquo; is not. Anything the corpus could not support was
+            Nobody on this page carries a score. Where the brief picks one person over
+            another it names both and quotes the reason, because &ldquo;answered the last
+            four questions about the extraction pipeline&rdquo; is checkable and
+            &ldquo;best match, 0.87&rdquo; is not — one is a claim about work that happened,
+            the other is a claim about a person. Anything the corpus could not support was
             left out rather than softened.
           </p>
         </footer>

@@ -77,13 +77,6 @@ const MIN_AUDIO_BYTES = 256;
 const TIMEOUT_MS = 30_000;
 
 /**
- * A question, not a lecture. Recording is capped in the UI; this is the
- * server-side twin of that cap, and it exists so a stuck MediaRecorder cannot
- * turn into a large bill.
- */
-export const MAX_RECORDING_MS = 120_000;
-
-/**
  * The same failure vocabulary as the TTS client, plus the one code that only a
  * file upload can produce. Reusing the type rather than restating it means a
  * new failure mode added to `VoiceFailureCode` shows up here as a compile

@@ -483,9 +483,16 @@ function whyExpert(candidate: Candidate, evidence: ExpertEvidence[], topic: stri
   const clauses: string[] = [];
 
   if (answered.length) {
+    // "Threads", not "questions". The `answered` signal is *replied inside a
+    // conversation somebody else opened* — which is what makes it authority —
+    // and it does not require the opening message to have been question-shaped:
+    // 33 of the 40 in the seeded corpus reply to a statement or a ticket body.
+    // "Answered three questions" is therefore a claim a reader who clicks the
+    // citation finds is not true, on the one line that exists to be checked.
+    // `whyGoTo` below already says "answers N threads"; these now agree.
+    const n = Math.min(answered.length, 12);
     clauses.push(
-      `answered ${count(answered.length)} question${answered.length === 1 ? "" : "s"} about ${subject}` +
-        placeSuffix(answered),
+      `replied in ${count(n)} thread${n === 1 ? "" : "s"} about ${subject}` + placeSuffix(answered),
     );
   }
 

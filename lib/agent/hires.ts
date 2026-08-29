@@ -71,6 +71,36 @@ async function readAll(): Promise<Map<string, HireState>> {
   return map;
 }
 
+/**
+ * "A real hire always wins" — enforced on the person, not just on the id.
+ *
+ * The baked hire was generated *from* a record that is still sitting in
+ * `data/hires.json` on any machine that has run the demo, and it carries a
+ * fixed id rather than that record's UUID. Merging by id therefore kept both,
+ * and `/manager` listed two Rebecca Hartleys with the same blocker under each.
+ * Same company, same person, same role is the same hire, so the stored one is
+ * the one on the board and the bundled copy steps aside.
+ *
+ * Applied to `listHires` only, so `/hire/demo-legal-engineer` still resolves
+ * and a bookmarked or printed link keeps working. Nothing on disk is touched.
+ */
+function dropShadowedBakes(map: Map<string, HireState>): Map<string, HireState> {
+  const baked = new Set(BAKED_HIRES.map((h) => h.id));
+  // NUL as the field separator: it is the one character that cannot occur in
+  // a slug, a name or a role title, so no two hires can collide on a key.
+  // Escaped rather than written as a literal byte, which would make git and
+  // grep treat this whole file as binary and skip it.
+  const key = (h: HireState) =>
+    `${h.companySlug}\u0000${h.name.trim().toLowerCase()}\u0000${h.roleTitle.trim().toLowerCase()}`;
+
+  const real = new Set<string>();
+  for (const hire of map.values()) if (!baked.has(hire.id)) real.add(key(hire));
+  if (real.size === 0) return map;
+
+  for (const [id, hire] of map) if (baked.has(id) && real.has(key(hire))) map.delete(id);
+  return map;
+}
+
 async function writeAll(map: Map<string, HireState>): Promise<void> {
   for (const [id, hire] of map) memory.set(id, hire);
   if (!diskWritable) return;
@@ -90,7 +120,9 @@ export async function getHire(id: string): Promise<HireState | undefined> {
 }
 
 export async function listHires(): Promise<HireState[]> {
-  return [...(await readAll()).values()].sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+  return [...dropShadowedBakes(await readAll()).values()].sort((a, b) =>
+    b.startedAt.localeCompare(a.startedAt),
+  );
 }
 
 export async function putHire(hire: HireState): Promise<HireState> {

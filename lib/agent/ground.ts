@@ -62,11 +62,6 @@ export function groundingReport(evidence: Evidence[], company: Company): Groundi
   return report(evidence, company);
 }
 
-/** How many citations the model invented on this pass. Surface it; don't hide it. */
-export function countDropped(evidence: Evidence[], company: Company): number {
-  return report(evidence, company).droppedCount;
-}
-
 function report(evidence: Evidence[], company: Company): GroundingReport {
   const byId = new Map<string, Artifact>(company.artifacts.map((a) => [a.id, a]));
   const kept: Evidence[] = [];

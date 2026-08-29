@@ -75,13 +75,6 @@ export type BriefOptions = {
   now?: number;
 };
 
-/**
- * How many blockers get a sentence of their own before the rest become a count.
- * Three is the most a listener holds in their head; past that the briefing
- * stops being actionable and becomes a list they tune out of.
- */
-const SPOKEN_DETAIL_LIMIT = 3;
-
 /** Hard ceiling. Past ~220 words (about ninety seconds) this stops being a briefing. */
 const MAX_WORDS = 220;
 

@@ -1,4 +1,5 @@
-import type { Artifact, DerivedRole } from "@/lib/types";
+import type { Artifact, DerivedRole, Person } from "@/lib/types";
+import { expandToSentence } from "@/lib/agent/sentence";
 import CoverageNote from "./coverage-note";
 import { Label, Pill } from "./ui";
 
@@ -80,10 +81,13 @@ function dayStamp(iso?: string) {
 export default function RoleCard({
   role,
   artifacts = [],
+  people,
   companyName,
 }: {
   role?: DerivedRole;
   artifacts?: Artifact[];
+  /** The roster, so the coverage panel can say whether it is independent of the corpus. */
+  people?: Person[];
   companyName?: string;
 }) {
   if (!role) return <RoleCardSkeleton />;
@@ -111,7 +115,7 @@ export default function RoleCard({
       </header>
 
       {/* ── what it was derived from, before anything derived from it ── */}
-      <CoverageNote artifacts={artifacts} companyName={companyName} />
+      <CoverageNote artifacts={artifacts} people={people} companyName={companyName} />
 
       {/* ── evidence: the proof it isn't invented ── */}
       {evidence.length > 0 && (
@@ -151,7 +155,7 @@ export default function RoleCard({
                     <div className="min-w-0 flex-1 px-4 py-3.5 sm:px-5">
                       <blockquote className="text-[15px] leading-[1.6] font-medium tracking-[-0.005em] break-words hyphens-auto text-ink">
                         <span className="mr-0.5 text-accent">&ldquo;</span>
-                        {e.quote}
+                        {a ? expandToSentence(e.quote, a.text) : e.quote}
                         <span className="ml-0.5 text-accent">&rdquo;</span>
                       </blockquote>
 

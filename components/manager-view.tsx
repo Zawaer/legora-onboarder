@@ -6,7 +6,7 @@ import type { Blocker, HireState } from "@/lib/types";
 import BlockerList, { type HireRef } from "./blocker-list";
 import { fetchHires } from "./client-api";
 import SiteHeader, { NavLink } from "./site-header";
-import { Label } from "./ui";
+import { Label, initials } from "./ui";
 
 export default function ManagerView() {
   const [hires, setHires] = useState<HireState[] | null>(null);
@@ -51,6 +51,10 @@ export default function ManagerView() {
       <SiteHeader
         right={
           <>
+            {/* The pre-start half of this screen. Reachable from here because
+                the two are one job: what lands before day 1, and what is in
+                the way after it. */}
+            <NavLink href="/manager/brief">Manager brief</NavLink>
             <NavLink href="/loi">Letter of intent</NavLink>
             <NavLink href="/" emphasis>
               Derive a role
@@ -99,12 +103,7 @@ export default function ManagerView() {
                       className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 transition-colors hover:border-line-strong"
                     >
                       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface-2 text-[11px] font-semibold text-muted">
-                        {(h.name ?? "?")
-                          .split(/\s+/)
-                          .slice(0, 2)
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()}
+                        {initials(h.name ?? "?")}
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[14px] font-medium">
@@ -165,9 +164,12 @@ export default function ManagerView() {
         <footer className="border-t border-line pt-8 pb-4">
           <p className="max-w-[70ch] text-[13px] leading-[1.65] text-faint">
             What is missing from this page is the point. There is no ranking of
-            people, no percentage complete, and no way to compare two hires
-            against each other — because none of those numbers would make a
-            single person less stuck.
+            people, no percentage complete, and no score attached to anybody.
+            The one number on the roster is a count of things standing in
+            someone&rsquo;s way, which is a queue to clear and not a mark against
+            them — every other number we could have shown would have measured
+            the person instead, and none of them would make a single person less
+            stuck.
           </p>
         </footer>
       </main>

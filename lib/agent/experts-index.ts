@@ -458,6 +458,19 @@ function clause(text: string, start: number, end: number): string {
  * Writing the reference document for an area counts: nobody writes the Italian
  * drafting note for a jurisdiction they do not own, and in a corpus with no
  * `owns` field it is the clearest ownership statement available.
+ *
+ * A QUESTION IS NOT AN OWNERSHIP STATEMENT.
+ *
+ * `FIRST_PERSON_COMMIT` matches "i run", "i do", "i take" — and "how do i run
+ * the eval harness?" and "what do i do when an extraction is off?" contain
+ * exactly those. Without the guard below, the *newcomer asking* is scored as
+ * having decided the thing they are stuck on, and `rankExperts` can then hand
+ * their own question back to the next person as the evidence that they own it.
+ * That is the failure this whole file is biased against: a missed signal costs
+ * a name in a list, an invented one sends a stuck hire to somebody who has
+ * never touched the thing. It does not fire anywhere in the seeded corpus; it
+ * fires immediately on a pasted export, which is the path a customer tries
+ * first.
  */
 function statesOwnership(
   artifact: Artifact,
@@ -467,7 +480,10 @@ function statesOwnership(
 ): number | undefined {
   const span = text.slice(start, end);
   const commit = span.match(FIRST_PERSON_COMMIT) ?? span.match(DECISION_LINE);
-  if (commit?.index !== undefined) return start + commit.index;
+  if (commit?.index !== undefined) {
+    const at = start + commit.index;
+    return isQuestion(clause(text, at, at + commit[0].length)) ? undefined : at;
+  }
   if (artifact.kind === "doc" && span.length > 200) return start;
   return undefined;
 }

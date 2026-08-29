@@ -1,16 +1,7 @@
 import type { Blocker } from "@/lib/types";
-import { Label, Pill, agoFrom } from "./ui";
+import { Label, Pill, agoFrom, initials } from "./ui";
 
 export type HireRef = { name: string; roleTitle?: string };
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
-}
 
 function Avatar({ name, tone }: { name: string; tone: "warn" | "ok" }) {
   return (

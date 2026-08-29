@@ -35,7 +35,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { getHire } from "@/lib/agent/hires";
 import { composeManagerBrief } from "@/lib/agent/manager-brief";
-import { getCompany } from "@/lib/seed";
+import { loadCompany } from "@/lib/agent/knowledge";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -80,10 +80,10 @@ async function handle(input: unknown): Promise<Response> {
     return NextResponse.json({ error: "Unknown hire." }, { status: 404, headers: NO_STORE });
   }
 
-  const company = getCompany(hire.companySlug);
+  const company = await loadCompany(hire.companySlug);
   if (!company) {
     return NextResponse.json(
-      { error: `No corpus seeded for "${hire.companySlug}", so there is nothing to cite.` },
+      { error: `No corpus for "${hire.companySlug}", so there is nothing to cite.` },
       { status: 404, headers: NO_STORE },
     );
   }

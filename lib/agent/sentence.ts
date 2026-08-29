@@ -161,15 +161,44 @@ export function expandToSentence(quote: string, artifactText: string): string {
    * backward only to the start of the sentence, and forward as far as the cap
    * allows. Whatever the speaker said next is the thing a reader needs.
    */
-  const to = Math.min(artifactText.length, from + MAX_EXPANDED_CHARS);
+  /*
+   * ...but stop at a blank line, because that is where another person starts
+   * speaking.
+   *
+   * A Slack message is one voice, so running past a newline is right there. A
+   * ticket or a meeting note is not: `experts-index.ts` parses their comment
+   * lines as separate speakers. Measured over 3,780 expansions on the real
+   * corpus, 430 crossed a newline — and quoting Tobias's "Rolled back to 4.1.13"
+   * from a platform ticket returned text continuing "priya — this also killed
+   * the overnight eval run", which is Priya talking, presented inside Tobias's
+   * quotation.
+   *
+   * That is a misattribution: exactly the failure this file exists to prevent,
+   * arriving through the fix rather than despite it. A blank line is the
+   * conservative boundary — it separates speakers in every multi-line artifact
+   * we hold, and never appears mid-message in a Slack one.
+   */
+  const paragraphEnd = artifactText.indexOf("\n\n", last.end);
+  const hardStop = paragraphEnd === -1 ? artifactText.length : paragraphEnd;
+
+  const to = Math.min(hardStop, from + MAX_EXPANDED_CHARS);
   if (to <= from) return quote;
 
-  // Never end mid-word — a truncated expansion is its own small misquote.
+  // Never end mid-word — a truncated expansion is its own small misquote. When
+  // there is no space to cut on (an unbroken run of characters), stop at the end
+  // of the quote itself rather than mid-token: that boundary is always real.
   let cut = to;
   if (cut < artifactText.length) {
     const lastBreak = artifactText.lastIndexOf(" ", cut);
-    if (lastBreak > last.end) cut = lastBreak;
+    cut = lastBreak > last.end ? lastBreak : last.end;
   }
+
+  // The expansion has to contain what was quoted. In a long run with no sentence
+  // break — a Slack message with no full stops — `from` is the start of the run
+  // and `from + MAX_EXPANDED_CHARS` can stop before the quote begins, which
+  // returns a different passage of the same message under the quote's name. It
+  // passes the length check below, so that check cannot catch it.
+  if (from > first.start || cut < last.end) return quote;
 
   const expanded = artifactText.slice(from, cut).trim();
   if (!expanded || expanded.length > MAX_EXPANDED_CHARS) return quote;

@@ -11,7 +11,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { randomUUID } from "node:crypto";
-import { getCompany } from "@/lib/seed";
+import { loadCompany } from "@/lib/agent/knowledge";
 import { getHire, listHires, putHire } from "@/lib/agent/hires";
 import type { HireState } from "@/lib/types";
 
@@ -52,8 +52,10 @@ export async function POST(request: Request) {
 
   const { companySlug, roleTitle, name } = parsed.data;
 
-  if (!getCompany(companySlug)) {
-    return NextResponse.json({ error: `No company seeded for "${companySlug}".` }, { status: 404 });
+  // Same resolver /api/derive uses, so a slug is never accepted by one and
+  // rejected by the other — seeded or ingested, both are real companies here.
+  if (!(await loadCompany(companySlug))) {
+    return NextResponse.json({ error: `No company known as "${companySlug}".` }, { status: 404 });
   }
 
   const hire: HireState = {

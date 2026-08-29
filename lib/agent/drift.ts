@@ -80,6 +80,7 @@ import { z } from "zod/v4";
 import { generate } from "@/lib/anthropic";
 import { renderCorpus } from "@/lib/agent/derive";
 import { groundEvidence } from "@/lib/agent/ground";
+import { expandToSentence } from "@/lib/agent/sentence";
 import { resolveOwner } from "@/lib/agent/plan";
 // Reused, not reimplemented. The ban on assessment language is written once and
 // this is the third surface that honours it; a second copy of the pattern list
@@ -474,7 +475,10 @@ export function renderDriftNote(note: DriftNote, company: Company): string {
 
   for (const item of shown) {
     const a = byId.get(item.artifactId);
-    lines.push(``, `> ${item.quote.trim()}`);
+    // Shown as the passage it sits in, not the fragment. A verified quote can
+    // still mislead by stopping one sentence early — see lib/agent/sentence.ts.
+    const shown = a ? expandToSentence(item.quote, a.text) : item.quote;
+    lines.push(``, `> ${shown.trim()}`);
     // Every quote after the first still needs its own attribution — a reader
     // skimming must never have to guess which of two people said which line.
     if (a && a !== lead) {

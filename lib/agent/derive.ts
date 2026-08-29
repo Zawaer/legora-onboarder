@@ -85,8 +85,11 @@ OPEN QUESTIONS ARE A DELIVERABLE
 
 openQuestions must not be empty, and must not be padded with generic unknowns ("what are the OKRs?"). List the specific things a competent reader of this corpus would still not know: which of two teams this person reports into, whether they own the thing end to end or hand it off, whether the tooling decision from three weeks ago is settled. "The company has not decided this yet" is a genuinely useful answer to give a hiring manager, and a far better one than a confident guess. Inventing an answer here is actively harmful: it tells them a decision has been made that has not.`;
 
+export type DeriveResult = { role: DerivedRole; grounding: GroundingReport };
+
 /**
- * Derive the role, then verify every citation before anyone sees it.
+ * Derive the role, then verify every citation before anyone sees it — and hand
+ * back what the verification pass threw out.
  *
  * Grounding happens inside this function rather than being left to the caller,
  * deliberately. If verification were the caller's job, then the moment someone
@@ -94,13 +97,6 @@ openQuestions must not be empty, and must not be padded with generic unknowns ("
  * unverified output escapes. There is one exit from this module and it is
  * checked.
  */
-export async function deriveRole(company: Company, roleTitle: string): Promise<DerivedRole> {
-  return (await deriveRoleWithGrounding(company, roleTitle)).role;
-}
-
-export type DeriveResult = { role: DerivedRole; grounding: GroundingReport };
-
-/** Same derivation, but also hands back what the verification pass threw out. */
 export async function deriveRoleWithGrounding(
   company: Company,
   roleTitle: string,

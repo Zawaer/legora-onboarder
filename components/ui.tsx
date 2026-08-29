@@ -96,11 +96,27 @@ export function Pill({
   );
 }
 
-export function Dot({ className = "" }: { className?: string }) {
+/** Avatar initials. Two words at most — three letters in a circle reads as a logo. */
+export function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((n) => n[0] ?? "")
+    .join("")
+    .toUpperCase();
+}
+
+export function Spinner() {
   return (
-    <span
-      className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${className}`}
-    />
+    <svg viewBox="0 0 16 16" className="h-4 w-4 animate-spin" aria-hidden fill="none">
+      <circle cx="8" cy="8" r="6.25" stroke="currentColor" strokeWidth="1.6" opacity="0.25" />
+      <path
+        d="M14.25 8A6.25 6.25 0 0 0 8 1.75"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 

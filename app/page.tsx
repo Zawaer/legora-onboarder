@@ -69,7 +69,7 @@ const STEPS = [
   },
   {
     k: "Derive",
-    d: "Reconstructs what the role really is — and attaches a verbatim quote, with its channel and author, to every claim it makes.",
+    d: "Reconstructs what the role really is, out of verbatim quotes it has verified against the source — each with its channel, its author and the date it was written.",
   },
   {
     k: "Ramp",
@@ -91,8 +91,8 @@ const REFUSALS = [
     d: "What the company hasn't decided is shown as undecided. Confident filler is the failure a hiring manager catches in ten seconds.",
   },
   {
-    h: "No unsourced claims.",
-    d: "Every line of the derived role points back at a message somebody actually wrote. You can check it yourself.",
+    h: "No unsourced quotes.",
+    d: "Every quote is checked as a literal substring of the message it cites, and the ones that are not there are dropped rather than shown. The reading is the agent's; the evidence under it is the company's own, and you can open it and check.",
   },
 ];
 
@@ -167,7 +167,7 @@ export default async function Home() {
                   <Label>Evidence</Label>
                   <blockquote className="mt-2.5 border-l-2 border-accent pl-3.5 text-[14.5px] leading-[1.55] font-medium">
                     &ldquo;the person starting sept 1 is ex-M&amp;A, 6 years,
-                    london… no coding at all. what i genuinely dont have is
+                    london… no coding at all… what i genuinely dont have is
                     anything to hand them on day one&rdquo;
                   </blockquote>
                   <p className="mt-2.5 font-mono text-[11.5px] text-accent-ink">
@@ -188,8 +188,8 @@ export default async function Home() {
                 </div>
                 <div className="flex items-center gap-2 border-t border-line pt-4 text-[12px] text-faint">
                   <span className="h-1.5 w-1.5 rounded-full bg-ok" />
-                  Every claim carries its source. Eight open questions
-                  flagged, not invented.
+                  Every quote carries its source. Open questions are the ones
+                  the company never settled &mdash; flagged, not invented.
                 </div>
               </div>
             </div>
@@ -342,6 +342,12 @@ export default async function Home() {
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] sm:ml-auto">
             <Link href="/manager" className="text-muted hover:text-ink">
               Manager view
+            </Link>
+            {/* The evidence board. It is the page that has to be findable
+                without being told about it — a claim nobody can reach is
+                indistinguishable from one we did not make. */}
+            <Link href="/pitch" className="text-muted hover:text-ink">
+              Traction
             </Link>
             <Link href="/loi" className="text-muted hover:text-ink">
               Letter of intent

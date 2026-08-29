@@ -438,8 +438,12 @@ function headlineFor(
 ): string {
   if (total === 0) return "No corpus. Nothing has been ingested for this company.";
 
-  const window =
-    span.days <= 1
+  // An export whose timestamps are all unparseable leaves `first` undefined, and
+  // interpolating that printed "…across 1 channel, all on ." — a sentence that
+  // reads as a rendering bug rather than as the coverage fact it is.
+  const window = !span.first
+    ? "with no usable timestamps"
+    : span.days <= 1
       ? `all on ${coverageDate(span.first)}`
       : `${coverageDate(span.first)} to ${coverageDate(span.last)}, ${plural(span.days, "day")}`;
 
@@ -605,7 +609,11 @@ function qualifiersFor(input: {
     });
   }
 
-  if (span.days <= 1) {
+  // Guarded on `first`: with no parseable timestamp anywhere, `days` is 0 and
+  // this would have claimed every artifact fell on a blank date. The absence
+  // list already carries "the corpus carries no usable timestamps", which is
+  // the honest version of the same fact.
+  if (span.first && span.days <= 1) {
     out.push({
       id: "single-day",
       headline: `Every artifact falls on ${coverageDate(span.first)}.`,
@@ -613,7 +621,7 @@ function qualifiersFor(input: {
         "One day of a company's life. Whatever happened to be live that day is the whole " +
         "of what this corpus knows about.",
     });
-  } else if (span.days < NARROW_WINDOW_DAYS) {
+  } else if (span.first && span.days < NARROW_WINDOW_DAYS) {
     out.push({
       id: "narrow-window",
       headline: `The window is ${plural(span.days, "day")} wide.`,
@@ -641,7 +649,9 @@ function qualifiersFor(input: {
       // precision, so below the floor this is stated as the count it is.
       headline: sharesMeaningful
         ? `${Math.round(top.share * 100)}% of the corpus was written by one person (${top.name}).`
-        : `${top.artifacts} of the ${total} artifacts were written by one person (${top.name}).`,
+        : `${top.artifacts} of the ${total} artifacts ${
+            top.artifacts === 1 ? "was" : "were"
+          } written by one person (${top.name}).`,
       detail:
         "One voice dominates the sample, so it dominates anything read out of it. This is a " +
         "property of the export, not of anyone's contribution.",
@@ -654,7 +664,7 @@ function qualifiersFor(input: {
       id: "gapped-window",
       headline:
         span.gaps.length === 1
-          ? `A ${plural(g.days, "day")} silence inside the window (${coverageDate(
+          ? `A silence of ${plural(g.days, "day")} inside the window (${coverageDate(
               `${g.from}T00:00:00Z`,
             )} to ${coverageDate(`${g.to}T00:00:00Z`)}).`
           : `${plural(span.gaps.length, "silent stretch", "silent stretches")} of a week or more inside the window.`,
@@ -667,20 +677,28 @@ function qualifiersFor(input: {
   // Deliberately computed from the authors rather than the roster, so the same
   // fact survives wherever a roster was not handed along with the corpus. A
   // roster only changes the wording and adds the names it hears from never.
-  const barelyPresent = people.filter((p) => p.thinSlice).length;
-  const quiet = barelyPresent + (roster?.independent ? roster.silent.length : 0);
-  const population =
-    roster?.independent && roster.silent.length > 0 ? roster.size : people.length;
+  //
+  // When the sentence is about the roster, the numerator has to be counted over
+  // the roster too. Counting every thin author against a roster population
+  // printed "6 of 5 people on the roster" the moment the corpus held an author
+  // the roster had never heard of, which is exactly the arithmetic a reader
+  // checks first.
+  const rosterView =
+    roster && roster.independent && roster.silent.length > 0 ? roster : undefined;
+  const quiet = rosterView
+    ? rosterView.barelyPresent.length + rosterView.silent.length
+    : people.filter((p) => p.thinSlice).length;
+  const population = rosterView ? rosterView.size : people.length;
 
   if (quiet > 0) {
     out.push({
       id: "barely-present",
       headline:
-        roster?.independent && roster.silent.length > 0
+        rosterView
           ? `${quiet} of ${population} people on the roster appear ${plural(
               THIN_SLICE,
               "time",
-            )} or fewer in the corpus, ${roster.silent.length} of them never.`
+            )} or fewer in the corpus, ${rosterView.silent.length} of them never.`
           : `${quiet} of the ${population} names in the corpus appear ${plural(
               THIN_SLICE,
               "time",
