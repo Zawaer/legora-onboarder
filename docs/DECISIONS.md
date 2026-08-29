@@ -5,6 +5,14 @@ this before doing anything. If a decision changes, change it *here*.
 
 Written 29 August 2026, ~02:00.
 
+**Live task state is in Linear**, team `STU`, project *Onboarder*:
+https://linear.app/stuhi-hackathon/project/onboarder-dc7eca946d57
+
+Linear MCP is authorised, so any Claude session can read and update it. Linear
+is the task state; this file is the reasoning behind it. Update the issue when
+you finish something — the "Best build with Linear" prize is judged on whether
+we actually ran the build on it, not on whether a board exists.
+
 ---
 
 ## 1. The product is Onboarder
