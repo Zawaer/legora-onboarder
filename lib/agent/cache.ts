@@ -84,16 +84,41 @@ function serialise<T>(work: () => Promise<T>): Promise<T> {
   return next;
 }
 
+/**
+ * Derivations committed to the repo, so they ship inside the bundle.
+ *
+ * `FILE` lives under the project directory, which is read-only on serverless —
+ * the write fails, `diskWritable` flips, and the memory map does not survive
+ * the instance. Measured on the live deployment: two identical requests back to
+ * back, 189s and 191s, both `cached: false`. Every visitor was paying for a
+ * fresh derivation, which is untenable the moment a link is posted publicly.
+ *
+ * A bundled fixture has no disk and no instance affinity. It is the lowest
+ * priority source, so a real cache entry always wins, and it cannot go stale
+ * silently: `readDerivation` rejects any entry whose `corpusHash` does not match
+ * the corpus in front of it. Editing the seed makes this ignored, not wrong.
+ *
+ * Refresh with `npm run bake -- <derive-response.json>`.
+ */
+import { BAKED_DERIVATIONS as BAKED } from "@/lib/seed/derivations";
+
 async function readAll(): Promise<Map<string, CachedDerivation>> {
-  if (!diskWritable) return memory;
+  const map = new Map<string, CachedDerivation>(BAKED.map((d) => [d.key, d]));
+
+  if (!diskWritable) {
+    for (const [key, entry] of memory) map.set(key, entry);
+    return map;
+  }
+
   try {
     const parsed = JSON.parse(await fs.readFile(FILE, "utf8")) as CachedDerivation[];
-    const map = new Map(parsed.map((d) => [d.key, d]));
-    for (const [key, entry] of memory) if (!map.has(key)) map.set(key, entry);
-    return map;
+    for (const d of parsed) map.set(d.key, d);
   } catch {
-    return memory;
+    // No cache file yet, or unreadable. The fixtures still stand.
   }
+
+  for (const [key, entry] of memory) map.set(key, entry);
+  return map;
 }
 
 /**
