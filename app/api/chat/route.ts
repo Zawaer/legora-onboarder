@@ -11,8 +11,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { randomUUID } from "node:crypto";
-import { getCompany } from "@/lib/seed";
-import { getIngestedCompany } from "@/lib/ingest/store";
+import { loadCompany } from "@/lib/agent/knowledge";
 import { currentTask, isDuplicateBlocker, respond } from "@/lib/agent/supervise";
 import { getHire, updateHire } from "@/lib/agent/hires";
 import { toApiError } from "@/lib/anthropic";
@@ -55,9 +54,13 @@ export async function POST(request: Request) {
   const hire = await getHire(hireId);
   if (!hire) return NextResponse.json({ error: "Unknown hire." }, { status: 404 });
 
-  // Same fallback as /api/derive: a hire created from an ingested corpus has
-  // to be supervisable, or ingest produces a workspace whose chat is dead.
-  const company = getCompany(hire.companySlug) ?? (await getIngestedCompany(hire.companySlug));
+  // Same resolution as /api/derive: seeded, then ingested, then everything the
+  // agent has elicited from the team and had confirmed. A hire created from an
+  // ingested corpus has to be supervisable, or ingest produces a workspace whose
+  // chat is dead — and the elicited layer is what closes the loop, because it
+  // means a question that was escalated to a human last week is answered from
+  // the corpus this week, with a citation, like anything else.
+  const company = await loadCompany(hire.companySlug);
   if (!company) {
     return NextResponse.json(
       { error: `Hire references company "${hire.companySlug}", which is neither seeded nor ingested.` },

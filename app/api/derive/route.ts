@@ -22,8 +22,7 @@
 
 import { NextResponse } from "next/server";
 import { z } from "zod/v4";
-import { getCompany } from "@/lib/seed";
-import { getIngestedCompany } from "@/lib/ingest/store";
+import { loadCompany } from "@/lib/agent/knowledge";
 import { deriveRoleWithGrounding } from "@/lib/agent/derive";
 import { buildRampPlan } from "@/lib/agent/plan";
 import { openingMessage } from "@/lib/agent/supervise";
@@ -87,11 +86,17 @@ export async function POST(request: Request) {
   const freshParam = new URL(request.url).searchParams.get("fresh");
   const fresh = parsed.data.fresh === true || freshParam === "1" || freshParam === "true";
 
-  // Seeded corpora first, then anything a customer ingested at /ingest. An
+  // Seeded corpora first, then anything a customer ingested at /ingest, then
+  // everything the agent has since elicited from the team and had confirmed. An
   // ingested company is the same `Company` shape, so everything below this
   // line is identical either way — which is the point: the pilot path and the
   // demo path must not be two different code paths.
-  const company = getCompany(companySlug) ?? (await getIngestedCompany(companySlug));
+  //
+  // The third source is what makes this compound. A question that had to be
+  // taken to a human last month is in `company.artifacts` this month, so the
+  // next derivation reads it as ordinary corpus and can cite it, with no code
+  // below this line knowing where it came from. See lib/agent/knowledge.ts.
+  const company = await loadCompany(companySlug);
   if (!company) {
     return NextResponse.json(
       { error: `No company seeded or ingested for "${companySlug}".` },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HireView, { type Corpus } from "@/components/hire-view";
+import WhosWhoPanel from "@/components/whos-who";
 
 export const dynamic = "force-dynamic";
 
@@ -42,5 +43,12 @@ export default async function HirePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <HireView hireId={id} corpus={await corpus()} />;
+  return (
+    <>
+      <HireView hireId={id} corpus={await corpus()} />
+      {/* Derived from the corpus on the server, below the workspace: not knowing
+          who anyone is outranks missing documentation as a week-one blocker. */}
+      <WhosWhoPanel hireId={id} />
+    </>
+  );
 }

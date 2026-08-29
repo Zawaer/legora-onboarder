@@ -15,6 +15,7 @@
 import { z } from "zod/v4";
 import { generate } from "@/lib/anthropic";
 import { renderCorpus } from "@/lib/agent/derive";
+import { rankExperts } from "@/lib/agent/experts.impl";
 import type { Company, DerivedRole, Person, RampDay, RampPlan, RampTask } from "@/lib/types";
 
 const TaskSchema = z.object({
@@ -136,7 +137,21 @@ export function resolveOwner(company: Company, suggested: string, topic: string)
   );
   if (partial) return partial;
 
-  return bestByOwnership(people, topic) ?? people[0]!;
+  const owner = bestByOwnership(people, topic);
+  if (owner) return owner;
+
+  // `owns` is empty on every ingested corpus — lib/ingest/parse.ts leaves it
+  // that way on purpose — so on a customer's own Slack the line above can never
+  // fire and this used to fall through to `people[0]`, the most prolific poster.
+  // Derive it from behaviour instead: who answered, who got named, who decided.
+  // Guarded on nobody having any `owns` at all, so the seeded roster's routing
+  // is byte-identical to what it was before this existed.
+  if (people.every((p) => p.owns.length === 0)) {
+    const derived = rankExperts(company, topic, { limit: 1 })[0];
+    if (derived) return derived.person;
+  }
+
+  return people[0]!;
 }
 
 /** Crude keyword overlap against `owns`. Crude is fine; being wrong silently is not. */

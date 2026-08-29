@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Artifact, ChatMessage, HireState } from "@/lib/types";
 import BlockerList from "./blocker-list";
 import Chat from "./chat";
+import { ElicitStatus } from "./elicit-panel";
 import { fetchHire } from "./client-api";
 import RampPlanView from "./ramp-plan";
 import RoleCard, { RoleCardSkeleton } from "./role-card";
@@ -177,6 +178,15 @@ export default function HireView({
           <section className="flex min-h-0 flex-col gap-6 lg:gap-5">
             <div className="scroll-thin min-h-0 shrink-0 lg:flex-[1.05] lg:overflow-y-auto lg:pr-2">
               <RampPlanView plan={hire.plan} taskStatus={hire.taskStatus ?? {}} />
+
+              {/* Honest state on anything the corpus could not answer: which
+                  question is out, with whom, and — explicitly — that nothing is
+                  written down yet. Renders nothing when there is nothing out. */}
+              <ElicitStatus
+                hireId={hire.id}
+                blockers={hire.blockers ?? []}
+                className="mt-8"
+              />
 
               {(hire.blockers ?? []).length > 0 && (
                 <div className="mt-8 flex flex-col gap-3">
