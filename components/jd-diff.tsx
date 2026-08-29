@@ -74,19 +74,19 @@ type Check = {
 };
 
 /**
- * Legora's real, public posting for Legal Engineer, quoted verbatim from
- * careers.legora.com (see docs/jd-comparison.md). Offered as a one-click fill
+ * Lexhav's real, public posting for Legal Engineer, quoted verbatim from
+ * careers.lexhav.com (see docs/jd-comparison.md). Offered as a one-click fill
  * so anyone can watch this run on a document they can open and check
  * themselves — the two section headings are the only scaffolding.
  */
 const SAMPLE_JD = [
   "Legal Engineer",
   "",
-  "The Legal Engineer will help clients maximize the use of Legora's AI-powered platform, acting as a liaison between clients and product development, providing demos, and ensuring effective adoption across legal teams.",
+  "The Legal Engineer will help clients maximize the use of Lexhav's AI-powered platform, acting as a liaison between clients and product development, providing demos, and ensuring effective adoption across legal teams.",
   "",
   "What you'll do",
   "- Acting as a thought partner to clients",
-  "- Be the voice of the user inside Legora",
+  "- Be the voice of the user inside Lexhav",
   "- Documenting best practices, contribute to the development of scalable playbooks",
   "",
   "Who you are",
@@ -105,7 +105,7 @@ const STAGES: { at: number; text: string }[] = [
   { at: 104, text: "Counting what nothing in the corpus touches" },
 ];
 
-export default function JdDiff({ companySlug = "legora" }: { companySlug?: string }) {
+export default function JdDiff({ companySlug = "lexhav" }: { companySlug?: string }) {
   const [text, setText] = useState("");
   const [check, setCheck] = useState<Check | null>(null);
   const [coverage, setCoverage] = useState<Coverage | null>(null);
@@ -183,7 +183,7 @@ export default function JdDiff({ companySlug = "legora" }: { companySlug?: strin
             disabled={running}
             className="rounded-md border border-line bg-surface-2/50 px-2.5 py-1 text-[12px] text-muted transition-colors hover:border-line-strong hover:text-ink disabled:opacity-50"
           >
-            Use Legora&rsquo;s real public posting
+            Use Lexhav&rsquo;s real public posting
           </button>
           <span className="tnum ml-auto text-[11.5px] text-faint">
             {text.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}

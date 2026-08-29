@@ -19,7 +19,7 @@
  * ── WHY THE TRANSCRIPT IS NOT AUTO-SENT ──────────────────────────────────────
  *
  * See `components/voice-input.tsx`. Short version, and it is not hypothetical:
- * the first live call made against this endpoint transcribed "Legora" as
+ * the first live call made against this endpoint transcribed "Lexhav" as
  * "Ligora". A tool whose job is to teach somebody the vocabulary of a company
  * they just joined cannot silently mangle that company's own name into the
  * question it then answers. The transcript lands in the composer, editable.
@@ -47,7 +47,7 @@ const API_BASE = "https://api.elevenlabs.io/v1";
  * Verified live against the API on this key: the only accepted model ids are
  * `scribe_v1`, `scribe_v1_experimental` and `scribe_v2` — the server helpfully
  * enumerates them in its 400 when you send a wrong one. v2 is the current
- * model and the one that got "Legora" right on the second pass, so it is the
+ * model and the one that got "Lexhav" right on the second pass, so it is the
  * default. Override with ELEVENLABS_STT_MODEL_ID.
  */
 const DEFAULT_STT_MODEL_ID = "scribe_v2";

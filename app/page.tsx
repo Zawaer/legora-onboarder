@@ -117,7 +117,7 @@ export default async function Home() {
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] text-muted">
                 <span className="h-1.5 w-1.5 rounded-full bg-ok" />
-                Live demo · Legora, Stockholm
+                Live demo · Lexhav, Stockholm
               </span>
               <span className="text-[12px] text-faint">
                 ~100 new starts a month

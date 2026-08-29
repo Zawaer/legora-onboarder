@@ -1,6 +1,6 @@
 /**
  * Channel attribution. Every link we hand out carries `?source=` — `room`,
- * `linkedin`, `dm`, `legora`, `whatsapp` — and it rides all the way through to
+ * `linkedin`, `dm`, `lexhav`, `whatsapp` — and it rides all the way through to
  * the Stripe metadata, so we can say which channel produced the money.
  *
  * "We got three customers" is a traction claim. "We got three customers, all
@@ -10,7 +10,7 @@
  */
 export const KNOWN_SOURCES = [
   "room",
-  "legora",
+  "lexhav",
   "linkedin",
   "whatsapp",
   "dm",

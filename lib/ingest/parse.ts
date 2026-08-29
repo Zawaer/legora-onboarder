@@ -2,7 +2,7 @@
  * Ingest: turning somebody else's mess into a `Company`.
  *
  * Everything upstream of this file is a demo. The seed corpus in
- * lib/seed/legora.ts is hand-built, well-formed and ours; a prospective
+ * lib/seed/lexhav.ts is hand-built, well-formed and ours; a prospective
  * customer's corpus is a 40MB Slack export, or a CSV a paralegal made in
  * Excel, or four hundred lines pasted out of a Slack window thirty seconds
  * before a call starts. This module is the whole difference between "watch our

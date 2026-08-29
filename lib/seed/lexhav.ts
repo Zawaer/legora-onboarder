@@ -1,5 +1,5 @@
 /**
- * Legora — the seed corpus.
+ * Lexhav — the seed corpus.
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * WHY THERE IS NO ROLE DEFINITION IN THIS FILE
@@ -7,15 +7,15 @@
  *
  * Read all 63 artifacts below and you will not find a job description for
  * "Legal Engineer". No onboarding doc. No "what a Legal Engineer does at
- * Legora" page. No competency matrix, no career ladder, no RACI. Not one
+ * Lexhav" page. No competency matrix, no career ladder, no RACI. Not one
  * sentence anywhere that starts "the Legal Engineer is responsible for".
  *
  * That absence is the product.
  *
- * Legora went from 40 people to 400 in a year and is going from ~700 to 1,500
+ * Lexhav went from 40 people to 400 in a year and is going from ~700 to 1,500
  * by the end of 2026. At that speed the org chart is written after the work,
  * not before it. The Legal Engineer role in particular did not exist in the
- * legal industry three years ago — Legora largely invented it — so there is no
+ * legal industry three years ago — Lexhav largely invented it — so there is no
  * external course to take, no predecessor to shadow, and no internal document
  * to retrieve, because nobody has had a free afternoon to write one. The people
  * who know how to do the job are too busy doing it.
@@ -64,9 +64,9 @@
  * exists in the type system for exactly this. If the agent resolves them, it is
  * hallucinating, and a hiring manager will catch it in ten seconds.
  *
- * Public facts about Legora (ARR, headcount, funding, offices, customer count)
+ * Public facts about Lexhav (ARR, headcount, funding, offices, customer count)
  * are accurate as of August 2026 and appear only in `description` and, lightly,
- * in the all-hands notes. Every individual below except Max Junestrand is
+ * in the all-hands notes. Every individual below except Rasmus Thorell is
  * invented, as is every customer name; the words in these artifacts are fiction
  * written to be structurally true, not quotes from real employees.
  */
@@ -80,7 +80,7 @@ import type { Artifact, Company, Person } from "@/lib/types";
 
 const people: Person[] = [
   {
-    name: "Max Junestrand",
+    name: "Rasmus Thorell",
     role: "Co-founder & CEO",
     team: "Leadership",
     owns: ["company strategy", "board and investor communication"],
@@ -377,7 +377,7 @@ const artifacts: Artifact[] = [
       "Maintained by Platform. Last updated whenever it breaks, which is more often than it should be.",
       "",
       "1. Laptop + SSO. If SSO bounces you it is probably your display name, see PLAT-1104.",
-      "2. `gh auth login`, then clone `legora/workspace` and `legora/extraction`.",
+      "2. `gh auth login`, then clone `lexhav/workspace` and `lexhav/extraction`.",
       "3. `mise install` — do not use brew python, it will eat your first afternoon.",
       "4. Local stack: `just up`. Needs ~14GB free, the document index is not small.",
       "5. Seed a tenant: `just seed --tenant=dev --docs=sample-spa-set`.",
@@ -610,7 +610,7 @@ const artifacts: Artifact[] = [
       "- They want their own precedent bank as the few-shot source rather than our defaults. Reasonable. That is a fork.",
       "- Rollout: 340 fee earners across 4 offices by November.",
       "",
-      "The bit I keep thinking about — the banking partner asked, on the record, 'so who at Legora is the person who actually understands our credit agreement precedents'. The honest answer is: me, I have known them five weeks, and I learned them by reading 60 of their documents on a Sunday. He seemed fine with that answer, which I found more alarming than reassuring.",
+      "The bit I keep thinking about — the banking partner asked, on the record, 'so who at Lexhav is the person who actually understands our credit agreement precedents'. The honest answer is: me, I have known them five weeks, and I learned them by reading 60 of their documents on a Sunday. He seemed fine with that answer, which I found more alarming than reassuring.",
       "",
       "actions: daniel — raise the EBITDA-definition field; daniel — fork with their precedent bank; anders — November rollout plan, and who is on the November calls (open, see retro).",
     ].join("\n"),
@@ -622,7 +622,7 @@ const artifacts: Artifact[] = [
     author: "Anders Wikström",
     authorRole: "Director of Engagement, EMEA",
     timestamp: "2026-08-18T15:44:00+02:00",
-    text: "to be clear i am not trying to take anyone off client calls. im trying to stop the situation where a partner at a 900 lawyer firm hears three different versions of a timeline from three people at legora in one week. that happened in july and it nearly cost us the account",
+    text: "to be clear i am not trying to take anyone off client calls. im trying to stop the situation where a partner at a 900 lawyer firm hears three different versions of a timeline from three people at lexhav in one week. that happened in july and it nearly cost us the account",
   },
   {
     id: "slack-cust-esc-033",
@@ -773,7 +773,7 @@ const artifacts: Artifact[] = [
     id: "slack-general-041",
     kind: "slack",
     channel: "#general",
-    author: "Max Junestrand",
+    author: "Rasmus Thorell",
     authorRole: "Co-founder & CEO",
     timestamp: "2026-08-21T16:30:00+02:00",
     text: "quick one before the weekend. we passed 1,500 firms and in-house teams this week, and denver signed its lease, so thats 16 cities. thank you. one thing i want to say plainly though: we are hiring faster than we are writing anything down, and between those two i would rather fix the writing than slow the hiring. if you have figured out how to do something here — anything — put it somewhere a person who joins in october can find it. most of what we know is currently in about forty people's heads and that is a real risk, not a charming startup detail",
@@ -1101,13 +1101,13 @@ const artifacts: Artifact[] = [
 
 // ─────────────────────────────────────────────────────────────────── export
 
-export const legora: Company = {
-  slug: "legora",
-  name: "Legora",
+export const lexhav: Company = {
+  slug: "lexhav",
+  name: "Lexhav",
   description:
-    "Legora is a Stockholm-headquartered legal AI company founded in 2023, building a collaborative workspace where lawyers run AI workflows — clause extraction, diligence review, drafting — over their own documents. It is one of the fastest-scaling software companies in Europe: ARR went from roughly $3M at the end of 2024 to $50M at the end of 2025 to around $150M by June 2026, and headcount from 40 to 400 in a year, now heading from ~700 to 1,500 by the end of 2026. In March 2026 it raised a $600M Series D led by Accel at a $5.6B valuation, with later reports of talks at roughly double that. It serves about 1,500 law firms and in-house legal teams from 16 cities across four continents — Stockholm, London, New York, Denver, Sydney, Bengaluru, Paris, Munich, Madrid, Milan, Mexico City and Seoul among them — with Baker McKenzie deployed globally. It onboarded around 97 people in a single cohort in one week. Along the way it created and popularised the 'Legal Engineer': ex-lawyers who turn legal expertise into AI workflows — a job title that did not exist in the industry three years ago, and for which, consequently, no playbook, no course and no predecessor exists.",
+    "Lexhav is a Stockholm-headquartered legal AI company founded in 2023, building a collaborative workspace where lawyers run AI workflows — clause extraction, diligence review, drafting — over their own documents. It is one of the fastest-scaling software companies in Europe: ARR went from roughly $3M at the end of 2024 to $50M at the end of 2025 to around $150M by June 2026, and headcount from 40 to 400 in a year, now heading from ~700 to 1,500 by the end of 2026. In March 2026 it raised a $600M Series D led by Accel at a $5.6B valuation, with later reports of talks at roughly double that. It serves about 1,500 law firms and in-house legal teams from 16 cities across four continents — Stockholm, London, New York, Denver, Sydney, Bengaluru, Paris, Munich, Madrid, Milan, Mexico City and Seoul among them — with Baker McKenzie deployed globally. It onboarded around 97 people in a single cohort in one week. Along the way it created and popularised the 'Legal Engineer': ex-lawyers who turn legal expertise into AI workflows — a job title that did not exist in the industry three years ago, and for which, consequently, no playbook, no course and no predecessor exists.",
   people,
   artifacts,
 };
 
-export default legora;
+export default lexhav;

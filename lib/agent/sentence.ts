@@ -5,7 +5,7 @@
  *
  * `ground.ts` proves a quote is a real substring of a real artifact. That kills
  * fabrication, which is the loud failure. It cannot touch the quiet one, found
- * by running the JD checker against Legora's real posting:
+ * by running the JD checker against Lexhav's real posting:
  *
  *   cited:    "operationally: my team maintains the M&A ones and the diligence
  *              ones."

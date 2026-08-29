@@ -48,7 +48,7 @@ export default async function ExpertPage({
       />
 
       <main className="mx-auto w-full max-w-[820px] px-5 py-10 sm:px-8 sm:py-14">
-        <ExpertScreen id={id} companySlug={company || "legora"} />
+        <ExpertScreen id={id} companySlug={company || "lexhav"} />
 
         <footer className="mt-14 border-t border-line pt-5">
           <p className="max-w-[68ch] text-[12px] leading-[1.65] text-faint">

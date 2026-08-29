@@ -83,7 +83,7 @@ export default function JdPage() {
           </p>
         </header>
 
-        <JdDiff companySlug="legora" />
+        <JdDiff companySlug="lexhav" />
 
         <section className="flex flex-col gap-4 border-t border-line pt-8">
           <Label>The three verdicts</Label>
@@ -116,7 +116,7 @@ export default function JdPage() {
             with their own team on evidence that will not survive being looked
             at, and the first one of those takes every true verdict next to it
             down with it. The corpus behind the demo is realistic and synthetic;
-            it is not Legora&rsquo;s real Slack, and we have never had access to
+            it is not Lexhav&rsquo;s real Slack, and we have never had access to
             it.
           </p>
         </section>

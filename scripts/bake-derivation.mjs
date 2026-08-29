@@ -15,7 +15,7 @@
  *
  * It cannot go stale silently. The entry carries the `corpusHash` it was baked
  * from, and `readDerivation` already refuses any entry whose hash does not match
- * the corpus in front of it — so editing `lib/seed/legora.ts` makes this fixture
+ * the corpus in front of it — so editing `lib/seed/lexhav.ts` makes this fixture
  * be ignored rather than served wrongly. Re-run this script to refresh it.
  *
  * The hash and key come from the real modules via the `@/` resolver hook rather
@@ -25,7 +25,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-const [, , sourcePath, slugArg = "legora", roleArg = "Legal Engineer"] = process.argv;
+const [, , sourcePath, slugArg = "lexhav", roleArg = "Legal Engineer"] = process.argv;
 
 if (!sourcePath) {
   console.error("usage: npm run bake -- <derive-response.json> [slug] [role]");

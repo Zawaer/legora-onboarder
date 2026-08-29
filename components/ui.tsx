@@ -109,7 +109,7 @@ export type SyntheticCorpus = { companyName: string; people?: number };
  * Says out loud, inline and before anyone asks, that the demo workspace is
  * invented.
  *
- * Legora is a real company in Stockholm and this corpus is not theirs: the
+ * Lexhav is a real company in Stockholm and this corpus is not theirs: the
  * fourteen names, their titles and every message in the export were written
  * for the demo. That is fine right up to the moment somebody who works there
  * opens it and has to work out for themselves whether it is real — and trust

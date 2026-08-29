@@ -13,7 +13,7 @@
  * cohort as meetings go from one to eight in ninety days.
  *
  * Both interventions have the same precondition: a human with a spare hour who
- * notices a start date and acts on it. Legora is putting 58 people through
+ * notices a start date and acts on it. Lexhav is putting 58 people through
  * September across nine offices; the buddy sheet was 60% full a week before the
  * cohort landed, and the three joiners from the previous cohort were "all still
  * mostly shadowing". Nobody is neglecting this. There is simply no such human.

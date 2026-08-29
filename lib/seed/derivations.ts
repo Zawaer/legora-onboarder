@@ -8,13 +8,13 @@ import type { CachedDerivation } from "@/lib/agent/cache";
 
 export const BAKED_DERIVATIONS: CachedDerivation[] = [
   {
-    "key": "legora::legal engineer",
-    "companySlug": "legora",
+    "key": "lexhav::legal engineer",
+    "companySlug": "lexhav",
     "roleTitle": "Legal Engineer",
-    "corpusHash": "bc550b5779ffff21",
+    "corpusHash": "a075a96d3b5356af",
     "role": {
       "title": "Legal Engineer",
-      "summary": "This is not a generic \"legal engineer\" opening: Legora is hiring an ex-transactional lawyer to absorb work that four people (Johan, Marta, Daniel, Camille) are currently doing at 22:00 on top of client calls. Concretely, the person starting is expected to take a bounded, dated client deliverable — LE-2231, the Nordkap disclosure-letter schedule export, due 8 Sept for an 11 Sept signing — while doing the two things only a lawyer can do here: writing extraction/classification instructions around legal concepts rather than labels (the CoC rewrite that moved recall 0.71→0.94), and reviewing the eval labels that every accuracy number Legora has ever quoted a customer traces back to. The recurring failure mode they are being hired against is jurisdictional: Milan's 'cessione del contratto' miss, the French/Spanish equivalents, and Ji-won's bilingual Korean column finding are all cases where the pipeline assumed English-law drafting conventions and nobody owned the variants.",
+      "summary": "This is not a generic \"legal engineer\" opening: Lexhav is hiring an ex-transactional lawyer to absorb work that four people (Johan, Marta, Daniel, Camille) are currently doing at 22:00 on top of client calls. Concretely, the person starting is expected to take a bounded, dated client deliverable — LE-2231, the Nordkap disclosure-letter schedule export, due 8 Sept for an 11 Sept signing — while doing the two things only a lawyer can do here: writing extraction/classification instructions around legal concepts rather than labels (the CoC rewrite that moved recall 0.71→0.94), and reviewing the eval labels that every accuracy number Lexhav has ever quoted a customer traces back to. The recurring failure mode they are being hired against is jurisdictional: Milan's 'cessione del contratto' miss, the French/Spanish equivalents, and Ji-won's bilingual Korean column finding are all cases where the pipeline assumed English-law drafting conventions and nobody owned the variants.",
       "evidence": [
         {
           "artifactId": "slack-legal-eng-056",
@@ -74,7 +74,7 @@ export const BAKED_DERIVATIONS: CachedDerivation[] = [
         "Contribute the written artefacts that do not exist yet: the Legal Engineering equivalent of Tobias's day-1 setup doc, and the monthly one-paragraph writeups Elin is chasing"
       ],
       "firstWeekOutcomes": [
-        "A written list of every place Legora's output is wrong on SPA and disclosure documents you already understand — produced before you are put on any client call, per Elin's ramp",
+        "A written list of every place Lexhav's output is wrong on SPA and disclosure documents you already understand — produced before you are put on any client call, per Elin's ramp",
         "LE-2231 scoped with Nordkap's actual ask captured in one paragraph in the fork description before any build, and the docx template layer started (Johan's estimate: half a day, he'll take the docx if it fights back)",
         "A batch of eval labels reviewed in ma.spa.change-of-control so Priya's harness is not blocked on evening volunteers",
         "At least one item cleared from the prompt review queue against checklist v3, with jurisdiction named in the instruction description",
@@ -143,7 +143,7 @@ export const BAKED_DERIVATIONS: CachedDerivation[] = [
             {
               "id": "d1-t3",
               "title": "Review a batch of candidate eval labels in ma.spa.change-of-control",
-              "why": "Priya can generate 200 candidate labels in four minutes and they are worth nothing until someone qualified reviews them; today that is Johan, Marta, Daniel and Camille in the evenings, and every accuracy figure Legora has ever quoted a customer traces back to that queue. On 19 Aug she needed ~200 labelled by Thursday and there was nobody.",
+              "why": "Priya can generate 200 candidate labels in four minutes and they are worth nothing until someone qualified reviews them; today that is Johan, Marta, Daniel and Camille in the evenings, and every accuracy figure Lexhav has ever quoted a customer traces back to that queue. On 19 Aug she needed ~200 labelled by Thursday and there was nobody.",
               "context": "Priya's runbook 'Eval harness — how to run it (and why the numbers move)' is in Notion / Applied ML; ping her for an account. You run `just eval --set=ma.spa.change-of-control --rev=HEAD` and get recall, precision, a per-document breakdown and a diff against the last run. Her explicit position: you do not need to be able to write Python, you need to be able to read a contract, and 'want me to explain what a threshold is — also ping me, it is a ten minute conversation and it is not a stupid question.' The single most useful thing you produce here is the distinction she cannot make herself: roughly half of apparent misses are wrong labels, not model failures, and only someone who has drafted the clause can tell which. The ma.spa.* sets hold about 120 documents; treat anything under ~50 as a vibe. Aim for 60 labels, correct/incorrect, one line of reasoning on every disagreement, in the concept language you'd use with a client rather than 'clause type'. Note that the overnight eval run was killed once by PLAT-1190 and results came back two hours late — if a run looks stale, check with Priya before assuming a regression.",
               "doneWhen": "60 candidate labels in ma.spa.change-of-control marked correct/incorrect with a reason on each disagreement, and a note in #eng-platform stating how many of your disagreements were label errors versus model errors.",
               "askIfStuck": "Priya Raghunathan",

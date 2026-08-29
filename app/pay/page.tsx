@@ -18,7 +18,7 @@ type Params = Promise<{ [key: string]: string | string[] | undefined }>;
  * roughly three hundred cold visitors.
  *
  *   /pay                        → the one-off, attributed to `room`
- *   /pay?plan=pro&source=legora → the subscription, attributed differently
+ *   /pay?plan=pro&source=lexhav → the subscription, attributed differently
  */
 export default async function PayPage({ searchParams }: { searchParams: Params }) {
   const params = await searchParams;

@@ -8,7 +8,7 @@
  * same number:
  *
  *   /api/resolutions
- *   /api/resolutions?company=legora
+ *   /api/resolutions?company=lexhav
  *   /api/resolutions?hire=demo-legal-engineer
  *   /api/resolutions?since=2026-08-29T00:00:00Z
  *   /api/resolutions?records=1        ← the rows the numbers were computed from

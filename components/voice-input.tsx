@@ -22,7 +22,7 @@
  *
  * Because it is wrong sometimes, and specifically wrong about the things this
  * product exists to explain. The very first live call against our endpoint
- * transcribed "Legora" as "Ligora". A tool whose job is to teach somebody a
+ * transcribed "Lexhav" as "Ligora". A tool whose job is to teach somebody a
  * company's vocabulary cannot silently mangle a company's own name and then
  * answer the mangled question — the hire watches the agent confidently discuss
  * something that does not exist and quietly concludes the agent is useless.

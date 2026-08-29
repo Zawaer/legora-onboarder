@@ -32,9 +32,9 @@ export type FeedItem = {
 };
 
 export default function StartDemo({
-  companySlug = "legora",
+  companySlug = "lexhav",
   roleTitle = "Legal Engineer",
-  companyName = "Legora",
+  companyName = "Lexhav",
   /**
    * The corpus never names the joiner — they haven't started, so people refer
    * to them as "the person starting sept 1". The demo names them anyway: a

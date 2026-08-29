@@ -122,7 +122,7 @@ export function loadSlackConfig(env: EnvLike): SlackConfig {
     appToken,
     managerChannel,
     apiBaseUrl: (env.ONBOARDER_API_URL ?? "http://localhost:3000").trim().replace(/\/+$/, ""),
-    companySlug: (env.ONBOARDER_COMPANY ?? "legora").trim(),
+    companySlug: (env.ONBOARDER_COMPANY ?? "lexhav").trim(),
     roleTitle: (env.ONBOARDER_ROLE ?? "Legal Engineer").trim(),
     sessionsPath: (env.SLACK_SESSIONS_PATH ?? "data/slack-sessions.json").trim(),
   };

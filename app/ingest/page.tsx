@@ -50,7 +50,7 @@ export default function IngestPage() {
               Bring your own corpus
             </span>
             <Link href="/" className="text-[12px] text-faint hover:text-muted">
-              or watch it on the Legora corpus first
+              or watch it on the Lexhav corpus first
             </Link>
           </div>
 

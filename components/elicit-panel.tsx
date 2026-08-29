@@ -655,7 +655,7 @@ function TheAsk({ record }: { record: Elicitation }) {
  */
 export function ExpertScreen({
   id,
-  companySlug = "legora",
+  companySlug = "lexhav",
 }: {
   id?: string;
   companySlug?: string;
