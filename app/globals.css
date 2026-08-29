@@ -184,6 +184,21 @@
   }
 }
 
+/* The JS fallback for browsers without scroll-driven animations. `.js-reveal`
+   is set by an inline script in the head, so these rules can only ever apply
+   when scripting is on and components/reveal.tsx is there to undo them. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.55s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.js-reveal [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
 @keyframes reveal {
   from {
     opacity: 0;

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import Reveal from "@/components/reveal";
 
 /**
  * Archivo for what is read, IBM Plex Mono for what is measured.
@@ -39,7 +40,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
-      <body className="min-h-dvh antialiased">{children}</body>
+      <head>
+        {/*
+          Runs before first paint, so the hidden state is in place from the
+          start and nothing flashes in and back out. Only opts in when the
+          browser lacks native scroll-driven animations AND the reader has not
+          asked for reduced motion — Chrome and Edge take the CSS path in
+          globals.css instead and never see this class.
+
+          Setting the class here rather than in the component is what removes
+          the flicker; undoing it is components/reveal.tsx's job, and both ship
+          in the same bundle.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))" +
+              "&&!matchMedia('(prefers-reduced-motion: reduce)').matches)" +
+              "document.documentElement.classList.add('js-reveal')}catch(e){}",
+          }}
+        />
+      </head>
+      <body className="min-h-dvh antialiased">
+        {children}
+        <Reveal />
+      </body>
     </html>
   );
 }
