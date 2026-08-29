@@ -7,12 +7,12 @@ Reflects the reframe in `STU-41`: the product is the loop, not the role brief.
 
 ---
 
-Build a landing page for **Onboarder**, a B2B SaaS product. One page, static
+Build a landing page for **Vanav**, a B2B SaaS product. One page, static
 content, no backend, no auth. Marketing site only — do not build the product UI.
 
 ## What it sells
 
-Onboarder is an AI agent for companies that hire faster than they can document.
+Vanav is an AI agent for companies that hire faster than they can document.
 It removes the social cost of asking, and when nobody has written the answer
 down, it goes and gets it from the person who knows.
 

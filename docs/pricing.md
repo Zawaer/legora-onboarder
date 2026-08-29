@@ -12,7 +12,7 @@ mode.
 
 Checkout was inherited from the previous pivot and showed **"Svara — 299 SEK"**,
 the restaurant review agent. Anyone handed a phone would have seen the wrong
-product at an SMB price. That is now the Onboarder product at a B2B price.
+product at an SMB price. That is now the Vanav product at a B2B price.
 
 ## Why two prices
 

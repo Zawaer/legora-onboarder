@@ -9,7 +9,7 @@ Fill the numbers in the `[[ ]]` gaps on Sunday morning. Everything else is done.
 ---
 
 ## 1. Project name
-**Onboarder**
+**Vanav**
 
 ## 2. Team name and members
 `[[ team name ]]` — `[[ full names of everyone ]]`
@@ -60,7 +60,7 @@ for screenshotting.
 >
 > ### What we built during the weekend
 >
-> **Onboarder** — an agent that onboards new hires into roles that have never
+> **Vanav** — an agent that onboards new hires into roles that have never
 > existed before.
 >
 > Those three facts close every existing door. You cannot write documentation,

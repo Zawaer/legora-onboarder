@@ -5,7 +5,7 @@ this before doing anything. If a decision changes, change it *here*.
 
 Written 29 August 2026, ~02:00.
 
-**Live task state is in Linear**, team `STU`, project *Onboarder*:
+**Live task state is in Linear**, team `STU`, project *Vanav*:
 https://linear.app/stuhi-hackathon/project/onboarder-dc7eca946d57
 
 Linear MCP is authorised, so any Claude session can read and update it. Linear
@@ -15,7 +15,7 @@ we actually ran the build on it, not on whether a board exists.
 
 ---
 
-## 1. The product is Onboarder
+## 1. The product is Vanav
 
 An agent that onboards new hires into roles that have **never existed before**
 at the company. It derives the role from the company's real Slack/docs/tickets,
@@ -39,7 +39,7 @@ anyway and **ported only what scores**: Stripe checkout, the `/buy` QR route,
 `?source=` attribution, rate limiting, and LOI capture.
 
 **Deliberately left behind:** Supabase auth, RLS, migrations, PostHog, shadcn/ui,
-sonner. The Legora demo needs no user accounts, and every one of those is
+sonner. The demo needs no user accounts, and every one of those is
 setup cost with no point value attached.
 
 ## 3. No database

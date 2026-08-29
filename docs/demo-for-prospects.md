@@ -107,7 +107,7 @@ review.**
 
 ## Send the link afterwards
 
-`https://legora-onboarder.vercel.app/hire/demo-legal-engineer`
+`https://vanav.io/hire/demo-legal-engineer`
 
 Stable and bookmarkable, so it survives a cold start and can be forwarded
 internally. The person you demoed to is rarely the only person who has to say
@@ -194,8 +194,8 @@ The second one is queryable, not just drawn, so it can go in a write-up with a
 date on it:
 
 ```
-curl https://legora-onboarder.vercel.app/api/resolutions
-curl 'https://legora-onboarder.vercel.app/api/resolutions?company=legora&records=1'
+curl https://vanav.io/api/resolutions
+curl 'https://vanav.io/api/resolutions?company=legora&records=1'
 ```
 
 Filters: `company`, `hire`, `since` (ISO 8601), and `records=1` for the rows

@@ -6,13 +6,13 @@ no agent, no API.
 
 ---
 
-Build a marketing site plus product UI for **Onboarder**, a B2B SaaS product.
+Build a marketing site plus product UI for **Vanav**, a B2B SaaS product.
 Use static data throughout — no backend, no auth, no API calls. This is a
 visual build.
 
 ## What the product is
 
-Onboarder onboards new hires into roles that have **never existed before** at a
+Vanav onboards new hires into roles that have **never existed before** at a
 company. At companies hiring tens of people a month, most new roles have no
 predecessor, no playbook and no documentation. So the role can't be looked up —
 it has to be *derived* from the company's real Slack messages, docs and tickets.

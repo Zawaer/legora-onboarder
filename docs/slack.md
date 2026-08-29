@@ -1,4 +1,4 @@
-# Onboarder in Slack
+# Vanav in Slack
 
 The product's claim is that it lives where onboarding actually happens: the new
 hire's DM, and the channel a senior person is already ignoring. This is that
@@ -47,7 +47,7 @@ handshake. It is the only transport that reliably survives a conference network.
 ### 1. Create the app
 
 1. Go to **<https://api.slack.com/apps>** → **Create New App** → **From scratch**.
-2. Name it **Onboarder**. Pick your workspace. → **Create App**.
+2. Name it **Vanav**. Pick your workspace. → **Create App**.
 
 ### 2. Turn on Socket Mode and get the app-level token
 
@@ -73,7 +73,7 @@ handshake. It is the only transport that reliably survives a conference network.
    | `im:history` | The bot never sees the hire's replies; the DM goes one-way |
    | `im:write` | `/onboard` cannot open a DM to speak first |
    | `commands` | The `/onboard` slash command does not exist |
-   | `app_mentions:read` | `@Onboarder` in a channel is silently ignored |
+   | `app_mentions:read` | `@Vanav` in a channel is silently ignored |
 
    Optional, and only cosmetic: **`users:read`** lets the bot use the hire's
    real name instead of "New hire". It is deliberately not required — a missing
@@ -86,7 +86,7 @@ handshake. It is the only transport that reliably survives a conference network.
    point of Socket Mode, and its absence means you did step 3 correctly.
 8. Expand **Subscribe to bot events** and add:
    - **`message.im`** — the hire's DMs
-   - **`app_mention`** — `@Onboarder` in a channel
+   - **`app_mention`** — `@Vanav` in a channel
 9. **Save Changes** (bottom right).
 
 ### 5. Turn on the Messages tab — do not skip this one
@@ -134,7 +134,7 @@ the event: *"Under **Show Tab**, switch on the **Messages Tab** toggle"*
 
 16. In Slack, create a channel — `#onboarding-blockers` is a good name for a
     demo, because the audience can read the purpose off the tab.
-17. In that channel, type: **`/invite @Onboarder`**
+17. In that channel, type: **`/invite @Vanav`**
 
     Do not skip this. A bot that is not a member of a channel cannot post to it,
     and the error (`not_in_channel`) arrives at the exact moment your escalation
@@ -169,7 +169,7 @@ the event: *"Under **Show Tab**, switch on the **Messages Tab** toggle"*
     You should see:
 
     ```
-      Onboarder is live in Slack.  (scripts/slack-bot.mjs, Socket Mode — no public URL)
+      Vanav is live in Slack.  (scripts/slack-bot.mjs, Socket Mode — no public URL)
 
       workspace tokens : bot xoxb-…4f · app xapp-…9c
       escalations to   : C09XXXXXXXX
@@ -177,7 +177,7 @@ the event: *"Under **Show Tab**, switch on the **Messages Tab** toggle"*
       …
     ```
 
-21. In Slack, DM the bot (find **Onboarder** under **Apps**) and type `start`,
+21. In Slack, DM the bot (find **Vanav** under **Apps**) and type `start`,
     or run `/onboard` from anywhere. If the DM has no message box, step 5 is
     not done.
 
@@ -249,10 +249,10 @@ The bot terminal prints a banner when this happens:
 
 ```
   ESCALATION NOT DELIVERED — the bot is not in C09XXXXXXXX.
-  Fix: open that channel in Slack and run  /invite @Onboarder
+  Fix: open that channel in Slack and run  /invite @Vanav
 ```
 
-**Fix:** open the channel in Slack, type `/invite @Onboarder`. If the channel is
+**Fix:** open the channel in Slack, type `/invite @Vanav`. If the channel is
 private, the bot must be invited *and* you will see `channel_not_found` rather
 than `not_in_channel` until it is — a private channel is invisible to apps that
 are not members. For a demo, use a public channel.
@@ -309,7 +309,7 @@ Regenerate it under **Basic Information → App-Level Tokens** with that scope.
 | Symptom | Cause |
 | --- | --- |
 | The bot's DM has no message box at all | The Messages tab is off, or its "allow users to send…" checkbox is unticked — step 5 |
-| `Cannot reach the Onboarder API at http://localhost:3000` | `npm run dev` is not running, or is on another port — set `ONBOARDER_API_URL` |
+| `Cannot reach the Vanav API at http://localhost:3000` | `npm run dev` is not running, or is on another port — set `VANAV_API_URL` |
 | Every turn errors with an Anthropic message | `ANTHROPIC_API_KEY` missing or rejected; it is the *Next* process that needs it |
 | `/onboard` says "dispatch_failed" | The slash command was created but the app was not reinstalled afterwards |
 | Bot replies to itself in a loop | Not possible here — Bolt's `ignoreSelf` is on and the handler drops anything with a `bot_id` |
