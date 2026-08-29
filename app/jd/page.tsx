@@ -32,7 +32,7 @@ const VERDICTS = [
   {
     k: "Contradicted",
     tone: "warn" as const,
-    d: "Your own material shows something incompatible with the line as written — someone with standing saying the opposite, a thing the line assumes exists that visibly does not, or a question the posting settles that your team is still openly arguing about. Always quoted, always attributed.",
+    d: "Your own material shows something incompatible with the line as written, someone with standing saying the opposite, a thing the line assumes exists that visibly does not, or a question the posting settles that your team is still openly arguing about. Always quoted, always attributed.",
   },
   {
     k: "Silent",

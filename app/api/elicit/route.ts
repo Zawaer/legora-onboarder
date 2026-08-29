@@ -176,7 +176,7 @@ const AnswerBody = z.object({
     .min(1)
     .max(
       8000,
-      "That answer is longer than 8,000 characters. Send the part that answers the question — the rest can follow in Slack.",
+      "That answer is longer than 8,000 characters. Send the part that answers the question, the rest can follow in Slack.",
     ),
 });
 
@@ -284,7 +284,7 @@ async function handleCreate(input: z.infer<typeof CreateBody>) {
   const blocker = hire?.blockers?.find((b) => b.id === input.blockerId);
   const question = (input.question ?? blocker?.summary ?? "").trim();
   if (question.length < 6) {
-    return fail(400, "Say what the hire is stuck on — a blockerId or a question.");
+    return fail(400, "Say what the hire is stuck on, a blockerId or a question.");
   }
 
   const outcome = await raise({
@@ -646,7 +646,7 @@ async function handleDecline(
   }
 
   const reason =
-    input.reason?.trim() || (mode === "quiet" ? "No reply — pushed on to someone else." : undefined);
+    input.reason?.trim() || (mode === "quiet" ? "No reply, pushed on to someone else." : undefined);
 
   const updated = await updateElicitation(input.id, (r) => ({
     ...r,

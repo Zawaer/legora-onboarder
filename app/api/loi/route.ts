@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     // response and that screenshot is the proof we submit; a failed disk write
     // must never be what stops it appearing. We already have the LOI in the log
     // line above, so nothing is actually lost.
-    console.error("loi save failed — recover from the LOI_SIGNED log line", error);
+    console.error("loi save failed, recover from the LOI_SIGNED log line", error);
   }
 
   // The timestamp goes back to the form so the signed artefact it renders —

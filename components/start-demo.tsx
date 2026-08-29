@@ -12,7 +12,7 @@ import { Spinner } from "./ui";
  * outcome, but it means these lines describe the slow path only.
  */
 const STAGES = [
-  { at: 0, text: "Opening the corpus — Slack, docs, tickets, meeting notes" },
+  { at: 0, text: "Opening the corpus, Slack, docs, tickets, meeting notes" },
   { at: 8, text: "Reading #legal-eng and every channel that touches it" },
   { at: 22, text: "Working out who does this work today, and what they hand off" },
   { at: 38, text: "Deriving responsibilities from what the team actually ships" },

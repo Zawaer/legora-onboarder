@@ -93,7 +93,7 @@ export function WhosWho({
           </div>
           <span className="text-[11.5px] text-muted">
             {derivedOwnership
-              ? "Nobody in this corpus states what they own — this is behaviour, not titles."
+              ? "Nobody in this corpus states what they own, this is behaviour, not titles."
               : "Derived from who answers, who gets named, and who decides."}
           </span>
         </div>

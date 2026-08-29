@@ -55,8 +55,8 @@ export default function TractionBoard({
             <span className="inline-flex items-center gap-2">
               <span className={`h-1.5 w-1.5 rounded-full ${keysAreLive ? "bg-ok" : "bg-warn"}`} />
               {keysAreLive
-                ? "Stripe live keys — anything captured now counts"
-                : "Stripe test keys — anything captured now is recorded as test"}
+                ? "Stripe live keys, anything captured now counts"
+                : "Stripe test keys, anything captured now is recorded as test"}
             </span>
             <span className="hidden h-3 w-px bg-line sm:block" />
             <span className="tnum">
@@ -262,7 +262,7 @@ export default function TractionBoard({
               </div>
               <p className="mx-auto mt-7 max-w-[58ch] text-[12.5px] leading-[1.6] text-faint">
                 Attribution rides on the link. Append{" "}
-                <code className="font-mono">?source=</code> to either URL —{" "}
+                <code className="font-mono">?source=</code> to either URL, {" "}
                 {KNOWN_SOURCES.join(", ")} — and this page can then say which channel
                 produced the money.
               </p>
@@ -333,14 +333,14 @@ export default function TractionBoard({
                     <p className="mt-5 text-[12.5px] leading-[1.6] text-faint">
                       {channels.basis === "customers"
                         ? "Bars measure customers, not money: payments span more than one currency and adding minor units across currencies would be arithmetic on incompatible numbers."
-                        : "Bars measure signed intent — no live revenue has landed yet, so there is no money to split."}
+                        : "Bars measure signed intent, no live revenue has landed yet, so there is no money to split."}
                     </p>
                   ) : null}
                 </>
               ) : (
                 <p className="mt-6 rounded-xl border border-dashed border-line bg-surface px-5 py-8 text-center text-[13.5px] leading-[1.65] text-muted">
                   No live-mode records to attribute yet
-                  {s.hasTestRecords ? " — every record on disk is Stripe test mode" : ""}. The
+                  {s.hasTestRecords ? ", every record on disk is Stripe test mode" : ""}. The
                   channels wired up and ready to attribute are {KNOWN_SOURCES.join(", ")}.
                 </p>
               )}

@@ -158,7 +158,7 @@ export default function IngestForm() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label>What the company does — optional</Label>
+            <Label>What the company does, optional</Label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}

@@ -78,7 +78,7 @@ export default function ResolutionCounters({ companySlug }: { companySlug?: stri
         <Figure
           value={stats ? String(stats.resolvedWithoutHuman) : null}
           of={stats ? `of ${stats.total} asked` : undefined}
-          caption="Questions resolved without interrupting anyone — answered from your own corpus, or from the web when they turned out not to be about you at all."
+          caption="Questions resolved without interrupting anyone, answered from your own corpus, or from the web when they turned out not to be about you at all."
         />
         <Figure
           // `null` share means no corpus miss has happened yet. A "0%" here
@@ -92,7 +92,7 @@ export default function ResolutionCounters({ companySlug }: { companySlug?: stri
                 : `${stats.generalCorpusMisses} of ${stats.corpusMisses} misses`
               : undefined
           }
-          caption="Of the questions your corpus could not answer, the share that were general knowledge — not about this company, and never worth a colleague's time."
+          caption="Of the questions your corpus could not answer, the share that were general knowledge, not about this company, and never worth a colleague's time."
         />
       </div>
 

@@ -230,7 +230,7 @@ export default function ElicitPanel({
                 /* Matches the server's cap, so a long answer is stopped at the
                    keyboard rather than lost to a 400 after they hit send. */
                 maxLength={8000}
-                placeholder="Tell me what happened — the sequence, what you saw, what you did."
+                placeholder="Tell me what happened, the sequence, what you saw, what you did."
                 className="min-h-[110px] flex-1 resize-y rounded-lg border border-line bg-paper px-3.5 py-3 text-[14.5px] leading-[1.6] outline-none placeholder:text-faint focus:border-line-strong"
               />
               {/* The verified mic. Transcript lands here editable — never auto-sent. */}
@@ -265,7 +265,7 @@ export default function ElicitPanel({
                 disabled={busy !== null}
                 className="ml-auto inline-flex h-10 items-center rounded-lg border border-line bg-surface px-4 text-[13.5px] text-muted transition-colors hover:border-line-strong hover:text-ink disabled:opacity-40"
               >
-                {busy === "decline" ? "Passing it on…" : "Not me — pass it on"}
+                {busy === "decline" ? "Passing it on…" : "Not me, pass it on"}
               </button>
             </div>
 
@@ -377,7 +377,7 @@ export default function ElicitPanel({
                 disabled={busy !== null || editing !== null}
                 className="inline-flex h-10 items-center rounded-lg border border-ok-line bg-ok-soft px-5 text-[14px] font-medium text-ok transition-colors hover:border-ok/40 disabled:opacity-40"
               >
-                {busy === "confirm" ? "Writing it down…" : "That's right — write it down"}
+                {busy === "confirm" ? "Writing it down…" : "That's right, write it down"}
               </button>
               <span className="text-[12px] text-faint">
                 {record.answer?.via === "voice" ? "Captured by voice" : "Captured as text"}
@@ -454,8 +454,8 @@ export default function ElicitPanel({
                 }`}
               >
                 {proof.grounded
-                  ? "Verified: the agent can now cite this the same way it cites a Slack message — the quote checks out as a literal substring of the stored artifact."
-                  : "Stored, but the citation check did not pass — the agent will not quote this until it does."}
+                  ? "Verified: the agent can now cite this the same way it cites a Slack message, the quote checks out as a literal substring of the stored artifact."
+                  : "Stored, but the citation check did not pass, the agent will not quote this until it does."}
               </p>
             )}
           </div>
@@ -936,7 +936,7 @@ export function ElicitStatus({
 
   return (
     <div className={`flex flex-col gap-2.5 ${className}`}>
-      <Label>{rows.length ? "Out with a human" : "Escalated — nothing written down"}</Label>
+      <Label>{rows.length ? "Out with a human" : "Escalated, nothing written down"}</Label>
 
       {unasked.map((b) => (
         <div key={b.id} className="rounded-xl border border-line bg-surface px-4 py-3">

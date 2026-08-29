@@ -159,7 +159,7 @@ function unknownCompany(slug: string): Response {
 
 function tooMany(retryAfter: number): Response {
   return NextResponse.json(
-    { error: "Too many checks. Give it a minute — each one is two model calls over the corpus." },
+    { error: "Too many checks. Give it a minute, each one is two model calls over the corpus." },
     { status: 429, headers: { ...NO_STORE, "retry-after": String(retryAfter) } },
   );
 }

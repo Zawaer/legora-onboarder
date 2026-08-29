@@ -196,7 +196,7 @@ export default function JdDiff({ companySlug = "lexhav" }: { companySlug?: strin
           disabled={running}
           spellCheck={false}
           placeholder={
-            "Paste the posting. Bullets, headings, whatever your ATS spat out — it gets broken into claims either way."
+            "Paste the posting. Bullets, headings, whatever your ATS spat out, it gets broken into claims either way."
           }
           className="scroll-thin block h-[260px] w-full resize-y bg-transparent px-4 py-4 font-mono text-[12.5px] leading-[1.65] text-ink outline-none placeholder:text-faint disabled:opacity-60 sm:px-5"
         />

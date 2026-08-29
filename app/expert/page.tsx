@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "One question · VANAV",
   description:
-    "A specific question about one thing that actually happened, sent to the person who would know. Under a minute, including the correction — and then it is written down for good.",
+    "A specific question about one thing that actually happened, sent to the person who would know. Under a minute, including the correction, and then it is written down for good.",
 };
 
 /**

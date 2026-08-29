@@ -10,7 +10,7 @@ import AgentText from "./agent-text";
 const DEFAULT_PROMPTS = [
   "What should I start with?",
   "Who owns this decision?",
-  "I'm stuck — I can't find the source of truth.",
+  "I'm stuck, I can't find the source of truth.",
 ];
 
 export default function Chat({

@@ -33,7 +33,7 @@ const COMPETITORS = [
   {
     name: "Rippling · BambooHR",
     model: "$8–25 per employee / month",
-    why: "HR admin priced by headcount — a different product for a different buyer.",
+    why: "HR admin priced by headcount, a different product for a different buyer.",
   },
 ];
 

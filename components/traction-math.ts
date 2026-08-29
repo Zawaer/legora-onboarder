@@ -108,7 +108,7 @@ function buildLadder(customers: number, lois: number): Rung[] {
     { band: 0, criterion: "Nothing captured.", met: true, remaining: [] },
     {
       band: 6,
-      criterion: "A captured demand signal — a waitlist entry or a demo request.",
+      criterion: "A captured demand signal, a waitlist entry or a demo request.",
       met: sixth,
       remaining: sixth ? [] : ["1 signed LOI"],
     },

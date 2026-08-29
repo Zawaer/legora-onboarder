@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Traction · VANAV",
   description:
-    "Paying customers, revenue by channel, and signed letters of intent — read live from the payment and LOI stores, with Stripe test-mode records separated out and counted nowhere.",
+    "Paying customers, revenue by channel, and signed letters of intent, read live from the payment and LOI stores, with Stripe test-mode records separated out and counted nowhere.",
 };
 
 export default async function PitchPage() {

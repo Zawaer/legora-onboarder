@@ -29,7 +29,7 @@ const FORMATS = [
   },
   {
     k: "Pasted log",
-    d: "Select a channel, copy, paste. #channel  Name  10:32  message, or Name: message, or [10:32] Name: message — mixed together is fine.",
+    d: "Select a channel, copy, paste. #channel  Name  10:32  message, or Name: message, or [10:32] Name: message, mixed together is fine.",
   },
   {
     k: "CSV",
