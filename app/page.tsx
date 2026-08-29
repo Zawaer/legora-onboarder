@@ -323,6 +323,139 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* ── the unprompted correction ──
+            Step 4 of the four-step block mentions this in one line. It is the
+            single behaviour that separates the product from a chatbot, it is
+            where the originality points live, and it is the beat that lands in
+            a demo — so it gets shown rather than claimed, with the real quote
+            from the seeded corpus. ── */}
+        <section className="border-b border-line py-14 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+            <div className="flex flex-col gap-5">
+              <Label>Nobody asked it to check</Label>
+              <h2 className="max-w-[18ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.025em] text-balance sm:text-[38px]">
+                It stops them before it costs two weeks.
+              </h2>
+              <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
+                A manager normally catches a confident wrong turn by reviewing
+                the work. That holds at six reports. It does not hold at sixty,
+                and the correction arrives from a customer instead.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="rounded-xl border border-line bg-surface p-5 sm:p-6">
+                <div className="label mb-2.5">The new hire, day one</div>
+                <p className="text-[15px] leading-[1.6] text-ink">
+                  &ldquo;I&rsquo;m going to fix the Italian miss by adding
+                  <em> cessione del contratto</em> and a few other synonyms to
+                  the playbook keyword list.&rdquo;
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-accent/25 bg-accent-soft p-5 sm:p-6">
+                <div className="label mb-2.5 !text-accent-ink">
+                  Unprompted, three seconds later
+                </div>
+                <p className="text-[15px] leading-[1.6] text-ink">
+                  Marta wrote this in{" "}
+                  <span className="font-mono text-[13.5px]">
+                    #customer-escalations
+                  </span>{" "}
+                  on 19 Aug:
+                </p>
+                <blockquote className="mt-3 border-l-2 border-accent/45 pl-4 text-[15px] leading-[1.55] text-ink">
+                  &ldquo;NOT shipping: a keyword list. If anyone adds
+                  &lsquo;cessione&rsquo; to a keyword list I will find
+                  you.&rdquo;
+                </blockquote>
+                <p className="mt-3 text-[13.5px] leading-[1.6] text-muted">
+                  They didn&rsquo;t ask a question. They stated a plan, and the
+                  agent volunteered the decision that already ruled it out —
+                  with the date and the person.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── what compounds ──
+            The only selling point that is about money rather than experience,
+            and it was missing from the site entirely. Argued structurally with
+            a ledger rather than with an invented statistic — every "cost of a
+            bad hire" figure in this market traces back to vendor marketing. ── */}
+        <section className="border-b border-line py-14 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+            <div className="flex flex-col gap-5">
+              <Label>What compounds</Label>
+              <h2 className="max-w-[20ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.025em] text-balance sm:text-[38px]">
+                The tenth hire asks nothing the first nine already answered.
+              </h2>
+              <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
+                When the answer genuinely isn&rsquo;t written down, the agent
+                asks the one person who would know — once — and writes the
+                confirmed answer back into the company&rsquo;s own record,
+                attributed and dated. Everyone who hits the same gap afterwards
+                gets it from there.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-px overflow-hidden rounded-xl border border-line bg-line">
+              {[
+                {
+                  who: "1st hire",
+                  what: "Hits a gap nobody wrote down. The agent asks the person who knows.",
+                  cost: "~60 seconds of theirs",
+                  first: true,
+                },
+                {
+                  who: "2nd hire",
+                  what: "Same question. Answered from the record, attribution intact.",
+                  cost: "nobody interrupted",
+                },
+                {
+                  who: "3rd hire",
+                  what: "Same question.",
+                  cost: "nobody interrupted",
+                },
+              ].map((r) => (
+                <div
+                  key={r.who}
+                  className="grid grid-cols-[74px_minmax(0,1fr)] items-baseline gap-x-4 gap-y-1 bg-surface px-5 py-3.5 sm:grid-cols-[84px_minmax(0,1fr)_auto]"
+                >
+                  <span className="font-mono text-[11px] tracking-wide text-faint uppercase">
+                    {r.who}
+                  </span>
+                  <span
+                    className={`text-[14px] leading-[1.55] ${
+                      r.first ? "text-ink" : "text-muted"
+                    }`}
+                  >
+                    {r.what}
+                  </span>
+                  <span
+                    className={`col-start-2 font-mono text-[11.5px] whitespace-nowrap sm:col-start-3 sm:text-right ${
+                      r.first ? "text-accent-ink" : "text-faint"
+                    }`}
+                  >
+                    {r.cost}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-7 max-w-[62ch] text-[15.5px] leading-[1.65] text-muted">
+            Your senior people are interrupted{" "}
+            <span className="font-medium text-ink">
+              once per unknown, not once per hire
+            </span>
+            . With three people starting the same month that is one question
+            instead of three; at thirty it is the difference between a tool and
+            a second job.
+          </p>
+        </section>
+
         {/* ── what it refuses to do ── */}
         <section className="py-14 lg:py-20">
           <Label>What it deliberately refuses to do</Label>
