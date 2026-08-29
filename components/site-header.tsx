@@ -14,7 +14,7 @@ export default function SiteHeader({
         sticky ? "sticky top-0 z-30" : ""
       } border-b border-line bg-paper/85 backdrop-blur-md`}
     >
-      <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-4 px-5 sm:px-8">
+      <div className="mx-auto flex h-14 max-w-[1180px] items-center gap-4 px-5 sm:px-8 lg:px-12">
         <Link href="/" className="shrink-0">
           <Wordmark />
         </Link>
@@ -53,7 +53,12 @@ export function NavLink({
       href={href}
       className={`rounded-md px-2.5 py-1.5 text-[13px] transition-colors ${
         emphasis
-          ? "border border-line bg-surface font-medium text-ink hover:border-line-strong"
+          // Solid ink, the same primary-action colour as every other button in
+          // the product. Deliberately NOT the brass accent: that marks verified
+          // evidence — the rule on a citation, the attribution line, the panel
+          // dots — and spending it on nav chrome would blunt the one visual
+          // distinction the product is actually built on.
+          ? "bg-ink font-medium text-paper hover:opacity-90"
           : "text-muted hover:bg-surface-2 hover:text-ink"
       }`}
     >

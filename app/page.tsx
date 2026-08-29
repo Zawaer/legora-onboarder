@@ -88,6 +88,28 @@ const STEPS = [
   },
 ];
 
+/**
+ * The three ways a question ends, in the order the agent tries them.
+ * `lib/web/contract.ts` is the argument; this is the same table in public words.
+ */
+const ROUTES = [
+  {
+    k: "It is in the messages",
+    d: "The message itself, quoted verbatim, with the person and the date.",
+    out: "nobody interrupted",
+  },
+  {
+    k: "Not there, and not about you",
+    d: "\u201cWhat\u2019s the difference between git rebase and merge?\u201d Answered from the web with its sources, in a box that cannot be mistaken for something a colleague said.",
+    out: "nobody interrupted",
+  },
+  {
+    k: "Not there, and about you",
+    d: "\u201cWhy do retries live in the consumer?\u201d That one goes to a named person.",
+    out: "one person, once",
+  },
+];
+
 const REFUSALS = [
   {
     h: "No productivity score.",
@@ -110,7 +132,7 @@ export default async function Home() {
     <div className="min-h-dvh">
       <SiteHeader />
 
-      <main className="mx-auto max-w-[1400px] px-5 sm:px-8">
+      <main className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-12">
         {/* ── hero ── */}
         <section className="grid gap-12 border-b border-line py-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16 lg:py-24">
           <div className="flex flex-col gap-7">
@@ -275,7 +297,7 @@ export default async function Home() {
         </section>
 
         {/* ── how it works ── */}
-        <section className="border-b border-line py-14 lg:py-20">
+        <section className="py-14 lg:py-20">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <Label>What their first days look like</Label>
             <span className="text-[12.5px] text-faint">
@@ -319,6 +341,16 @@ export default async function Home() {
             </Link>
           </div>
         </section>
+
+        {/* ── the ask ──
+            Moved out of the last slot before the footer. This is the first
+            point on the page where somebody knows what the thing is, and a
+            reader who is convinced here should not have to scroll four more
+            sections to act on it. The band brings its own top rule, so the
+            section above it drops its bottom one. ── */}
+        <div className="border-b border-line">
+          <Waitlist />
+        </div>
 
         {/* ── the unprompted correction ──
             Step 4 of the four-step block mentions this in one line. It is the
@@ -374,6 +406,56 @@ export default async function Home() {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* ── the web rung ──
+            The rung between "the messages cannot answer this" and "interrupt a
+            human". Expert attention is the one input this product can actually
+            run out of, so the question of which questions are allowed to spend
+            it is the design decision, not a detail. `lib/web/contract.ts`. ── */}
+        <section className="border-b border-line py-14 lg:py-20">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <Label>Which questions are allowed to cost a person</Label>
+            <span className="text-[12.5px] text-faint">
+              a general question never reaches a colleague
+            </span>
+          </div>
+
+          <h2 className="mt-6 max-w-[20ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.025em] text-balance sm:text-[38px]">
+            Nobody is interrupted for a git question.
+          </h2>
+          <p className="mt-4 max-w-[62ch] text-[15px] leading-[1.65] text-muted">
+            Expert attention is the thing that runs out. So when the
+            company&rsquo;s own messages cannot answer, the agent first works
+            out whether the question is even about this company.
+          </p>
+
+          <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-3">
+            {ROUTES.map((r, i) => (
+              <article key={r.k} className="flex flex-col gap-3 bg-surface p-6">
+                <span className="tnum font-mono text-[11px] text-faint">
+                  0{i + 1}
+                </span>
+                <h3 className="text-[15px] leading-[1.3] font-semibold tracking-[-0.01em]">
+                  {r.k}
+                </h3>
+                <p className="text-[13.5px] leading-[1.6] text-muted">{r.d}</p>
+                <span className="mt-auto pt-1 font-mono text-[11.5px] text-accent-ink">
+                  {r.out}
+                </span>
+              </article>
+            ))}
+          </div>
+
+          <p className="mt-7 max-w-[62ch] text-[15.5px] leading-[1.65] text-muted">
+            It has to be{" "}
+            <span className="font-medium text-ink">
+              75% sure a question is general
+            </span>{" "}
+            before it may skip the human; under that it asks anyway. A confident
+            wrong answer about how your company works is unrecoverable. A
+            wrongly forwarded git question costs five minutes.
+          </p>
         </section>
 
         {/* ── what compounds ──
@@ -453,6 +535,62 @@ export default async function Home() {
           </p>
         </section>
 
+        {/* ── two starters at once ──
+            Coordination through shared state, described as exactly that and no
+            more: the second planner reads the first one's plan before it
+            writes. The sentence in the card is generated output from the live
+            fixtures, not copy. `lib/agent/cohort.ts`. ── */}
+        <section className="border-b border-line py-14 lg:py-20">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <Label>When two people start the same week</Label>
+            <span className="text-[12.5px] text-faint">
+              otherwise both are handed the same ticket
+            </span>
+          </div>
+
+          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+            <div className="flex flex-col gap-5">
+              <h2 className="max-w-[18ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.025em] text-balance sm:text-[38px]">
+                The second plan is written around the first.
+              </h2>
+              <p className="max-w-[46ch] text-[15px] leading-[1.65] text-muted">
+                Two planners read the same messages and both land on the same
+                unglamorous, high-value ticket. So the second one reads what the
+                first already wrote down, and where the scope genuinely runs
+                alongside, it says so in the task itself — by name.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="rounded-xl border border-accent/25 bg-accent-soft p-5 sm:p-6">
+                <div className="label mb-2.5 !text-accent-ink">
+                  Generated into Hannah&rsquo;s own task
+                </div>
+                <p className="text-[15px] leading-[1.6] text-ink">
+                  &ldquo;Rebecca Hartley is delivering a
+                  ma.spa.change-of-control label batch back to Priya this week
+                  — that set is hers; you are on dd.assignment, so check with
+                  her before either of you touches ma.spa.* labels.&rdquo;
+                </p>
+              </div>
+              <p className="text-[13.5px] leading-[1.6] text-muted">
+                Rebecca and Hannah started the same week. Nothing was negotiated
+                between the two planners: the second one read the first
+                one&rsquo;s plan before writing, the way you read a whiteboard
+                before adding to it. Both people have already read the sentence
+                their manager sees.
+              </p>
+              <Link
+                href="/manager"
+                className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-accent-ink underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
+              >
+                Where two ramps touch, on the manager screen
+                <span aria-hidden>&rarr;</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* ── what it refuses to do ── */}
         <section className="py-14 lg:py-20">
           <Label>What it deliberately refuses to do</Label>
@@ -485,11 +623,10 @@ export default async function Home() {
             ))}
           </div>
         </section>
-        <Waitlist />
       </main>
 
       <footer className="border-t border-line bg-surface-2/40">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:px-8">
+        <div className="mx-auto flex max-w-[1180px] flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:px-8 lg:px-12">
           <Wordmark muted />
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] sm:ml-auto">
             <Link href="/#waitlist" className="text-muted hover:text-ink">
