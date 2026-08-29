@@ -1,5 +1,26 @@
 import type { Metadata, Viewport } from "next";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+
+/**
+ * Archivo for what is read, IBM Plex Mono for what is measured.
+ *
+ * Self-hosted by next/font at build time rather than linked to Google: no
+ * third-party request on first paint, no layout shift, and the demo still
+ * renders correctly on a conference network that cannot reach fonts.gstatic.
+ */
+const archivo = Archivo({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-archivo",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+  variable: "--font-plex-mono",
+});
 
 export const metadata: Metadata = {
   title: "Onboarder — onboarding for roles that have never existed",
@@ -9,8 +30,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf9f7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0b0d" },
+    { media: "(prefers-color-scheme: light)", color: "#eceee4" },
+    { media: "(prefers-color-scheme: dark)", color: "#101d18" },
   ],
 };
 
@@ -20,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

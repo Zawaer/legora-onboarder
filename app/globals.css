@@ -1,50 +1,79 @@
 @import "tailwindcss";
 
 /* ── palette ───────────────────────────────────────────────────────────────
-   Restrained: paper + ink, one blue accent, one amber for "a human is needed",
-   one green for "the agent handled it". Nothing else earns a colour.        */
+   Paper and ink, but warm: a dark forest green rather than a neutral black,
+   on a paper that has a green cast rather than a grey one. One brass accent
+   for "this is the company's own evidence", one clay for "a human is needed",
+   one deep green for "the agent handled it". Nothing else earns a colour.
+
+   Three values are deliberately NOT the source palette's, because that palette
+   was drawn for a marketing page and this is an instrument:
+
+   - `--accent-ink` is a darker brass than the accent itself. Brass #a97a32 on
+     this paper is 3.25:1, under the 4.5:1 floor for body text, and accent-ink
+     carries every citation attribution line — the smallest, most load-bearing
+     text in the product. Darkened to 5.2:1. The brass proper stays for rules,
+     dots and borders, where 3:1 is the bar and it passes.
+
+   - `--warn` moved from amber to clay. Amber sits at roughly the same hue as
+     brass, so on a page where an accent rule and a blocker can appear in the
+     same column the two would read as the same signal. Clay is 26 degrees away
+     and much darker.
+
+   - `--ok` moved to a deep, saturated green. The ground is now green, so the
+     old mid-green success colour would sink into it; this one separates by
+     darkness and saturation rather than by hue, which is the only axis left.  */
 
 :root {
-  --paper: #faf9f7;
-  --surface: #ffffff;
-  --surface-2: #f3f1ed;
-  --ink: #14161a;
-  --muted: #6b7078;
-  --faint: #9a9ea6;
-  --line: #e4e1db;
-  --line-strong: #d2cec6;
-  --accent: #2b4fc4;
-  --accent-ink: #1e3a9b;
-  --accent-soft: #eceffb;
-  --warn: #9a5a06;
-  --warn-soft: #fbf1e2;
-  --warn-line: #ebd6b0;
-  --ok: #1f6a4a;
-  --ok-soft: #e8f2ec;
-  --ok-line: #c4dfd1;
-  --shadow: 0 1px 2px rgb(20 22 26 / 0.04), 0 8px 24px -12px rgb(20 22 26 / 0.14);
+  --paper: #eceee4;
+  --surface: #f4f5ee;
+  --surface-2: #e1e4d6;
+  --ink: #172420;
+  --muted: #34473f;
+  /* Darkened from the source palette's #5b7568 (4.28:1 on paper, 3.9:1 on
+     surface-2). --faint drives
+     .label, which is 10.5px uppercase, so it needs the full small-text
+     floor rather than the 3:1 one -- and it has to clear it against the
+     header strips too, not just the page. Hue held at 150. */
+  --faint: #52695e;
+  --line: rgb(23 36 32 / 0.14);
+  --line-strong: rgb(23 36 32 / 0.28);
+  --accent: #a97a32;
+  --accent-ink: #7a5d26;
+  --accent-soft: #efe6d3;
+  --warn: #9e3520;
+  --warn-soft: #f6e6df;
+  --warn-line: #e0c0b2;
+  --ok: #2e6b44;
+  --ok-soft: #e2ede5;
+  --ok-line: #bcd4c4;
+  --shadow: 0 1px 0 rgb(23 36 32 / 0.04), 0 10px 24px -18px rgb(23 36 32 / 0.25);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #0a0b0d;
-    --surface: #111317;
-    --surface-2: #171a1f;
-    --ink: #e9ebef;
-    --muted: #949aa4;
-    --faint: #6d737d;
-    --line: #23262c;
-    --line-strong: #32363e;
-    --accent: #8ba6ff;
-    --accent-ink: #a9bdff;
-    --accent-soft: #151b2e;
-    --warn: #e2a852;
-    --warn-soft: #211a0f;
-    --warn-line: #3d3018;
-    --ok: #6ec49a;
-    --ok-soft: #0f1c17;
-    --ok-line: #1e3a2c;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.7);
+    /* The surfaces step further apart than the source palette's do. It puts
+       card and page within two points of each other, which is legible on a
+       page of prose and invisible under the panel chrome this product is made
+       of — header strips, hairlines, nested cards. */
+    --paper: #101d18;
+    --surface: #16241e;
+    --surface-2: #1c2b24;
+    --ink: #edefe6;
+    --muted: #c4cbc1;
+    --faint: #93ac9c;
+    --line: rgb(237 239 230 / 0.14);
+    --line-strong: rgb(237 239 230 / 0.26);
+    --accent: #d2a055;
+    --accent-ink: #e3b36a;
+    --accent-soft: #241b0f;
+    --warn: #e79079;
+    --warn-soft: #2a1610;
+    --warn-line: #4a2a1e;
+    --ok: #7fc79a;
+    --ok-soft: #10231a;
+    --ok-line: #1f3d2d;
+    --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 12px 28px -18px rgb(0 0 0 / 0.6);
   }
 }
 
@@ -67,9 +96,12 @@
   --color-ok-soft: var(--ok-soft);
   --color-ok-line: var(--ok-line);
 
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono",
+  /* Archivo for everything that is read, a real mono for everything that is
+     measured. The source palette used one family for all three roles; that
+     works on a marketing page and would flatten this one, where mono labels,
+     timestamps, tabular counters and the coverage readout are the furniture. */
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", SFMono-Regular,
     Menlo, Consolas, monospace;
 }
 
@@ -85,7 +117,6 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-feature-settings: "cv02", "cv03", "cv04", "ss01";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
