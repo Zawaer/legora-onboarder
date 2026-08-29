@@ -37,9 +37,9 @@ const EMPTY = {
 };
 
 const inputClass =
-  "w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-50 dark:placeholder:text-neutral-600 dark:focus:border-neutral-300";
+ "w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900";
 
-const labelClass = "text-sm font-medium text-neutral-700 dark:text-neutral-300";
+const labelClass = "text-sm font-medium text-neutral-700";
 
 export function LoiForm({
   product,
@@ -157,12 +157,12 @@ export function LoiForm({
         <input {...field("signed_name")} required />
       </div>
 
-      <p className="text-xs text-neutral-500 dark:text-neutral-400">
+      <p className="text-xs text-neutral-500">
         This is a statement of intent, not a binding contract.
       </p>
 
       {error ? (
-        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="text-sm text-red-600">
           {error}
         </p>
       ) : null}
@@ -170,7 +170,7 @@ export function LoiForm({
       <button
         type="submit"
         disabled={state === "sending"}
-        className="rounded-lg bg-neutral-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700 disabled:opacity-50 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+        className="rounded-lg bg-neutral-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700 disabled:opacity-50"
       >
         {state === "sending" ? "Signing…" : "Sign"}
       </button>
@@ -196,18 +196,18 @@ function SignedLoi({ loi, product }: { loi: Signed; product: string }) {
   const at = [loi.role, loi.company].filter(Boolean).join(" at ");
 
   return (
-    <div className="flex w-full flex-col gap-5 rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-950">
-      <h2 className="text-sm font-medium uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+    <div className="flex w-full flex-col gap-5 rounded-xl border border-neutral-200 bg-white p-6">
+      <h2 className="text-sm font-medium uppercase tracking-widest text-neutral-500">
         Letter of intent
       </h2>
 
-      <p className="text-pretty leading-relaxed text-neutral-900 dark:text-neutral-100">
+      <p className="text-pretty leading-relaxed text-neutral-900">
         I, <strong>{loi.full_name}</strong>
         {at ? <>, {at},</> : ","} have used <strong>{product}</strong> on{" "}
         {new Intl.DateTimeFormat("sv-SE", { dateStyle: "long" }).format(date)}.
       </p>
 
-      <p className="text-pretty leading-relaxed text-neutral-900 dark:text-neutral-100">
+      <p className="text-pretty leading-relaxed text-neutral-900">
         I intend to <strong>{loi.intent}</strong>
         {loi.blocker ? (
           <>
@@ -218,18 +218,18 @@ function SignedLoi({ loi, product }: { loi: Signed; product: string }) {
         .
       </p>
 
-      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+      <p className="text-sm text-neutral-500">
         This is a statement of intent, not a binding contract.
       </p>
 
-      <div className="flex flex-col gap-1 border-t border-neutral-200 pt-4 text-sm text-neutral-900 dark:border-neutral-800 dark:text-neutral-100">
+      <div className="flex flex-col gap-1 border-t border-neutral-200 pt-4 text-sm text-neutral-900">
         <span>
           Signed: <strong>{loi.signed_name}</strong>
         </span>
-        <span className="text-neutral-500 dark:text-neutral-400">{loi.email}</span>
+        <span className="text-neutral-500">{loi.email}</span>
         {/* Server clock, rendered verbatim. This line is why the screenshot is
             evidence rather than a claim. */}
-        <span className="font-mono text-xs text-neutral-500 dark:text-neutral-400">
+        <span className="font-mono text-xs text-neutral-500">
           {stamp}
         </span>
       </div>

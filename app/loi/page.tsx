@@ -26,16 +26,16 @@ export default async function LoiPage({ searchParams }: { searchParams: Params }
           the phone is usually in someone else's hand on this screen. */}
       <Link
         href="/"
-        className="text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+        className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
       >
         &larr; Vanav
       </Link>
 
       <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        <h1 className="text-3xl font-semibold tracking-tight text-neutral-900">
           Would you put this in front of your next cohort?
         </h1>
-        <p className="text-pretty text-neutral-600 dark:text-neutral-400">
+        <p className="text-pretty text-neutral-600">
           If you would pay for {PRODUCT} but not today, say so here. It takes a
           minute, and the “…once” line tells us exactly what to build next.
         </p>

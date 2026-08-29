@@ -50,8 +50,7 @@
   --shadow: 0 1px 0 rgb(23 36 32 / 0.04), 0 10px 24px -18px rgb(23 36 32 / 0.25);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+:root[data-theme="dark"] {
     /* The surfaces step further apart than the source palette's do. It puts
        card and page within two points of each other, which is legible on a
        page of prose and invisible under the panel chrome this product is made
@@ -75,7 +74,6 @@
     --ok-line: #1f3d2d;
     --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 12px 28px -18px rgb(0 0 0 / 0.6);
   }
-}
 
 @theme inline {
   --color-paper: var(--paper);
@@ -110,6 +108,7 @@
 }
 
 html {
+  color-scheme: light;
   -webkit-text-size-adjust: 100%;
 }
 

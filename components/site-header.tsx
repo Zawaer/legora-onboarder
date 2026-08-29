@@ -18,9 +18,6 @@ export default function SiteHeader({
         <Link href="/" className="shrink-0">
           <Wordmark />
         </Link>
-        <span className="hidden truncate text-[12px] text-faint sm:block">
-          onboarding for roles that have never existed
-        </span>
         <div className="ml-auto flex items-center gap-1.5">
           {right ?? (
             <>
@@ -33,7 +30,7 @@ export default function SiteHeader({
               <NavLink href="/manager">Manager view</NavLink>
               <NavLink href="/#waitlist" emphasis>
                 Join the waitlist
-            </NavLink>
+              </NavLink>
             </>
           )}
         </div>
