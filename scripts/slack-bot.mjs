@@ -196,6 +196,33 @@ async function send(client, action, dmChannel, replace) {
     return replace;
   }
 
+  // The review gate. When a customer has auto_send off, nothing the agent
+  // wrote reaches the hire: it becomes a row an admin approves. Only DMs pass
+  // through here, because those are the messages addressed to a person. The
+  // manager channel is a different audience with a different consent.
+  const { reviewBeforeSend, isReviewConfigured } = await import("@/lib/slack/review.ts");
+  if (isReviewConfigured()) {
+    const outcome = await reviewBeforeSend({
+      hireRef: dmChannel,
+      kind: "message",
+      body: action.text ?? "",
+    });
+    if (outcome.held) {
+      const note = outcome.draftId
+        ? "Waiting for someone on your team to release this."
+        : "Waiting for review. It could not be queued, so tell an admin.";
+      // The hire is told something is coming rather than left in silence. A
+      // conversation that simply stops looks like the bot died, and that is
+      // the impression a held message must not create.
+      if (replace) {
+        await client.chat.update({ channel: replace.channel, ts: replace.ts, text: note });
+      } else {
+        await client.chat.postMessage({ channel: dmChannel, text: note });
+      }
+      return undefined;
+    }
+  }
+
   // A DM. The first one edits the thinking placeholder in place, so the
   // conversation reads as one turn rather than a bubble of filler followed by
   // an answer.
