@@ -109,9 +109,30 @@ export default function RoleCard({
         <h1 className="text-[28px] leading-[1.12] font-semibold tracking-[-0.022em] text-balance sm:text-[32px]">
           {role.title}
         </h1>
-        <p className="max-w-[62ch] text-[16px] leading-[1.62] text-muted">
-          {role.summary}
-        </p>
+        {/*
+          The summary is one long paragraph of dense prose with a dozen proper
+          nouns in it. At a single weight there is no way into it — a reader
+          seeing this for the first time has to commit to ten lines before
+          learning anything. So the first sentence carries at heading weight and
+          the rest sits underneath as detail. Split on the sentence, not on a
+          character count, so a short summary simply renders as one line and
+          nothing looks truncated.
+        */}
+        {(() => {
+          const m = /^(.*?[.!?])(\s+)([\s\S]+)$/.exec(role.summary.trim());
+          const lead = m ? m[1] : role.summary;
+          const rest = m ? m[3] : "";
+          return (
+            <div className="flex max-w-[62ch] flex-col gap-3">
+              <p className="text-[19px] leading-[1.45] font-medium tracking-[-0.01em] text-ink text-balance">
+                {lead}
+              </p>
+              {rest && (
+                <p className="text-[15px] leading-[1.65] text-muted">{rest}</p>
+              )}
+            </div>
+          );
+        })()}
       </header>
 
       {/* ── what it was derived from, before anything derived from it ── */}
@@ -136,12 +157,6 @@ export default function RoleCard({
               against source
             </Pill>
           </div>
-          <p className="-mt-1 max-w-[60ch] text-[13px] leading-[1.6] text-faint">
-            Every claim above points at a message someone actually wrote. Nothing
-            here was inferred from a job description, because there isn&rsquo;t
-            one.
-          </p>
-
           <ol className="flex flex-col gap-3">
             {evidence.map((e, i) => {
               const a = byId.get(e.artifactId);

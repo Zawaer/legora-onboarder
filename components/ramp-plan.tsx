@@ -30,11 +30,29 @@ function Chev() {
   );
 }
 
-function Field({ label, children }: { label: string; children: string }) {
+/**
+ * `clamp` bounds Context, which is the longest field on the card and the one
+ * that was being cut mid-word by the panel's own scroll — "…because if" with
+ * nothing after it reads as broken rather than as continued. Clamping to whole
+ * lines with a fade says "there is more" instead; the card expands to show it.
+ */
+function Field({
+  label,
+  clamp = false,
+  children,
+}: {
+  label: string;
+  clamp?: boolean;
+  children: string;
+}) {
   return (
     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4">
       <span className="label w-full shrink-0 pt-[3px] sm:w-24">{label}</span>
-      <p className="min-w-0 flex-1 text-[13.5px] leading-[1.6] text-muted">
+      <p
+        className={`min-w-0 flex-1 text-[13.5px] leading-[1.6] text-muted${
+          clamp ? " line-clamp-6" : ""
+        }`}
+      >
         {children}
       </p>
     </div>
@@ -82,7 +100,11 @@ function Task({
 
       <div className="flex flex-col gap-3.5 border-t border-line bg-surface-2/40 px-4 py-4">
         {task.why && <Field label="Why">{task.why}</Field>}
-        {task.context && <Field label="Context">{task.context}</Field>}
+        {task.context && (
+          <Field label="Context" clamp>
+            {task.context}
+          </Field>
+        )}
         {task.doneWhen && (
           <div className="flex flex-col gap-1 sm:flex-row sm:gap-4">
             <span className="label w-full shrink-0 pt-[3px] sm:w-24">
