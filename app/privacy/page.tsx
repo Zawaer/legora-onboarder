@@ -21,7 +21,11 @@ export const metadata = {
  * first thing on the site that is not true.
  */
 
-const CONTACT = "hello@vanav.io";
+// A real mailbox someone reads, rather than a branded one that bounces. A
+// privacy page whose contact address does not work is worse than not having
+// the page: it states a right and then removes the only way to exercise it.
+// Swap for hello@vanav.io once that forwards somewhere.
+const CONTACT = "toivo@stuhi.org";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
