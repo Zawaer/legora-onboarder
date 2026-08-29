@@ -190,6 +190,31 @@ export default async function Home() {
           </aside>
         </section>
 
+        {/* ── why now ──
+            The page argued that the problem exists but never that it is new,
+            and a reader can reasonably think onboarding has always been hard.
+            Kept to two sentences: the claim that survives scrutiny is not that
+            AI makes companies grow (fast-growing companies are not new) but
+            that it invents the jobs, which is what removes the predecessor. */}
+        <section className="border-b border-line py-12 lg:py-16">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-16">
+            <Label>Why now</Label>
+            <div className="flex flex-col gap-4">
+              <p className="max-w-[30ch] text-[26px] leading-[1.18] font-semibold tracking-[-0.022em] text-balance sm:text-[32px]">
+                Fast-growing companies aren&rsquo;t new. Jobs nobody has ever
+                held are.
+              </p>
+              <p className="max-w-[58ch] text-[15.5px] leading-[1.65] text-muted">
+                &ldquo;Legal engineer&rdquo; didn&rsquo;t exist three years ago.
+                Neither did &ldquo;forward deployed engineer&rdquo;. The work is
+                new, so the role is new, so there is nobody to shadow and nothing
+                to hand anyone &mdash; and companies are filling these roles
+                faster than they can work out what they are.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* ── the three facts ── */}
         <section className="border-b border-line py-14 lg:py-20">
           <Label>Why this happens</Label>
