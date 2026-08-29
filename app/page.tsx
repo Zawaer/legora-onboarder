@@ -300,6 +300,29 @@ export default async function Home() {
               </li>
             ))}
           </ol>
+
+          {/* The two entry points that used to be two-word labels in the
+              header. A stranger cannot decode "Your own data" or "JD check";
+              they can decode a sentence about what happens when they click.
+              These are the only inbound links to /ingest and /jd, so they are
+              in the body rather than the footer. */}
+          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13.5px]">
+            <Link
+              href="/ingest"
+              className="inline-flex items-center gap-1.5 font-medium text-accent-ink underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
+            >
+              Run it on your own Slack
+              <span aria-hidden>&rarr;</span>
+            </Link>
+            <span className="hidden h-3 w-px bg-line sm:block" />
+            <Link
+              href="/jd"
+              className="inline-flex items-center gap-1.5 text-muted hover:text-ink"
+            >
+              Check a job ad against your team&rsquo;s messages
+              <span aria-hidden>&rarr;</span>
+            </Link>
+          </div>
         </section>
 
         {/* ── what it refuses to do ── */}

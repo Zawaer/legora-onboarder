@@ -71,6 +71,17 @@ export default async function PayPage({ searchParams }: { searchParams: Params }
         &larr; Onboarder
       </Link>
 
+      {/* The letter of intent is a sales instrument, not a product surface, so
+          it no longer sits in the site nav. It belongs exactly here: next to
+          the price, for the half of the room that wants to commit today
+          without putting a card in. */}
+      <Link
+        href="/loi"
+        className="absolute right-6 top-6 max-w-[45%] text-right text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+      >
+        Not paying today? Sign a letter of intent &rarr;
+      </Link>
+
       <div className="flex flex-col items-center gap-3 text-center">
         <span className="font-mono text-sm uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
           {PRODUCT}

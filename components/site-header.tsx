@@ -24,17 +24,13 @@ export default function SiteHeader({
         <div className="ml-auto flex items-center gap-1.5">
           {right ?? (
             <>
-              {/* The bring-your-own-corpus entry point. Hidden on the narrowest
-                  screens only because the bar has no room, not because it is
-                  secondary — it is the difference between a demo and a pilot. */}
-              <span className="hidden sm:contents">
-                <NavLink href="/ingest">Your own data</NavLink>
-                {/* The falsifiable claim: what the traces say about the
-                    posting, including where they say nothing. */}
-                <NavLink href="/jd">JD check</NavLink>
-              </span>
+              {/* Two links, both of which mean something to someone who has
+                  never seen this product. "Your own data" and "JD check" used
+                  to sit here and told a first-time visitor nothing; they are
+                  now named by what they do, in the body of the landing page.
+                  "Letter of intent" is a sales instrument, not a surface, and
+                  lives next to the price. */}
               <NavLink href="/manager">Manager view</NavLink>
-              <NavLink href="/loi">Letter of intent</NavLink>
               <NavLink href="/pay" emphasis>
                 Pricing
               </NavLink>

@@ -10,7 +10,7 @@ import { fetchHire } from "./client-api";
 import RampPlanView from "./ramp-plan";
 import RoleCard, { RoleCardSkeleton } from "./role-card";
 import SiteHeader, { NavLink } from "./site-header";
-import { Label, Pill } from "./ui";
+import { Label, Pill, SyntheticNote, type SyntheticCorpus } from "./ui";
 
 const DERIVING_COPY = [
   "Reading the company's Slack, docs, tickets and meeting notes",
@@ -28,10 +28,17 @@ export type Corpus = Record<
 export default function HireView({
   hireId,
   corpus = {},
+  synthetic,
 }: {
   hireId: string;
   /** Seeded source material, so evidence can be shown with its channel and author. */
   corpus?: Corpus;
+  /**
+   * Set by the server when this hire's corpus is the written demo. Carried as
+   * a prop rather than derived after the fetch so the notice is in the
+   * server-rendered HTML, including the loading state.
+   */
+  synthetic?: SyntheticCorpus;
 }) {
   const [hire, setHire] = useState<HireState | null>(null);
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
@@ -77,10 +84,16 @@ export default function HireView({
     return () => clearInterval(id);
   }, [load]);
 
-  if (loading && !hire) return <FullPageState state="loading" />;
+  if (loading && !hire) return <FullPageState state="loading" synthetic={synthetic} />;
 
   if (!hire) {
-    return <FullPageState state="missing" message={error ?? undefined} />;
+    return (
+      <FullPageState
+        state="missing"
+        message={error ?? undefined}
+        synthetic={synthetic}
+      />
+    );
   }
 
   const role = hire.derivedRole;
@@ -152,6 +165,15 @@ export default function HireView({
           </div>
         </div>
       </div>
+
+      {/* Above the fold, beside the derived role, and with nothing to dismiss.
+          `shrink-0` so the desktop layout takes the height out of the
+          workspace below rather than off the bottom of the viewport. */}
+      {synthetic && (
+        <div className="mx-auto w-full max-w-[1400px] shrink-0 px-5 pt-5 sm:px-8">
+          <SyntheticNote {...synthetic} />
+        </div>
+      )}
 
       {/* ── the workspace ── */}
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 sm:px-8 lg:min-h-0 lg:overflow-hidden">
@@ -250,13 +272,23 @@ function channelFor(name?: string, roleTitle?: string) {
 function FullPageState({
   state,
   message,
+  synthetic,
 }: {
   state: "loading" | "missing";
   message?: string;
+  synthetic?: SyntheticCorpus;
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <SiteHeader />
+      {/* This is the state the server renders, so the notice has to be here
+          too — otherwise it is absent from the first frame of a recording and
+          from any screenshot of the page opening. */}
+      {synthetic && (
+        <div className="mx-auto w-full max-w-[1400px] px-5 pt-5 sm:px-8">
+          <SyntheticNote {...synthetic} />
+        </div>
+      )}
       <main className="mx-auto grid w-full max-w-[1400px] flex-1 place-items-center px-5 py-24">
         {state === "loading" ? (
           <div className="flex flex-col items-center gap-3">

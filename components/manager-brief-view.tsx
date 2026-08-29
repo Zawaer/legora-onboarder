@@ -23,7 +23,7 @@ import type {
 import { asHires } from "./client-api";
 import type { HireState } from "@/lib/types";
 import SiteHeader, { NavLink } from "./site-header";
-import { Label, Panel, Pill } from "./ui";
+import { Label, Panel, Pill, SyntheticNote, type SyntheticCorpus } from "./ui";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
@@ -33,7 +33,15 @@ function dayMonth(iso: string): string {
   return m ? `${+m[3]} ${MONTHS[+m[2] - 1]}` : "";
 }
 
-export default function ManagerBriefView() {
+export default function ManagerBriefView({
+  synthetic,
+}: {
+  /**
+   * Set by the server when this brief is composed from the written demo
+   * corpus. A prop, not a fetch, so the notice is in the server HTML.
+   */
+  synthetic?: SyntheticCorpus;
+} = {}) {
   const [hires, setHires] = useState<HireState[] | null>(null);
   const [hireId, setHireId] = useState<string | null>(null);
   const [startsAt, setStartsAt] = useState<string | null>(null);
@@ -144,6 +152,9 @@ export default function ManagerBriefView() {
       <main className="mx-auto max-w-[1100px] px-5 py-10 sm:px-8 lg:py-14">
         {/* ── the design statement ── */}
         <header className="flex flex-col gap-5 border-b border-line pb-10">
+          {/* The brief names a buddy and five people to meet. None of them
+              exist, and that is said here rather than discovered later. */}
+          {synthetic && <SyntheticNote {...synthetic} />}
           <Label>Manager brief</Label>
           <h1 className="max-w-[20ch] text-[32px] leading-[1.08] font-semibold tracking-[-0.028em] text-balance sm:text-[40px]">
             Forty-eight hours before they start.

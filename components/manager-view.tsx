@@ -6,9 +6,18 @@ import type { Blocker, HireState } from "@/lib/types";
 import BlockerList, { type HireRef } from "./blocker-list";
 import { fetchHires } from "./client-api";
 import SiteHeader, { NavLink } from "./site-header";
-import { Label, initials } from "./ui";
+import { Label, SyntheticNote, initials, type SyntheticCorpus } from "./ui";
 
-export default function ManagerView() {
+export default function ManagerView({
+  synthetic,
+}: {
+  /**
+   * Set by the server when a hire on this screen comes from the written demo
+   * corpus. A prop, not a fetch, so the notice is in the server HTML rather
+   * than appearing once the roster lands.
+   */
+  synthetic?: SyntheticCorpus;
+} = {}) {
   const [hires, setHires] = useState<HireState[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(0);
@@ -66,6 +75,9 @@ export default function ManagerView() {
       <main className="mx-auto max-w-[1100px] px-5 py-10 sm:px-8 lg:py-14">
         {/* ── the design statement ── */}
         <header className="flex flex-col gap-5 border-b border-line pb-10">
+          {/* Every name below this line was written. Said here, above the
+              fold and next to the names, rather than in a footer. */}
+          {synthetic && <SyntheticNote {...synthetic} />}
           <Label>Manager view</Label>
           <h1 className="max-w-[18ch] text-[32px] leading-[1.08] font-semibold tracking-[-0.028em] text-balance sm:text-[40px]">
             Blockers. Nothing else.

@@ -96,6 +96,60 @@ export function Pill({
   );
 }
 
+/**
+ * What a screen has to say about itself when the people on it were written.
+ *
+ * Resolved on the server (`getCompany`) so it is `undefined` for a corpus a
+ * customer uploaded themselves — that Slack is real, and calling it fictional
+ * would be a worse falsehood than the one this notice exists to prevent.
+ */
+export type SyntheticCorpus = { companyName: string; people?: number };
+
+/**
+ * Says out loud, inline and before anyone asks, that the demo workspace is
+ * invented.
+ *
+ * Legora is a real company in Stockholm and this corpus is not theirs: the
+ * fourteen names, their titles and every message in the export were written
+ * for the demo. That is fine right up to the moment somebody who works there
+ * opens it and has to work out for themselves whether it is real — and trust
+ * damaged by working it out yourself is trust that does not come back, while
+ * a disclosure made first costs almost nothing. So it is stated adjacent to
+ * the content, above the fold, on every screen that puts an invented person's
+ * name on it: never a footer, never behind a disclosure triangle, and with
+ * nothing to click that makes it go away.
+ *
+ * Deliberately not a warning — no amber, no icon, no alert. It is a line of
+ * spec in the same register as the coverage panel, and it says a different
+ * thing: the coverage panel is "here is what we could not see", this is "none
+ * of this is real". Both have to survive; neither replaces the other.
+ */
+export function SyntheticNote({
+  companyName,
+  people,
+  className = "",
+}: SyntheticCorpus & { className?: string }) {
+  return (
+    <div
+      className={`flex gap-2.5 rounded-lg border border-line-strong bg-surface-2 px-3.5 py-2.5 ${className}`}
+    >
+      <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-line-strong" />
+      <p className="max-w-[88ch] text-[12.5px] leading-[1.55] text-muted">
+        <span className="font-semibold text-ink">Synthetic workspace.</span> The
+        company, the{" "}
+        {typeof people === "number" && (
+          <>
+            <span className="tnum">{people}</span>{" "}
+          </>
+        )}
+        people and every message are invented &mdash; built to mirror how a
+        fast-growing company is structured. Nothing here is real {companyName}{" "}
+        data.
+      </p>
+    </div>
+  );
+}
+
 /** Avatar initials. Two words at most — three letters in a circle reads as a logo. */
 export function initials(name: string): string {
   return name
