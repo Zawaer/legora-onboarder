@@ -192,6 +192,18 @@ export type DriftNote = {
 };
 
 export type HireState = {
+  /**
+   * Who this hire is, stably, across sessions. The Slack user id when the hire
+   * came from Slack; absent for the demo hire on the landing page.
+   *
+   * Exists because a hire used to be looked up by company and role title
+   * alone, so three people who each said "start" in Slack were handed the same
+   * record: one person's finished task was everybody's finished task, and one
+   * person's blocker appeared on everybody's manager row. Every hire is a
+   * different person even when the role is identical, and that is the whole
+   * point of the product.
+   */
+  personKey?: string;
   id: string;
   name: string;
   roleTitle: string;

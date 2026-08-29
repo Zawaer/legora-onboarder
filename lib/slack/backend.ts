@@ -33,6 +33,8 @@ export interface VanavBackend {
   /** Derive the role, build the ramp, and seed the opening message. Slow on a cold cache. */
   start(input: {
     name: string;
+    /** Stable identity of this person, so two hires in one role stay separate. */
+    personKey?: string;
     roleTitle: string;
     companySlug: string;
     /** Reuse an existing hire row instead of littering the dashboard with duplicates. */
@@ -130,10 +132,16 @@ export function createHttpBackend(opts: HttpBackendOptions): VanavBackend {
   }
 
   return {
-    async start({ name, roleTitle, companySlug, hireId }) {
+    async start({ name, roleTitle, companySlug, hireId, personKey }) {
       const data = await post<{ hire: HireState; cached: boolean }>(
         "/api/derive",
-        { name, roleTitle, companySlug, ...(hireId ? { hireId } : {}) },
+        {
+          name,
+          roleTitle,
+          companySlug,
+          ...(hireId ? { hireId } : {}),
+          ...(personKey ? { personKey } : {}),
+        },
         opts.deriveTimeoutMs ?? DEFAULT_DERIVE_TIMEOUT_MS,
       );
       return { hire: data.hire, cached: Boolean(data.cached) };

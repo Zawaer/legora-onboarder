@@ -147,6 +147,9 @@ export async function handleStart(deps: SlackDeps, input: StartInput): Promise<O
     name: input.profileName?.trim() || "New hire",
     roleTitle,
     companySlug: deps.defaults.companySlug,
+    // Without the users:read scope every profile name is "New hire", so the
+    // name cannot tell two people apart. The Slack user id can.
+    personKey: input.slackUserId,
     // Reuse the row if this Slack user already has one, so restarting during a
     // demo does not fill the manager dashboard with abandoned hires.
     hireId: existing?.hireId,

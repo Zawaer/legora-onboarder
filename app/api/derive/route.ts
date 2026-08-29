@@ -52,6 +52,8 @@ export const maxDuration = 300;
 
 const Body = z.object({
   companySlug: z.string().min(1),
+  /** Stable identity of the person, when the caller has one. */
+  personKey: z.string().min(1).max(120).optional(),
   roleTitle: z.string().min(2).max(120),
   name: z.string().min(1).max(80).optional(),
   /** Attach to an existing hire instead of creating one. */
@@ -81,7 +83,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { companySlug, roleTitle, name, hireId } = parsed.data;
+  const { companySlug, roleTitle, name, hireId, personKey } = parsed.data;
 
   // `?fresh=1` and `{ fresh: true }` both work: the query param is what you can
   // type into a browser bar mid-demo, the body field is what the UI sends.
@@ -187,12 +189,18 @@ export async function POST(request: Request) {
      * no bundled hire to land on. That needs durable storage rather than a
      * lookup, and is the first thing to fix if a customer is going to use it.
      */
+    // Reuse is per person, not per role. Without personKey this still collapses
+    // to company plus role, which is what the landing page wants: a judge
+    // clicking the CTA twice should land on the same demo hire rather than
+    // filling the manager screen with abandoned rows. With one, two people in
+    // the same role are two people.
     const priorForRole = hireId
       ? undefined
       : hires.find(
           (h) =>
             h.companySlug === companySlug &&
-            normaliseRoleTitle(h.roleTitle) === normaliseRoleTitle(roleTitle),
+            normaliseRoleTitle(h.roleTitle) === normaliseRoleTitle(roleTitle) &&
+            (personKey ? h.personKey === personKey : !h.personKey),
         );
 
     if (priorForRole && !fresh) {
@@ -213,6 +221,7 @@ export async function POST(request: Request) {
     for (const day of plan.days) for (const task of day.tasks) taskStatus[task.id] = "not_started";
 
     const hire: HireState = {
+      personKey,
       id: existing?.id ?? randomUUID(),
       name: name ?? existing?.name ?? "New hire",
       roleTitle,
