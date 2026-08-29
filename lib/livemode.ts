@@ -1,17 +1,21 @@
 /**
- * Is this deployment taking real money?
+ * Is this a real capture, or someone testing?
  *
- * Derived from the Stripe key rather than a separate flag, because a separate
- * flag is one more thing to remember to flip on Saturday — and the failure
- * mode of forgetting is that sandbox tests get counted as real traction.
+ * It used to derive from the Stripe key: `sk_live` meant we were taking real
+ * money, which was a decent proxy for "this signature is real" back when there
+ * was a checkout. Stripe was removed, so that check now returns false for
+ * everything — and a letter of intent signed by a real COO on the live site
+ * was being labelled "test mode — does not count as traction". Mislabelling
+ * real traction as fake is a worse failure than the one the flag was guarding
+ * against, and it is the one that was actually happening.
  *
- * Stripe events carry an authoritative `livemode` of their own; the webhook
- * uses that. This is for the captures Stripe knows nothing about — signed LOIs
- * — where "are we live yet" is the only signal there is. Not perfect, but it
- * moves with the keys, and nothing has to be remembered.
+ * The honest signal now is where the capture happened. Signed against the
+ * production deployment: real. Signed on a laptop or a preview build while
+ * someone was checking the form worked: not. Vercel sets VERCEL_ENV itself, so
+ * there is still nothing to remember to flip.
  *
- * Server-only: it reads a secret. Never import into a client component.
+ * Server-only.
  */
 export function isLiveMode(): boolean {
-  return (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_live");
+  return process.env.VERCEL_ENV === "production";
 }
