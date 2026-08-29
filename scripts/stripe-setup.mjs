@@ -1,5 +1,5 @@
 /**
- * Creates the Onboarder product and its two prices in Stripe, then prints the
+ * Creates the Vanav product and its two prices in Stripe, then prints the
  * env lines to paste into `.env.local`.
  *
  * Run it once per Stripe mode:
@@ -21,7 +21,7 @@ import Stripe from "stripe";
 
 // ── config ───────────────────────────────────────────────────────────────────
 
-const PRODUCT_NAME = "Onboarder";
+const PRODUCT_NAME = "Vanav";
 const PRODUCT_DESCRIPTION =
   "Onboards new hires into roles that have never existed before.";
 

@@ -54,14 +54,13 @@ export default function PricingPage() {
       <main className="mx-auto w-full max-w-[1100px] px-5 pb-20 sm:px-8">
         <section className="border-b border-line py-14 lg:py-20">
           <h1 className="max-w-[20ch] text-balance text-[34px] leading-[1.08] font-semibold tracking-[-0.03em] sm:text-[44px]">
-            You pay per person onboarded.
+            Priced against the time it gives back.
           </h1>
           <p className="mt-5 max-w-[62ch] text-[16px] leading-[1.6] text-muted">
-            Not per seat. Everyone else prices against headcount — the number
-            that barely moves — while the number actually breaking at a
-            fast-growing company is how many people started this month. We
-            charge for that one, so our bill grows only when the thing we fix
-            is happening to you.
+            Not per seat. A seat licence bills you for the fourteen hundred
+            people who already know how the company works. We bill against the
+            people who don&rsquo;t yet — so the price moves with the problem,
+            and every figure behind it is printed below rather than implied.
           </p>
         </section>
 
@@ -71,21 +70,34 @@ export default function PricingPage() {
 
         <section className="grid gap-10 border-b border-line py-12 lg:grid-cols-2 lg:gap-16 lg:py-16">
           <div>
-            <Label>What you can buy today</Label>
+            <Label>Plans</Label>
             <div className="mt-5 flex flex-col gap-5">
-              <div className="border-l-2 border-accent pl-4">
-                <div className="font-mono text-[13px] text-accent-ink">
-                  2 500 SEK · one-off
+              <div className="border-l-2 border-line-strong pl-4">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="font-medium">Pilot</span>
+                  <span className="font-mono text-[13px] text-faint">€900 once</span>
                 </div>
                 <p className="mt-1.5 text-[14px] leading-[1.6] text-muted">
-                  A pilot on one role. The number a hiring manager can put on a
-                  card without going near procurement.
+                  One team, 30 days. Credited against year one.
+                </p>
+              </div>
+              <div className="border-l-2 border-accent pl-4">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="font-medium">Team</span>
+                  <span className="font-mono text-[13px] text-accent-ink">€1,600 / mo</span>
+                </div>
+                <p className="mt-1.5 text-[14px] leading-[1.6] text-muted">
+                  12 onboardings included, then €500 each.
                 </p>
               </div>
               <div className="border-l-2 border-line-strong pl-4">
-                <div className="font-mono text-[13px]">4 900 SEK / month</div>
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="font-medium">Scale</span>
+                  <span className="font-mono text-[13px] text-faint">€3,200 / mo</span>
+                </div>
                 <p className="mt-1.5 text-[14px] leading-[1.6] text-muted">
-                  Continuous, for a team hiring every week.
+                  40 onboardings included, then €300 each. SSO and compliance
+                  review.
                 </p>
               </div>
             </div>
@@ -99,9 +111,9 @@ export default function PricingPage() {
                 Book 20 minutes
                 <span aria-hidden>→</span>
               </a>
-              <Link href="/pay" className="text-muted hover:text-ink">
-                Or pay now
-              </Link>
+              <span className="text-faint">
+                We are onboarding companies in order.
+              </span>
             </div>
           </div>
 

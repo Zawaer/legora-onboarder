@@ -1,33 +1,32 @@
 import type { ReactNode } from "react";
+import { PRODUCT } from "@/lib/product";
 
 /* Small shared presentational pieces. Deliberately tiny — no design system. */
 
+/**
+ * The mark: a vana — the trail someone leaves behind — with one point picked out.
+ *
+ * Sampled from the full lockup onto a 24 grid at nine dots rather than the
+ * original twenty-four. At the 18px the wordmark actually renders it,
+ * twenty-four dots collapse into a smudge; nine keep the wave legible and the
+ * highlighted point distinct, which is the whole idea of the mark.
+ *
+ * The dots take their colour from tokens rather than the source's #0a0a0a and
+ * #c99a3a, so the mark inverts correctly in dark mode. The brass in the
+ * original is within a few points of our accent already.
+ */
 export function Mark({ className = "h-6 w-6" }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-      className={className}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect
-        x="2.75"
-        y="2.75"
-        width="18.5"
-        height="18.5"
-        rx="5.5"
-        className="stroke-ink/25"
-        strokeWidth="1.4"
-      />
-      <path
-        d="M7.5 15.4V8.6M7.5 8.6c3.4 0 3.4 3.1 0 3.1M7.5 11.7c3.9 0 3.9 3.7 0 3.7"
-        className="stroke-accent"
-        strokeWidth="1.7"
-      />
-      <circle cx="16.4" cy="9" r="1.5" className="fill-accent" />
-      <path d="M16.4 12.4v3" className="stroke-ink/40" strokeWidth="1.5" />
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden className={className}>
+      <circle cx="3.0" cy="12.0" r="1.15" className="fill-ink/45" />
+      <circle cx="5.25" cy="15.54" r="1.15" className="fill-ink/45" />
+      <circle cx="7.5" cy="17.0" r="1.15" className="fill-ink/45" />
+      <circle cx="9.75" cy="15.54" r="1.15" className="fill-ink/45" />
+      <circle cx="12.0" cy="12.0" r="1.9" className="fill-accent" />
+      <circle cx="14.25" cy="8.46" r="1.15" className="fill-ink/45" />
+      <circle cx="16.5" cy="7.0" r="1.15" className="fill-ink/45" />
+      <circle cx="18.75" cy="8.46" r="1.15" className="fill-ink/45" />
+      <circle cx="21.0" cy="12.0" r="1.15" className="fill-ink/45" />
     </svg>
   );
 }
@@ -41,7 +40,7 @@ export function Wordmark({ muted = false }: { muted?: boolean }) {
           muted ? "text-muted" : "text-ink"
         }`}
       >
-        Onboarder
+        {PRODUCT}
       </span>
     </span>
   );

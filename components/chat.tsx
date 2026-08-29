@@ -123,7 +123,7 @@ export default function Chat({
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
             <span className="truncate text-[14px] font-semibold tracking-[-0.01em]">
-              Onboarder
+              Vanav
             </span>
             <span className="truncate font-mono text-[11px] text-faint">
               {channel}
@@ -207,7 +207,7 @@ export default function Chat({
                 submit(draft);
               }
             }}
-            placeholder={`Message Onboarder…`}
+            placeholder={`Message Vanav…`}
             className="max-h-40 min-h-6 flex-1 resize-none bg-transparent text-[14.5px] leading-[1.5] text-ink outline-none placeholder:text-faint"
           />
           <VoiceInput
@@ -277,7 +277,7 @@ function AgentBubble({ message }: { message: ChatMessage }) {
           </div>
         </div>
         <span className="tnum mt-1 block pl-1 text-[10.5px] text-faint">
-          Onboarder · {clockTime(message.at)}
+          Vanav · {clockTime(message.at)}
         </span>
       </div>
     </div>
@@ -308,7 +308,7 @@ function Typing() {
       <span
         className="flex items-center gap-1 rounded-2xl rounded-tl-md border border-line bg-surface-2 px-3.5 py-3"
         role="status"
-        aria-label="Onboarder is typing"
+        aria-label="Vanav is typing"
       >
         <span className="dot h-1.5 w-1.5 rounded-full bg-muted" />
         <span className="dot h-1.5 w-1.5 rounded-full bg-muted" />

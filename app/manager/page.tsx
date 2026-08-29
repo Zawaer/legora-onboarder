@@ -6,7 +6,7 @@ import VoiceBrief from "@/components/voice-brief";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Blockers · Onboarder",
+  title: "Blockers · Vanav",
   description:
     "What each new hire is stuck on, who can unblock them, and how many minutes it costs. No productivity metrics, by design.",
 };

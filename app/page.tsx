@@ -134,7 +134,7 @@ export default async function Home() {
               to be filled — and filled quickly.
             </p>
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              Onboarder reads a company&rsquo;s real Slack, docs and tickets,
+              Vanav reads a company&rsquo;s real Slack, docs and tickets,
               works out what a brand-new role actually is, and drives the new
               hire through their first two days of real work.
             </p>

@@ -429,7 +429,7 @@ function whyLine(
  * `knowledge.ts` so this module can recognise its own output without importing
  * the store (which imports this file).
  */
-export const CAPTURED_CHANNEL = "Onboarder / captured knowledge";
+export const CAPTURED_CHANNEL = "Vanav / captured knowledge";
 
 /** A verbatim thing this person said, used to anchor the probe to an incident. */
 export type Anchor = {
@@ -881,7 +881,7 @@ export type BuildRequestInput = {
  * an AI rather than a person reduced openness to asking for help (η²=0.17) and
  * willingness to correct mistakes (η²=0.14). A field study of 6,255 calls found
  * pre-disclosed bot callers cut compliance by 79.7%. A request that opens
- * "Onboarder requests knowledge capture" is a request that gets closed.
+ * "Vanav requests knowledge capture" is a request that gets closed.
  *
  * So: no bot persona, no first-person system voice, no branding in the ask. What
  * it must never do is *pretend* a human typed it — the write-up step is stated

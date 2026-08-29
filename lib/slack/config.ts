@@ -91,7 +91,7 @@ export function loadSlackConfig(env: EnvLike): SlackConfig {
     problems.push(
       "SLACK_MANAGER_CHANNEL is not set.\n" +
         "  This is where escalations go. Use the channel ID (open the channel → its name → About → the C… at\n" +
-        "  the bottom), or #channel-name for a public channel. Invite the bot to it: /invite @Onboarder.",
+        "  the bottom), or #channel-name for a public channel. Invite the bot to it: /invite @Vanav.",
     );
   } else if (!/^([CG][A-Z0-9]{6,}|#[a-z0-9_-]{1,80})$/.test(managerChannel)) {
     problems.push(
@@ -121,9 +121,9 @@ export function loadSlackConfig(env: EnvLike): SlackConfig {
     botToken,
     appToken,
     managerChannel,
-    apiBaseUrl: (env.ONBOARDER_API_URL ?? "http://localhost:3000").trim().replace(/\/+$/, ""),
-    companySlug: (env.ONBOARDER_COMPANY ?? "lexhav").trim(),
-    roleTitle: (env.ONBOARDER_ROLE ?? "Legal Engineer").trim(),
+    apiBaseUrl: (env.VANAV_API_URL ?? "http://localhost:3000").trim().replace(/\/+$/, ""),
+    companySlug: (env.VANAV_COMPANY ?? "lexhav").trim(),
+    roleTitle: (env.VANAV_ROLE ?? "Legal Engineer").trim(),
     sessionsPath: (env.SLACK_SESSIONS_PATH ?? "data/slack-sessions.json").trim(),
   };
 }

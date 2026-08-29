@@ -29,7 +29,7 @@
 import type { Blocker, HireState } from "@/lib/types";
 
 /** What the Slack handlers are allowed to ask for. Implemented over HTTP below, faked in the harness. */
-export interface OnboarderBackend {
+export interface VanavBackend {
   /** Derive the role, build the ramp, and seed the opening message. Slow on a cold cache. */
   start(input: {
     name: string;
@@ -47,11 +47,11 @@ export interface OnboarderBackend {
   }>;
 }
 
-export class OnboarderApiError extends Error {
+export class VanavApiError extends Error {
   readonly status: number;
   constructor(message: string, status: number) {
     super(message);
-    this.name = "OnboarderApiError";
+    this.name = "VanavApiError";
     this.status = status;
   }
 }
@@ -73,7 +73,7 @@ export type HttpBackendOptions = {
 const DEFAULT_DERIVE_TIMEOUT_MS = 300_000;
 const DEFAULT_TURN_TIMEOUT_MS = 120_000;
 
-export function createHttpBackend(opts: HttpBackendOptions): OnboarderBackend {
+export function createHttpBackend(opts: HttpBackendOptions): VanavBackend {
   const base = opts.baseUrl.replace(/\/+$/, "");
   const doFetch = opts.fetchImpl ?? fetch;
 
@@ -92,16 +92,16 @@ export function createHttpBackend(opts: HttpBackendOptions): OnboarderBackend {
       // rather than `fetch failed`.
       const cause = err instanceof Error ? err.message : String(err);
       if (err instanceof Error && err.name === "TimeoutError") {
-        throw new OnboarderApiError(
-          `The Onboarder API did not answer within ${Math.round(timeoutMs / 1000)}s (${base}${path}). ` +
+        throw new VanavApiError(
+          `The Vanav API did not answer within ${Math.round(timeoutMs / 1000)}s (${base}${path}). ` +
             `A cold role derivation genuinely takes a couple of minutes; if this was a chat turn, check the ` +
             `\`npm run dev\` terminal for an Anthropic error.`,
           504,
         );
       }
-      throw new OnboarderApiError(
-        `Cannot reach the Onboarder API at ${base} (${cause}). Start it with \`npm run dev\` in another ` +
-          `terminal, or set ONBOARDER_API_URL if it is on a different port.`,
+      throw new VanavApiError(
+        `Cannot reach the Vanav API at ${base} (${cause}). Start it with \`npm run dev\` in another ` +
+          `terminal, or set VANAV_API_URL if it is on a different port.`,
         503,
       );
     }
@@ -111,8 +111,8 @@ export function createHttpBackend(opts: HttpBackendOptions): OnboarderBackend {
     try {
       parsed = text ? JSON.parse(text) : {};
     } catch {
-      throw new OnboarderApiError(
-        `The Onboarder API returned non-JSON from ${path} (HTTP ${response.status}). ` +
+      throw new VanavApiError(
+        `The Vanav API returned non-JSON from ${path} (HTTP ${response.status}). ` +
           `That usually means the request hit the Next dev overlay rather than the route.`,
         response.status,
       );
@@ -123,7 +123,7 @@ export function createHttpBackend(opts: HttpBackendOptions): OnboarderBackend {
         typeof parsed === "object" && parsed !== null && typeof (parsed as { error?: unknown }).error === "string"
           ? (parsed as { error: string }).error
           : `HTTP ${response.status} from ${path}`;
-      throw new OnboarderApiError(message, response.status);
+      throw new VanavApiError(message, response.status);
     }
 
     return parsed as T;

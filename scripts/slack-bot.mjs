@@ -1,5 +1,5 @@
 /**
- * Onboarder in Slack. One command:
+ * Vanav in Slack. One command:
  *
  *     node scripts/slack-bot.mjs          (or: npm run slack)
  *
@@ -66,7 +66,7 @@ try {
   config = loadSlackConfig(process.env);
 } catch (err) {
   if (err instanceof SlackConfigError) {
-    console.error(`\n  Onboarder's Slack bot is not configured yet.\n`);
+    console.error(`\n  Vanav's Slack bot is not configured yet.\n`);
     for (const problem of err.problems) console.error(`  • ${problem.replace(/\n/g, "\n    ")}\n`);
     console.error(`  All of these go in .env.local (see .env.example). Full setup: docs/slack.md\n`);
     process.exit(1);
@@ -74,7 +74,7 @@ try {
   throw err;
 }
 
-const { createHttpBackend, OnboarderApiError } = await import("../lib/slack/backend.ts");
+const { createHttpBackend, VanavApiError } = await import("../lib/slack/backend.ts");
 const { createFileSessionStore } = await import("../lib/slack/sessions.ts");
 const { handleStart, handleUserMessage, handleMention } = await import("../lib/slack/app.ts");
 const { thinkingBlocks, errorBlocks, channelRef } = await import("../lib/slack/format.ts");
@@ -89,7 +89,7 @@ const { getCompany } = await import("@/lib/seed");
 const company = getCompany(config.companySlug);
 if (!company) {
   console.error(
-    `\n  ONBOARDER_COMPANY is "${config.companySlug}", which is not seeded.\n` +
+    `\n  VANAV_COMPANY is "${config.companySlug}", which is not seeded.\n` +
       `  Seeded companies live in lib/seed/. Leave the variable unset to use the default.\n`,
   );
   process.exit(1);
@@ -170,7 +170,7 @@ async function send(client, action, dmChannel, replace) {
         console.error(
           `\n  ────────────────────────────────────────────────────────────\n` +
             `  ESCALATION NOT DELIVERED — the bot is not in ${action.channel}.\n` +
-            `  Fix: open that channel in Slack and run  /invite @Onboarder\n` +
+            `  Fix: open that channel in Slack and run  /invite @Vanav\n` +
             `  (channel_not_found also means "private channel the bot cannot see".)\n` +
             `  ────────────────────────────────────────────────────────────\n`,
         );
@@ -273,7 +273,7 @@ async function withThinking(client, dmChannel, mode, work) {
   } catch (err) {
     await settle();
     const message =
-      err instanceof OnboarderApiError ? err.message : (err?.message ?? "Unexpected error.");
+      err instanceof VanavApiError ? err.message : (err?.message ?? "Unexpected error.");
     console.error("[slack]", err);
     // Only edit the placeholder if it is still a placeholder. Once `send` has
     // turned it into the agent's actual answer, `replace` is undefined and
@@ -421,7 +421,7 @@ try {
 console.log(
   [
     ``,
-    `  Onboarder is live in Slack.  (${scriptPath}, Socket Mode — no public URL)`,
+    `  Vanav is live in Slack.  (${scriptPath}, Socket Mode — no public URL)`,
     ``,
     describeConfig(config),
     ``,
@@ -434,7 +434,7 @@ console.log(
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, () => {
-    console.log("\n  Onboarder disconnected from Slack.");
+    console.log("\n  Vanav disconnected from Slack.");
     app.stop().finally(() => process.exit(0));
   });
 }

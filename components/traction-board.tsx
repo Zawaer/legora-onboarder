@@ -40,7 +40,7 @@ export default function TractionBoard({
           <>
             <NavLink href="/manager">Manager view</NavLink>
             <NavLink href="/loi">Letter of intent</NavLink>
-            <NavLink href="/pay" emphasis>
+            <NavLink href="/#waitlist" emphasis>
               Pricing
             </NavLink>
           </>
@@ -220,7 +220,7 @@ export default function TractionBoard({
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link
-                      href="/pay?source=room"
+                      href="/#waitlist"
                       className="inline-flex h-9 items-center rounded-lg bg-ink px-4 text-[13.5px] font-medium text-paper hover:opacity-90"
                     >
                       Take a payment
@@ -258,7 +258,7 @@ export default function TractionBoard({
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
                 <Link
-                  href="/pay?source=room"
+                  href="/#waitlist"
                   className="inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[14px] font-medium text-paper hover:opacity-90"
                 >
                   Take a payment

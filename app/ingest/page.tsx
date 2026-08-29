@@ -7,9 +7,9 @@ import { Label } from "@/components/ui";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Your own data · Onboarder",
+  title: "Your own data · Vanav",
   description:
-    "Point Onboarder at your own Slack, docs or tickets. It parses the corpus, shows you exactly what it understood, and only then derives the role.",
+    "Point Vanav at your own Slack, docs or tickets. It parses the corpus, shows you exactly what it understood, and only then derives the role.",
 };
 
 /**
@@ -60,7 +60,7 @@ export default function IngestPage() {
 
           <p className="max-w-[62ch] text-[16px] leading-[1.6] text-muted sm:text-[17px]">
             Drop in a Slack export, a CSV, or a few hundred lines pasted straight
-            out of a channel. Onboarder reads it into the same shape the demo
+            out of a channel. Vanav reads it into the same shape the demo
             uses, shows you what it understood, and waits for you to say go before
             it derives anything.
           </p>

@@ -6,7 +6,7 @@ import WhosWhoPanel from "@/components/whos-who";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Day 1 · Onboarder",
+  title: "Day 1 · Vanav",
 };
 
 /**

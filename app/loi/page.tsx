@@ -28,7 +28,7 @@ export default async function LoiPage({ searchParams }: { searchParams: Params }
         href="/"
         className="text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
       >
-        &larr; Onboarder
+        &larr; Vanav
       </Link>
 
       <div className="flex flex-col gap-3">

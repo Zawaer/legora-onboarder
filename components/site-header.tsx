@@ -31,9 +31,9 @@ export default function SiteHeader({
                   "Letter of intent" is a sales instrument, not a surface, and
                   lives next to the price. */}
               <NavLink href="/manager">Manager view</NavLink>
-              <NavLink href="/pay" emphasis>
-                Pricing
-              </NavLink>
+              <NavLink href="/#waitlist" emphasis>
+                Join the waitlist
+            </NavLink>
             </>
           )}
         </div>

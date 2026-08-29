@@ -2,7 +2,7 @@
  * The seed registry.
  *
  * One entry today (Lexhav), but keyed by slug from the start: the pitch is that
- * you point Onboarder at *any* hypergrowth company's Slack and it derives the
+ * you point Vanav at *any* hypergrowth company's Slack and it derives the
  * role, so the demo should never look like it was hard-coded for one company.
  * Adding a second company is a new file under `lib/seed/` and one line here.
  */

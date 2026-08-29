@@ -26,7 +26,7 @@
  */
 
 import type { Blocker, Company, HireState, RampTask } from "@/lib/types";
-import type { OnboarderBackend } from "./backend";
+import type { VanavBackend } from "./backend";
 import type { SessionStore } from "./sessions";
 import {
   type Block,
@@ -56,7 +56,7 @@ export type Outbound =
   | { kind: "thread"; channel: string; threadTs: string; text: string; blocks: Block[] };
 
 export type SlackDeps = {
-  backend: OnboarderBackend;
+  backend: VanavBackend;
   sessions: SessionStore;
   /** Where escalations go. Channel ID (`C…`) or `#name`. */
   managerChannel: string;
@@ -291,7 +291,7 @@ export async function handleUserMessage(deps: SlackDeps, input: MessageInput): P
 }
 
 /**
- * `@Onboarder` in a channel.
+ * `@Vanav` in a channel.
  *
  * The conversation belongs in a DM — it is one person's ramp, and half of it is
  * them admitting what they do not know. So a mention acknowledges in-thread and
