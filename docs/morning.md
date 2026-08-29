@@ -66,7 +66,7 @@ that is distribution you cannot buy.
 | Payments, QR, LOI capture | ✅ verified end to end |
 | `/pitch` traction board | ✅ live/test money separated |
 
-## Three things need one manual test before you demo them
+## Four things need one manual test before you demo them
 
 These are built and I could not verify them headlessly. **Do not discover these
 live.**
