@@ -5,6 +5,7 @@ import type { ChatMessage, HireState } from "@/lib/types";
 import { sendChat } from "./client-api";
 import { Mark, clockTime } from "./ui";
 import VoiceInput from "./voice-input";
+import AgentText from "./agent-text";
 
 const DEFAULT_PROMPTS = [
   "What should I start with?",
@@ -256,9 +257,9 @@ function OpeningMessage({ message }: { message: ChatMessage }) {
           {clockTime(message.at)}
         </span>
       </div>
-      <p className="px-4 py-3.5 text-[15px] leading-[1.62] whitespace-pre-wrap text-ink">
-        {message.text}
-      </p>
+      <div className="px-4 py-3.5 text-[15px] leading-[1.62] text-ink">
+        <AgentText text={message.text} />
+      </div>
     </div>
   );
 }
@@ -271,9 +272,9 @@ function AgentBubble({ message }: { message: ChatMessage }) {
       </span>
       <div className="min-w-0 max-w-[86%]">
         <div className="rounded-2xl rounded-tl-md border border-line bg-surface-2 px-3.5 py-2.5">
-          <p className="text-[14.5px] leading-[1.6] whitespace-pre-wrap break-words text-ink">
-            {message.text}
-          </p>
+          <div className="text-[14.5px] leading-[1.6] break-words text-ink">
+            <AgentText text={message.text} />
+          </div>
         </div>
         <span className="tnum mt-1 block pl-1 text-[10.5px] text-faint">
           Onboarder · {clockTime(message.at)}
