@@ -178,10 +178,23 @@ retention is available to API customers on request. Say "my understanding is" if
 you have not checked — this buyer knows the real answer better than you do, and
 hedging correctly earns more than confidence.
 
-**Say the weakness before they find it:** we currently ship the whole corpus
-in-context on every call. That is right at 63 artifacts and wrong at 50,000. The
-answer at scale is retrieval, so only relevant passages cross the boundary. We
-know it, and it is the next thing.
+**On "you send the whole corpus every time" — do not concede this as a flaw.**
+It is deliberate, and conceding it undercuts the pitch:
+
+> It reads everything on purpose. That is the point — the useful message is the
+> one nobody would have known to search for, which is exactly why retrieval
+> loses here. We are at about 4% of the context window, with caching on the
+> stable prefix so repeat calls read the cache rather than re-paying.
+
+**Retrieval is a cost control, not a security control.** Sending five thousand
+tokens across a boundary is the same trust posture as sending two hundred
+thousand. If the concern is data residency the answer is deployment location; if
+it is spend or latency, that is when retrieval earns its place — on the Q&A path,
+where there is an actual query. Never on the derivation path.
+
+The genuine limit to admit: the ingest cap is 1,500 artifacts. A 50,000-message
+workspace needs a selection step before derivation, and choosing *which* channels
+is a customer conversation, not an algorithm.
 
 **Do not offer to broker anything.** We cannot arrange terms between Anthropic
 and a customer and should not imply we can. The deployment answer is ours to
