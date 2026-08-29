@@ -78,8 +78,8 @@ export type BriefOptions = {
  */
 const SPOKEN_DETAIL_LIMIT = 3;
 
-/** Hard ceiling. Past ~230 words this stops being a briefing and becomes a podcast. */
-const MAX_WORDS = 230;
+/** Hard ceiling. Past ~220 words (about ninety seconds) this stops being a briefing. */
+const MAX_WORDS = 220;
 
 const WORDS_PER_SECOND = 2.5;
 
@@ -113,9 +113,24 @@ export function spellNumber(n: number): string {
   return String(value);
 }
 
+/**
+ * Minutes, spoken the way a person would say them.
+ *
+ * Past an hour we switch to hours-and-minutes rather than reading out "one
+ * hundred and five minutes" — partly because nobody talks like that, and partly
+ * because `spellNumber` hands back bare digits above ninety-nine, and a digit
+ * that reaches the speech model is exactly the failure this whole file exists
+ * to avoid.
+ */
 function spellMinutes(mins: number): string {
   const value = Math.max(1, Math.round(mins));
-  return value === 1 ? "one minute" : `${spellNumber(value)} minutes`;
+  if (value < 60) return value === 1 ? "one minute" : `${spellNumber(value)} minutes`;
+
+  const hours = Math.floor(value / 60);
+  const rest = value % 60;
+  const hourPart = hours === 1 ? "one hour" : `${spellNumber(hours)} hours`;
+  if (rest === 0) return hourPart;
+  return `${hourPart} and ${rest === 1 ? "one minute" : `${spellNumber(rest)} minutes`}`;
 }
 
 // ──────────────────────────────────────────────────────────── text for speech
@@ -206,7 +221,66 @@ type OpenItem = {
   blocker: Blocker;
   /** Who is stuck. Named, because a briefing without a name is not actionable. */
   hireName: string;
+  /**
+   * The ramp task this blocker is standing in front of, if the plan names one.
+   *
+   * This is about the WORK, not the worker: "it is holding up the Nordkap
+   * disclosure schedule" tells the manager what is actually stalled and what it
+   * costs the company. It is emphatically not progress tracking — there is no
+   * count of tasks done, no percentage, no comparison between hires.
+   */
+  taskTitle?: string;
 };
+
+/**
+ * What the company itself has not decided yet.
+ *
+ * `DerivedRole.openQuestions` is the agent admitting the corpus does not answer
+ * something — usually because nobody has made the call. That is genuinely a
+ * manager's job and nobody else's, so one of them belongs in the briefing. It
+ * is also, notably, an obstacle in the ORGANISATION rather than in the person,
+ * which is the only kind of thing this product is willing to say out loud.
+ */
+type RoleGap = { count: number; first: string; hireName: string };
+
+type Ingredients = {
+  open: OpenItem[];
+  handled: number;
+  hireCount: number;
+  /** For the one-hire case: who, and when they started. Orientation, not a metric. */
+  soloHire?: { name: string; startedAt: string };
+  gap?: RoleGap;
+};
+
+/**
+ * Which optional material makes it into this take.
+ *
+ * Everything here is true and worth saying; the only question is whether there
+ * is room for it. See `LADDER` below.
+ */
+type Take = {
+  detailLimit: number;
+  taskContext: boolean;
+  roleGap: boolean;
+  roster: boolean;
+};
+
+/**
+ * The degradation ladder, richest first.
+ *
+ * A briefing is a fixed budget of the listener's attention, so when the day is
+ * busy the extras have to give way to the blockers — never the other way round.
+ * Context is dropped in order of how far it sits from "somebody is stuck right
+ * now", and only as a last resort do we speak about fewer blockers.
+ */
+const LADDER: Take[] = [
+  { detailLimit: 3, taskContext: true, roleGap: true, roster: true },
+  { detailLimit: 3, taskContext: true, roleGap: true, roster: false },
+  { detailLimit: 3, taskContext: true, roleGap: false, roster: false },
+  { detailLimit: 3, taskContext: false, roleGap: false, roster: false },
+  { detailLimit: 2, taskContext: false, roleGap: false, roster: false },
+  { detailLimit: 1, taskContext: false, roleGap: false, roster: false },
+];
 
 function hoursWaiting(raisedAt: string, now: number): number {
   const at = new Date(raisedAt).getTime();
@@ -215,31 +289,73 @@ function hoursWaiting(raisedAt: string, now: number): number {
 }
 
 /**
+ * "started today" / "started yesterday" / "started three days ago".
+ *
+ * A date, not a judgement. It answers "which of the twenty is this?" for a
+ * manager who is ramping a cohort — and it deliberately stops at a fortnight,
+ * because past that the answer stops being interesting and starts sounding
+ * like a comment on how long somebody is taking.
+ */
+function startedPhrase(startedAt: string, now: number): string {
+  const days = Math.floor((now - new Date(startedAt).getTime()) / 86_400_000);
+  if (!Number.isFinite(days) || days < 0) return "";
+  if (days === 0) return "started today";
+  if (days === 1) return "started yesterday";
+  if (days < 14) return `started ${spellNumber(days)} days ago`;
+  return "";
+}
+
+const QUESTION_OPENER = /^(who|what|whether|which|where|when|how|why)\b/i;
+
+/**
+ * An open question, spoken as a clause after a colon. Question words get their
+ * capital dropped so "…is still open: who owns the escalation conversation"
+ * reads as one sentence rather than two glued together; anything else keeps its
+ * capital, because it is probably a proper noun.
+ */
+function asClause(text: string): string {
+  const clause = firstClause(text, 22);
+  if (!clause) return "";
+  return QUESTION_OPENER.test(clause)
+    ? clause.charAt(0).toLowerCase() + clause.slice(1)
+    : clause;
+}
+
+/**
  * One blocker, spoken.
  *
- * Two sentences rather than one, because the summary is a full sentence written
- * for a card and splicing it into "X is blocked on <summary>" produces garbage
- * grammar for anything but the shortest summaries. "Rebecca is blocked. The
- * workspace is not visible under her new account. Johan can clear it in five
- * minutes." survives any input the agent can produce.
+ * Deliberately several short sentences rather than one long one. The summary is
+ * a full sentence written for a card, and splicing it into "X is blocked on
+ * <summary>" produces broken grammar for anything but the shortest inputs.
+ * "Rebecca is blocked. The workspace is not visible under her new account.
+ * Johan can clear it in five minutes." survives anything the agent can write,
+ * and short sentences are what the ear wants anyway.
  */
-function speakBlocker(item: OpenItem, spokenName: string): string {
+function speakBlocker(item: OpenItem, spokenName: string, withTask: boolean): string {
   const { blocker } = item;
   const obstacle = firstClause(blocker.summary, 24);
   const person = blocker.suggestedPerson ? firstName(blocker.suggestedPerson) : null;
-  const mins = typeof blocker.minutesToUnblock === "number" && blocker.minutesToUnblock > 0
-    ? blocker.minutesToUnblock
-    : null;
+  const mins =
+    typeof blocker.minutesToUnblock === "number" && blocker.minutesToUnblock > 0
+      ? blocker.minutesToUnblock
+      : null;
 
   const parts = [`${spokenName} is blocked.`];
   if (obstacle) parts.push(obstacle);
+
+  if (withTask && item.taskTitle) {
+    const task = firstClause(item.taskTitle, 16);
+    if (task) parts.push(`It is holding up the task called ${task}`);
+  }
 
   if (person && mins) {
     parts.push(`${person} can clear it in ${spellMinutes(mins)}.`);
   } else if (person) {
     parts.push(`${person} can clear it.`);
   } else if (mins) {
-    parts.push(`It is about ${spellMinutes(mins)} of somebody's time, and nobody is named on it yet.`);
+    parts.push(
+      `It is about ${spellMinutes(mins)} of somebody's time, and nobody is named on it yet.`,
+    );
   } else {
     parts.push("Nobody is named on it yet.");
   }
@@ -247,18 +363,15 @@ function speakBlocker(item: OpenItem, spokenName: string): string {
   return parts.join(" ");
 }
 
-function compose(
-  open: OpenItem[],
-  handled: number,
-  hireCount: number,
-  detailLimit: number,
-  now: number,
-): string {
+function compose(input: Ingredients, take: Take, now: number): string {
+  const { open, handled, hireCount, soloHire, gap } = input;
+
   // ── nothing needs a human ──────────────────────────────────────────────────
   // One cheerful sentence and out. The temptation here is to fill the silence
   // with a roundup nobody asked for; a briefing that says "you are clear" in
-  // four seconds is worth more than ninety seconds of manufactured content,
-  // and it is the honest output.
+  // four seconds is worth more than ninety seconds of manufactured content, and
+  // it is the honest output. Filler is how a briefing teaches its listener to
+  // stop pressing play.
   if (open.length === 0) {
     if (hireCount === 0) {
       return "Nobody is onboarding right now, so there is nothing waiting on you.";
@@ -276,17 +389,23 @@ function compose(
   const lines: string[] = [];
 
   // ── lead with what needs a human, right now ───────────────────────────────
+  // First sentence, no preamble, no greeting. A listener who stops paying
+  // attention after four seconds should still have heard the only number that
+  // matters to them.
   lines.push(
     open.length === 1
       ? "One thing needs you."
       : `${capitalise(spellNumber(open.length))} things need you.`,
   );
 
-  const detailed = open.slice(0, detailLimit);
+  const detailed = open.slice(0, take.detailLimit);
   detailed.forEach((item, index) => {
-    lines.push(speakBlocker(item, names.get(item.hireName) ?? firstName(item.hireName)));
+    lines.push(
+      speakBlocker(item, names.get(item.hireName) ?? firstName(item.hireName), take.taskContext),
+    );
     // Age, on the oldest item only. It is the one fact that changes what the
-    // manager does first, and it is about the queue, never about the person.
+    // manager does first, and it is a fact about the queue — never about the
+    // person waiting in it.
     if (index === 0) {
       const hours = hoursWaiting(item.blocker.raisedAt, now);
       if (hours >= 2) {
@@ -313,15 +432,42 @@ function compose(
   }
 
   // ── what the agent absorbed ───────────────────────────────────────────────
-  // A count, never a list. The point being made is about volume: this is how
-  // much did NOT reach you. Reading out nine resolved questions would spend the
-  // manager's attention proving we saved the manager's attention.
+  // A count, never a list. The point is volume: this is how much did NOT reach
+  // you. Reading out nine resolved questions would spend the manager's
+  // attention proving that we save the manager's attention.
   if (handled > 0) {
     lines.push(
       `The agent answered ${spellNumber(handled)} other ${
         handled === 1 ? "question" : "questions"
       } without you.`,
     );
+  }
+
+  // ── who is in the cohort ──────────────────────────────────────────────────
+  if (take.roster) {
+    if (hireCount === 1 && soloHire) {
+      const started = startedPhrase(soloHire.startedAt, now);
+      lines.push(
+        started
+          ? `${soloHire.name} ${started} and is the only person ramping right now.`
+          : `${soloHire.name} is the only person ramping right now.`,
+      );
+    } else if (hireCount > 1) {
+      lines.push(`${capitalise(spellNumber(hireCount))} people are ramping right now.`);
+    }
+  }
+
+  // ── what the company has not decided ──────────────────────────────────────
+  if (take.roleGap && gap) {
+    const clause = asClause(gap.first);
+    const whose = hireCount === 1 ? "the role itself" : `${gap.hireName}'s role`;
+    if (clause) {
+      lines.push(
+        gap.count === 1
+          ? `Separately, one question about ${whose} is still open: ${clause}`
+          : `Separately, ${spellNumber(gap.count)} questions about ${whose} are still open. One of them: ${clause}`,
+      );
+    }
   }
 
   lines.push("Nothing else needs you.");
@@ -331,6 +477,17 @@ function compose(
 
 function capitalise(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+/** Ramp-task titles by id, so a blocker can name the work it is standing in front of. */
+function taskTitles(hire: HireState): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const day of hire.plan?.days ?? []) {
+    for (const task of day.tasks ?? []) {
+      if (task?.id && task?.title) map.set(task.id, task.title);
+    }
+  }
+  return map;
 }
 
 /**
@@ -348,14 +505,33 @@ export function composeBrief(
 
   const open: OpenItem[] = [];
   let handled = 0;
+  let gap: RoleGap | undefined;
 
   for (const hire of safeHires) {
+    const titles = taskTitles(hire);
     for (const blocker of hire.blockers ?? []) {
       if (blocker.needsHuman && !blocker.resolved) {
-        open.push({ blocker, hireName: hire.name ?? "Somebody" });
+        open.push({
+          blocker,
+          hireName: hire.name ?? "Somebody",
+          taskTitle: blocker.taskId ? titles.get(blocker.taskId) : undefined,
+        });
       } else {
         handled += 1;
       }
+    }
+
+    const questions = (hire.derivedRole?.openQuestions ?? []).filter(
+      (q): q is string => typeof q === "string" && q.trim().length > 0,
+    );
+    // First hire with unanswered questions wins. One per briefing, never a list
+    // — these are background truths, not today's work.
+    if (!gap && questions.length > 0) {
+      gap = {
+        count: questions.length,
+        first: questions[0],
+        hireName: firstName(hire.name ?? "Somebody"),
+      };
     }
   }
 
@@ -366,14 +542,24 @@ export function composeBrief(
 
   const minutes = open.reduce((sum, i) => sum + (i.blocker.minutesToUnblock ?? 0), 0);
 
-  let detailLimit = SPOKEN_DETAIL_LIMIT;
-  let script = compose(open, handled, safeHires.length, detailLimit, now);
-  // Long summaries can push a three-item briefing past the ceiling. Drop detail
-  // rather than truncate mid-sentence: a shorter briefing that finishes its
-  // thought beats a longer one that stops dead in the manager's ear.
-  while (countWords(script) > MAX_WORDS && detailLimit > 1) {
-    detailLimit -= 1;
-    script = compose(open, handled, safeHires.length, detailLimit, now);
+  const solo = safeHires.length === 1 ? safeHires[0] : undefined;
+  const ingredients: Ingredients = {
+    open,
+    handled,
+    hireCount: safeHires.length,
+    soloHire: solo
+      ? { name: forTheEar(solo.name ?? "Somebody"), startedAt: solo.startedAt }
+      : undefined,
+    gap,
+  };
+
+  // Walk the ladder and take the richest version that fits the budget. Dropping
+  // whole sentences beats truncating one: a briefing that stops mid-thought in
+  // somebody's ear is worse than a shorter briefing that finishes.
+  let script = compose(ingredients, LADDER[0], now);
+  for (const take of LADDER) {
+    script = compose(ingredients, take, now);
+    if (countWords(script) <= MAX_WORDS) break;
   }
 
   const wordCount = countWords(script);
