@@ -89,10 +89,36 @@ npm run dev
 | Route | What it is |
 | --- | --- |
 | `/` | The thesis, and the button that runs a live derivation |
+| `/ingest` | **Point it at your own company** — Slack export, pasted log, or CSV |
 | `/hire/[id]` | The new hire's experience — derived role, ramp plan, agent chat |
 | `/manager` | Blockers, and who can clear them |
+| `/pitch` | Traction evidence — live and test money separated, never merged |
 | `/pay`, `/buy` | Checkout, including a QR route that skips every login wall |
 | `/loi` | Letter of intent, signed on a phone in ninety seconds |
+
+There is also a Slack surface — `npm run slack`, Socket Mode, so it needs no
+public URL or tunnel. Setup is in [docs/slack.md](docs/slack.md). It has been
+verified locally (38 assertions, no network) but **not yet against a live
+workspace**; the first `/onboard` will be the first real execution of the
+handshake and scopes.
+
+## It is not hardcoded for one company
+
+`/ingest` takes a real Slack export (four shapes), NDJSON, a pasted chat log,
+or CSV, detected by shape rather than extension, and derives a role from it.
+
+We tested it on an invented company with a four-message corpus. It produced
+four grounded citations and, more importantly, **refused to invent a job
+description from thin data**:
+
+> "…this is a Growth Engineer hired without a defined first mandate — the corpus
+> is four messages from the week before their start date, and all four are about
+> the fact that nobody has decided what they own."
+
+An honest thin answer on thin evidence is the behaviour we want. The parser
+never throws either: every per-record failure is caught, counted, and shown to
+you as a warning, because a partial parse beats a 500 while a customer is
+watching.
 
 ## Stack
 
