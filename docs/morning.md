@@ -5,30 +5,50 @@ https://github.com/Zawaer/legora-onboarder
 
 ---
 
-## Do these four things before anything else
+## Outreach status
 
-**1. Send Joe the message.** (`STU-22`, ~2 min)
-Draft is in `docs/traction.md`. From the teammate he already knows, one sender.
-The ask is 15 minutes today. **Get his WhatsApp number** — LinkedIn is a dead
-channel on a Saturday and your deadline is 10:00 tomorrow.
+**Sent — awaiting replies:**
 
-**2. Send the backup outreach at 09:00 regardless.** (`STU-25`, ~20 min)
-Do not wait to hear from Legora. The whole traction path currently depends on
-one person replying on a weekend. Qualifying question, one line:
-*"How many of the roles you hired for this year had never existed at your
-company before?"*
+- **Joseph Cassidy** (People Enablement Partner, Legora) — sent ~00:15. `STU-22`
+- **Aino Bergius** (Head of Nordics, Lovable) — sent Saturday morning. `STU-40`
+  She publicly wrote she is hiring *"people who don't need a playbook"*, which is
+  our problem statement in her own words. Lovable went 80 → 250+ people in six
+  months and she is personally hiring into undefined roles this month.
 
-**3. Deploy.** (`STU-21`, ~10 min, `docs/deploy.md`)
+**When either replies, three things matter:**
+
+1. **Get their WhatsApp number.** LinkedIn is a dead channel on a weekend and
+   the deadline is 10:00 Sunday.
+2. **Ask the diagnostic question:** *"Of the roles you hired for this year, how
+   many had never existed at the company before?"* If both say "most of them",
+   that is the market validated by two people at two different hypergrowth
+   companies, and it goes straight on a slide.
+3. **On the call the ask is a paid pilot**, not an LOI. LOI is the fallback —
+   lead with it and a possible customer becomes a definite non-customer.
+
+**Don't mention Joe or Legora to Aino.** Joe's Lovable stint is public on his
+profile so it's tempting; it is still not ours to spend.
+
+## Do these three things now
+
+**1. Keep the outreach going.** (`STU-25`, ~20 min)
+Two sent is not enough — 3+ paying customers is the top traction band, and both
+current leads are people who may simply not open LinkedIn today. Founders House
+and the room itself are next.
+
+**2. Deploy.** (`STU-21`, ~10 min, `docs/deploy.md`)
 `NEXT_PUBLIC_SITE_URL` is still `localhost`, so **the QR code on `/pay` is dead**
 — scanning it on a customer's phone does nothing. Until this is fixed you cannot
 take money from anyone standing in front of you.
 
-**4. Post on LinkedIn.** (`STU-24`, ~40 min)
+**3. Post on LinkedIn.** (`STU-24`, ~40 min)
 20 rubric points plus up to 4 500 kr across two separate marketing prizes.
 Judged on real distribution, so morning beats evening. The street story is a
 genuinely good post regardless of the prize.
 
-None of these are engineering. All four are worth more points than any feature.
+None of these are engineering. All three are worth more points than any feature.
+Aino has 19,850 followers and Joe has 13,115 — if either engages with a post,
+that is distribution you cannot buy.
 
 ---
 
