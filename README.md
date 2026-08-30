@@ -172,19 +172,25 @@ answers. The manager briefing runs the same stack in reverse, spoken.
 
 ## The demo
 
-Onboarding an ex-M&A lawyer into a **Legal Engineer** role at Legora — a job
-title that did not exist in the legal industry three years ago, that Legora
-effectively invented, and that they are now hiring across sixteen cities. There
-is no course for it and no predecessor to shadow.
+Onboarding an ex-M&A lawyer into a **Legal Engineer** role. It is a real job
+title that did not exist in the legal industry three years ago, there is no
+course for it, and there is no predecessor to shadow.
 
-The seed corpus in `lib/seed/legora.ts` deliberately contains **no definition of
-the role anywhere**. If a document defined it, the demo would prove nothing.
+**The demo company, Lexhav, is invented.** Its people, its Slack, its documents
+and its tickets were all written by us to mirror how a fast-growing legal-AI
+company is structured. We have never had access to any real company's Slack,
+and nothing in the demo is anyone's real data.
+
+The seed corpus in `lib/seed/lexhav.ts` deliberately contains **no definition of
+the role anywhere**. If a document defined it, the demo would prove nothing:
+the point is that the role is derived from how people actually work, not
+retrieved from a job description somebody already wrote.
 
 ## Running it
 
 ```bash
 npm install
-cp .env.example .env.local   # add ANTHROPIC_API_KEY and the Stripe keys
+cp .env.example .env.local   # add ANTHROPIC_API_KEY, Supabase and Slack keys
 npm run dev
 ```
 
@@ -197,8 +203,9 @@ npm run dev
 | `/expert` | The one-question page a colleague opens. No account, works cold on a phone |
 | `/manager` | Blockers, and who can clear them |
 | `/manager/brief` | The note that goes out 48 hours before a start date |
-| `/pitch` | Traction evidence — live and test money separated, never merged |
-| `/pay`, `/buy` | Checkout, including a QR route that skips every login wall |
+| `/pitch` | Traction evidence. Not linked from the public nav |
+| `/app` | The customer's admin: company profile, uploaded material, and the draft review queue where a human releases anything the agent wants to say |
+| `/pricing` | Per hire, not per seat, with the ROI model shown rather than asserted |
 | `/loi` | Letter of intent, signed on a phone in ninety seconds |
 
 ## It is not hardcoded for one company
@@ -222,11 +229,20 @@ watching.
 ## Stack
 
 Next.js 15 · React 19 · TypeScript · Tailwind v4 · Claude Opus 5 via the
-Anthropic SDK · ElevenLabs for speech · Slack Bolt (Socket Mode) · Stripe ·
-JSON file persistence (deliberately — see below)
+Anthropic SDK · Slack Bolt (Socket Mode) · Supabase Postgres, Stockholm region ·
+Linkup for the web rung · ElevenLabs for speech
 
-No database. State lives in `data/*.json`, with committed fixtures under
-`lib/seed/` so the deployed site still has something to show on a read-only
-filesystem. It demos identically to Postgres, removes an entire category of
-failure at 3am, and is a twenty-minute swap if it ever needs to be real. Speed
-was the binding constraint, not architecture.
+Two stores, and the split is worth stating plainly because it is also the one
+real gap.
+
+Companies, members, the draft review queue, uploaded materials and signed
+letters of intent live in **Supabase Postgres**, hosted in Stockholm, with
+row-level security on every table. Both signed customers named data residency
+before they named a feature, so that was not a detail to leave until later.
+
+The **hire store is still `data/*.json`**, with committed fixtures under
+`lib/seed/` so the deployed site has something to show. That is why the live
+demo runs from a laptop rather than production: a serverless filesystem is
+read-only, so the deployed app serves the bundled corpus instead of a live
+workspace. Moving it to the Postgres we already run is the next change, and it
+is the honest answer to "where does this actually run".
