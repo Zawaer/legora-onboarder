@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 /**
@@ -19,6 +20,16 @@ import { useEffect } from "react";
  * this pattern normally ships with.
  */
 export default function Reveal() {
+  // Re-run on every navigation. This component lives in the root layout, which
+  // React keeps mounted across client-side route changes, so an effect with an
+  // empty dependency list runs exactly once in the life of the tab. The
+  // `js-reveal` class is set by a script in <head> and therefore also survives
+  // those navigations. Together that produced a page that was blank rather than
+  // merely unanimated: navigate away and back, and the new page's nodes arrive
+  // hidden by a class that is still there, with no observer left watching for
+  // them. Keying the effect on the path re-queries and re-observes each time.
+  const pathname = usePathname();
+
   useEffect(() => {
     const root = document.documentElement;
     if (!root.classList.contains("js-reveal")) return;
@@ -60,7 +71,7 @@ export default function Reveal() {
       io.disconnect();
       window.clearTimeout(failsafe);
     };
-  }, []);
+  }, [pathname]);
 
   // The header condenses once the page has moved. Done here rather than in
   // SiteHeader because that is a server component used on every route, and

@@ -1,0 +1,42 @@
+VANAV — 90 second submission cut
+=================================
+221 words, ~85s at a normal speaking pace. Read it slightly slower than feels
+right; every one of these sentences is load-bearing.
+
+WHAT WAS CUT, AND WHY
+A separate beat on verbatim citations. They are already on screen during the
+routing beat, so narrating them costs 30 seconds and proves nothing the
+escalation does not already prove.
+
+BEFORE YOU RECORD
+- Every page pre-warmed. Never derive a role on camera: cached is instant, cold
+  is three minutes.
+- Beat 2's escalation must run on a Slack hire, NOT demo-legal-engineer. That
+  hire's Nordkap blocker is already open, so asking again correctly dedupes and
+  nothing appears on /manager.
+- Beat 3 needs two live hires. With only one, it coordinates against fixtures.
+
+[BEAT 1 — 0:00-0:20 — Slack DM]
+Lexhav hired a Legal Engineer. The role has never existed there, so there's no
+playbook and nobody who has done the job. She says hey, and the agent already
+knows what the job is. It read the company's Slack, docs and tickets and worked
+it out. This is a two-day plan of real work. Nobody wrote it.
+
+[BEAT 2 — 0:20-0:55 — two questions, back to back]
+Watch what it does with two questions thirty seconds apart. The first one has
+nothing to do with this company, so it answers from the web and says so, in a
+box that deliberately looks nothing like a quote from her team. Nobody was
+interrupted. The second one it cannot answer and will not fake. So it spends a
+person: Johan, who owns Nordkap, about five minutes of his time. It says which
+person and how much it costs.
+
+[BEAT 3 — 0:55-1:15 — /manager]
+Two people are ramping. The agent wrote this sentence into her plan, naming him
+and settling which work is whose. They never message each other. The second plan
+was written against the first one's committed state. Agents talking to each
+other is theatre. Not double-booking a colleague is the thing that matters.
+
+[BEAT 4 — 1:15-1:30 — /app]
+And nothing it says reaches a new hire until someone at the company releases it.
+Both companies that signed letters of intent raised data security first. VANAV. It onboards people
+into roles that have never existed.

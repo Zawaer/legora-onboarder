@@ -129,9 +129,14 @@ export default function Chat({
               {channel}
             </span>
           </div>
+          {/* Says where this actually runs. The panel is styled as a channel
+              and the product lives in the customer's own Slack, but the page
+              never said so, so a visitor could reasonably conclude this web app
+              is the product. It is not: it is the same agent with its working
+              shown, which is the one thing a Slack DM cannot do and the reason
+              this page is what we send to a prospect. */}
           <p className="truncate text-[11.5px] text-muted">
-            Answers from company context. Escalates to a human only when it
-            genuinely can&rsquo;t unblock you.
+            Runs in your Slack. Shown here so you can check its sources.
           </p>
         </div>
       </header>

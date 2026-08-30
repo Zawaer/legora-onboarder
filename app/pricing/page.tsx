@@ -7,7 +7,7 @@ import { WAITLIST_BOOKING_URL } from "@/lib/waitlist";
 export const metadata = {
   title: "Pricing · VANAV",
   description:
-    "Priced per hire onboarded, because that is the number that is growing at our customers.",
+    "Priced per hire onboarded, because that is the number that grows when a company is scaling.",
 };
 
 /**
@@ -59,8 +59,8 @@ export default function PricingPage() {
         <section className="border-b border-line py-12 lg:py-16">
           <Label>The return</Label>
           <p className="mt-4 max-w-[46ch] text-balance text-[22px] leading-[1.4] font-medium tracking-[-0.02em] sm:text-[26px]">
-            A typical customer hires 60 people a year and recovers the cost in
-            under 7 months of saved onboarding time.
+            A company hiring 60 people a year recovers the cost in under 7
+            months of saved onboarding time.
           </p>
           <div className="mt-7">
             <RoiCalculator />

@@ -45,6 +45,8 @@ import {
   taskBlocks,
   taskFallback,
   toMrkdwn,
+  planBlocks,
+  planFallback,
 } from "./format";
 
 // ─────────────────────────────────────────────────────────────────── types
@@ -114,6 +116,19 @@ export type MentionInput = {
  */
 const START_WORDS = /^(start|begin|onboard|go|hi|hey|hello|yo|ready)\b[\s!.?]*$/i;
 
+/**
+ * Words that mean "show me the whole plan".
+ *
+ * `next` is deliberately not here: that is the agent's job, because the next
+ * task depends on what it knows about progress.
+ */
+const PLAN_WORDS = /^(plan|my plan|the plan|tasks|my tasks|ramp|show plan|what'?s my plan)\b[\s!.?]*$/i;
+
+export function isPlanTrigger(text: string): boolean {
+  const trimmed = text.trim();
+  return trimmed.length <= 24 && PLAN_WORDS.test(trimmed);
+}
+
 export function isStartTrigger(text: string): boolean {
   const trimmed = text.trim();
   return trimmed.length <= 24 && START_WORDS.test(trimmed);
@@ -174,7 +189,7 @@ export async function handleStart(deps: SlackDeps, input: StartInput): Promise<O
   } else {
     out.push({
       kind: "dm",
-      text: fallback("No ramp tasks were produced — tell me what you are looking at."),
+      text: fallback("No ramp tasks were produced. Tell me what you are looking at."),
       blocks: [
         section(
           "I derived the role but the plan came back without tasks. Tell me what you're looking at and I'll work from there.",
@@ -225,13 +240,36 @@ export async function handleUserMessage(deps: SlackDeps, input: MessageInput): P
         text: fallback("Say `start` and I'll derive your role and hand you your first task."),
         blocks: [
           section(
-            "I haven't derived your role yet — say *start* (or run `/onboard`) and I'll read your team's Slack, " +
+            "I haven't derived your role yet. Say *start* (or run `/onboard`) and I'll read your team's Slack, " +
               "docs and tickets, work out what the job actually is, and give you a first piece of real work.",
           ),
           context("`/onboard Legal Engineer` if you want to name the role yourself."),
         ],
       },
     ];
+  }
+
+  // "What am I actually meant to be doing?" is a question about the plan, not a
+  // question for the agent. Answering it locally means no model call, no 30s
+  // wait and no cost, and it puts the derived two-day ramp in front of the one
+  // person who should obviously be able to see it. Bounded like `isStartTrigger`
+  // so a real question that opens with "plan" is not swallowed.
+  if (isPlanTrigger(text)) {
+    const current = await deps.backend.get(session.hireId);
+    if (current) {
+      return [
+        {
+          kind: "dm",
+          // Not reviewable. This is the hire reading back a plan an admin has
+          // already released, not the agent saying anything new about them.
+          system: true,
+          text: planFallback(current),
+          blocks: planBlocks(current),
+        },
+      ];
+    }
+    // Fall through to a normal turn rather than erroring: the agent can still
+    // answer "what's my plan" from context, just more slowly.
   }
 
   const { hire, reply, blocker } = await deps.backend.turn({ hireId: session.hireId, text });
@@ -258,7 +296,7 @@ export async function handleUserMessage(deps: SlackDeps, input: MessageInput): P
           // must not: a stray `<` or `&` in a name is markup Slack will try to
           // parse, and it swallows the rest of the line when it fails.
           `${channelRef(deps.managerChannel)}${escalation.suggestedPerson ? ` for ${toMrkdwn(escalation.suggestedPerson)}` : ""}` +
-          `${typeof escalation.minutesToUnblock === "number" ? ` — about ${escalation.minutesToUnblock} min of their time` : ""}.`,
+          `${typeof escalation.minutesToUnblock === "number" ? `, about ${escalation.minutesToUnblock} min of their time` : ""}.`,
       ),
     );
   }
@@ -281,7 +319,7 @@ export async function handleUserMessage(deps: SlackDeps, input: MessageInput): P
       blocks: [
         header("Ramp complete"),
         section(
-          "That's every task in the two-day plan. Keep asking me things — I still have your team's Slack, docs and tickets.",
+          "That's every task in the two-day plan. Keep asking me things, I still have your team's Slack, docs and tickets.",
         ),
       ],
     });

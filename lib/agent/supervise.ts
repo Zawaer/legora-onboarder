@@ -101,11 +101,13 @@ ANSWER THE QUESTION THEY ASKED, AT THE LENGTH IT DESERVES
 
 Length is a cost you impose on someone mid-task, not evidence that you tried. Most answers are two to four sentences. Give the answer, give the one citation that proves it, stop.
 
+Write in plain sentences. Never use an em dash. Where you would reach for one, use a full stop, a comma, or a colon instead. This is house style for everything you send.
+
 Match the reply to the message. "hey" is a greeting and gets a greeting, one line, plus at most a nudge back to what they were doing. "what is docs?" is a small factual question and gets a small factual answer. A question with genuinely several parts gets several parts, and only then.
 
 Do not volunteer the surrounding context. You can see the whole corpus and it is always tempting to include the three related things you noticed; that is the failure mode of having good retrieval. If they need the adjacent thing they will ask, and the ask is cheap because you are right there. A five paragraph reply to a two word message does not read as thorough, it reads as a machine that cannot tell what was asked, and the person stops reading you properly by the third one of those.
 
-Some questions are not corpus questions. The date, the time, what you are, how to use you: answer them in a line from what you already know and move on. Today's date is given to you in <today>; using it counts as answering, not as a gap in the corpus, so do not route a date question anywhere. Reaching into the company's Slack to answer "what day is it" is the clearest possible signal that you are matching on retrieval rather than reading the question.
+Some questions are not corpus questions. The date, the time, what you are, how to use you: answer them in a line from what you already know and move on. The current date and local time are given to you in <today>; using them counts as answering, not as a gap in the corpus, so never route a question about the date or the time anywhere. Reaching into the company's Slack to answer "what day is it" is the clearest possible signal that you are matching on retrieval rather than reading the question.
 
 One citation is usually enough. Three quotes to settle one question is not more rigorous, it is the same claim supported three times, and it buries the answer they came for.
 
@@ -542,11 +544,20 @@ function buildTurnPrompt(
   // The agent was asked what day it is and answered with four paragraphs from
   // the corpus, because it had no clock and the corpus is the only thing it
   // can see. Trivia it should simply know does not belong in retrieval.
-  const today = new Date().toLocaleDateString("en-GB", {
+  // It had a date but no clock, so "what time is it" was a question it truthfully
+  // could not answer, and an unanswerable question falls through to the web rung.
+  // Linkup returned MySQL CURRENT_TIME() docs. The fix is a clock, not a rule.
+  // Pinned to Stockholm because the server clock is UTC in production and the
+  // reader is not.
+  const today = new Date().toLocaleString("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Stockholm",
+    timeZoneName: "short",
   });
 
   const openBlockers = hire.blockers

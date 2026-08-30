@@ -41,6 +41,9 @@ export interface VanavBackend {
     hireId?: string;
   }): Promise<{ hire: HireState; cached: boolean }>;
 
+  /** Read the hire as it stands. No model call, so it is safe on an impatient path. */
+  get(hireId: string): Promise<HireState | null>;
+
   /** One supervision turn. `blocker` is null when nothing was raised *or* it was deduped. */
   turn(input: { hireId: string; text: string }): Promise<{
     hire: HireState;
@@ -145,6 +148,22 @@ export function createHttpBackend(opts: HttpBackendOptions): VanavBackend {
         opts.deriveTimeoutMs ?? DEFAULT_DERIVE_TIMEOUT_MS,
       );
       return { hire: data.hire, cached: Boolean(data.cached) };
+    },
+
+    async get(hireId) {
+      // Deliberately not routed through `post`: this is the one call that must
+      // not fail loudly. It backs a convenience command, so a dead API should
+      // degrade to "I can't show that right now" rather than an error card.
+      try {
+        const response = await doFetch(`${base}/api/hire?id=${encodeURIComponent(hireId)}`, {
+          signal: AbortSignal.timeout(10_000),
+        });
+        if (!response.ok) return null;
+        const data = (await response.json()) as { hire?: HireState };
+        return data.hire ?? null;
+      } catch {
+        return null;
+      }
     },
 
     async turn({ hireId, text }) {

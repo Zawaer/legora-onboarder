@@ -129,10 +129,21 @@ export async function readDerivation(
   company: Company,
   roleTitle: string,
 ): Promise<CachedDerivation | undefined> {
-  const entry = (await readAll()).get(derivationKey(company.slug, roleTitle));
-  if (!entry) return undefined;
-  if (entry.corpusHash !== corpusFingerprint(company)) return undefined;
-  return entry;
+  const key = derivationKey(company.slug, roleTitle);
+  const fingerprint = corpusFingerprint(company);
+
+  const entry = (await readAll()).get(key);
+  if (entry && entry.corpusHash === fingerprint) return entry;
+
+  // A stale entry on disk must not mask a good fixture. `readAll` lets disk win
+  // over BAKED unconditionally, which is right when both are current and wrong
+  // the moment one is not: a single leftover row from an older corpus would
+  // send a demo into a three-minute cold derivation with a valid answer sitting
+  // unused in the bundle. This has cost us that twice.
+  const baked = BAKED.find((d) => d.key === key);
+  if (baked && baked.corpusHash === fingerprint) return baked;
+
+  return undefined;
 }
 
 export async function writeDerivation(

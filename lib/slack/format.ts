@@ -19,7 +19,7 @@
  */
 
 import type { types as SlackTypes } from "@slack/bolt";
-import type { Blocker, Company, Person, RampTask } from "@/lib/types";
+import type { Blocker, Company, HireState, Person, RampTask, TaskStatus } from "@/lib/types";
 
 /** One Block Kit block. Aliased so the rest of the code never imports Bolt. */
 export type Block = SlackTypes.KnownBlock;
@@ -209,12 +209,91 @@ export function taskBlocks(task: RampTask, opts: { heading?: string } = {}): Blo
   blocks.push(section(`*Done when*\n${toMrkdwn(task.doneWhen)}`));
   blocks.push(
     context(
-      `Ask me first — I have your team's Slack, docs and tickets. ` +
+      `Ask me first, I have your team's Slack, docs and tickets. ` +
         `If it turns out only a person can settle it, I'll say so and point you at ${toMrkdwn(task.askIfStuck)}.`,
     ),
   );
 
   return capBlocks(blocks);
+}
+
+/**
+ * The whole two-day ramp, on request.
+ *
+ * The plan is the product's headline claim: nobody wrote this, it was derived
+ * from the corpus. Slack was handing it out one task at a time and never
+ * showing the shape of it, so the strongest thing the agent produces was
+ * invisible in the place most people actually meet it. Drip-feeding is still
+ * right as the default for someone mid-task, but "what am I actually doing
+ * this week" deserves an answer that is not seven messages long.
+ *
+ * Read-only and local: no model call, no cost, no latency. Asking to see your
+ * own plan should never be something a person waits thirty seconds for.
+ */
+const STATUS_ICON: Record<TaskStatus, string> = {
+  done: ":white_check_mark:",
+  blocked: ":triangular_flag_on_post:",
+  in_progress: ":hourglass_flowing_sand:",
+  not_started: ":white_circle:",
+};
+
+export function planBlocks(hire: HireState): Block[] {
+  const days = hire.plan?.days ?? [];
+  if (days.length === 0) {
+    return [
+      section(
+        "I haven't derived a plan for you yet. Say *start* and I'll read your team's Slack, docs and tickets.",
+      ),
+    ];
+  }
+
+  const all = days.flatMap((d) => d.tasks);
+  const statusOf = (id: string): TaskStatus => hire.taskStatus?.[id] ?? "not_started";
+  const done = all.filter((t) => statusOf(t.id) === "done").length;
+  const remaining = all
+    .filter((t) => statusOf(t.id) !== "done")
+    .reduce((mins, t) => mins + (t.estimateMins || 0), 0);
+
+  const blocks: Block[] = [
+    header("Your two-day ramp"),
+    context(
+      `Derived from your team's own Slack, docs and tickets. Nobody wrote this plan for ${toMrkdwn(hire.roleTitle)}.`,
+    ),
+  ];
+
+  for (const day of days) {
+    blocks.push(divider());
+    blocks.push(section(`*Day ${day.day}*  ·  _${toMrkdwn(day.theme)}_`));
+    for (const t of day.tasks) {
+      const st = statusOf(t.id);
+      // Status is the marker, never a word after the title: a reader scanning
+      // for what is on fire should find it in the left column, not mid-sentence.
+      const strike = st === "done" ? "~" : "";
+      blocks.push(
+        section(
+          `${STATUS_ICON[st]}  ${strike}${toMrkdwn(t.title)}${strike}  ·  _~${t.estimateMins} min_`,
+        ),
+      );
+    }
+  }
+
+  blocks.push(divider());
+  blocks.push(
+    context(
+      `${done} of ${all.length} done` +
+        (remaining > 0 ? `  ·  about ${Math.round(remaining / 60)}h of work left` : "") +
+        `. Say *next* for the task you're on, or just ask me anything.`,
+    ),
+  );
+
+  return capBlocks(blocks);
+}
+
+/** The plan message's notification line. */
+export function planFallback(hire: HireState): string {
+  const all = hire.plan?.days.flatMap((d) => d.tasks) ?? [];
+  const done = all.filter((t) => (hire.taskStatus?.[t.id] ?? "not_started") === "done").length;
+  return fallback(`Your two-day ramp: ${done} of ${all.length} tasks done`);
 }
 
 /** The task card's notification line. */

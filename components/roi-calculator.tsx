@@ -113,24 +113,13 @@ export default function RoiCalculator() {
   const breakEven = perPoint > 0 ? (plan.cost - soft) / perPoint : 0;
 
   return (
-    <details className="group">
-      <summary className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted hover:text-ink">
-        <svg
-          viewBox="0 0 16 16"
-          fill="none"
-          className="chev h-3 w-3 shrink-0 transition-transform duration-150"
-          aria-hidden
-        >
-          <path
-            d="M6 3.5 10.5 8 6 12.5"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        See the full calculation
-      </summary>
+    // Visible by default. This was wrapped in <details> behind a caption-sized
+    // "See the full calculation" link, which hid the single strongest argument
+    // on the page: a payback figure the reader can move with their own numbers.
+    // The raw formulas stay collapsed below, which is the right thing to hide:
+    // a reader who wants to audit the arithmetic will go looking for it, and a
+    // reader who does not is served by the result.
+    <div>
 
       <div
         className="mt-5 overflow-hidden rounded-xl border border-line-strong bg-surface"
@@ -278,6 +267,6 @@ your plan                                ${eur(plan.cost)}/year`}
           )}
         </div>
       </div>
-    </details>
+    </div>
   );
 }

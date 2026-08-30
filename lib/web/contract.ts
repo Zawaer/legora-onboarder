@@ -127,4 +127,4 @@ export const WEB_ESCAPE_HATCH =
  * answer is ever attributed to a colleague.
  */
 export const WEB_PREAMBLE =
-  "Nobody here has written this down, but it isn't company-specific — here's the general answer:";
+  "Nobody here has written this down, but it isn't company-specific. Here's the general answer:";

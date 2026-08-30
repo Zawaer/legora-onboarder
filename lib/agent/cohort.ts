@@ -137,13 +137,28 @@ export type AdjoiningScope = {
  * Grouped by company, because two people onboarding at two different customers
  * have nothing to do with each other.
  */
+/** Two hire rows that are the same human. */
+function samePerson(a: HireState, b: HireState): boolean {
+  if (a.personKey && b.personKey) return a.personKey === b.personKey;
+  return a.name.trim().toLowerCase() === b.name.trim().toLowerCase();
+}
+
 export function findAdjoiningScope(hires: HireState[]): AdjoiningScope[] {
   const ramping = hires.filter(stillRamping);
   const found: AdjoiningScope[] = [];
 
   for (const hire of ramping) {
     const peers = ramping.filter(
-      (h) => h.id !== hire.id && h.companySlug === hire.companySlug,
+      (h) =>
+        h.id !== hire.id &&
+        h.companySlug === hire.companySlug &&
+        // Same human, second row. One person can end up with more than one hire
+        // (a re-run, a role they renamed), and matching on id alone let a plan
+        // "coordinate" with its own author: the manager view read "Maire ->
+        // Maire", advising her to check with herself. `personKey` is the real
+        // identity where we have it; the name is the fallback, and it is also
+        // what the note itself says out loud, so it is the right thing to match.
+        !samePerson(h, hire),
     );
     if (peers.length === 0) continue;
 

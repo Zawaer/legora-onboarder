@@ -34,7 +34,13 @@ export default function SiteHeader({
         <nav className="ml-auto hidden items-center gap-0.5 sm:flex">
           {right ?? (
             <>
-              <NavLink href="/manager">Manager view</NavLink>
+              {/* The demo link points at the hire page, not the manager
+                  dashboard. A cold visitor has no idea who Rebecca Hartley is
+                  or why a roster matters; the hire page explains itself in one
+                  screen, and it is the link we send prospects anyway. The
+                  manager view is still the buyer's screen and still live, it
+                  just is not what a stranger should meet first. */}
+              <NavLink href="/hire/demo-legal-engineer">Demo</NavLink>
               <NavLink href="/pricing">Pricing</NavLink>
               <NavLink href="/loi">Letter of intent</NavLink>
             </>

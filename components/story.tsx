@@ -171,7 +171,12 @@ function Panel({ active }: { active: number }) {
           <div
             key={i}
             aria-hidden={i !== active}
-            className={`absolute inset-0 px-5 py-5 transition-all duration-500 ${
+            // Centred, not top-aligned. The container is a fixed height so the
+            // panel never resizes as you scroll between steps, which means the
+            // shortest step would otherwise stack all of its slack at the
+            // bottom and read as a rendering bug. Centring splits the
+            // difference above and below, so every step looks composed.
+            className={`absolute inset-0 flex flex-col justify-center px-5 py-5 transition-all duration-500 ${
               i === active
                 ? "translate-y-0 opacity-100"
                 : "pointer-events-none translate-y-2 opacity-0"
