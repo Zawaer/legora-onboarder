@@ -39,7 +39,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
+    // suppressHydrationWarning because the script below deliberately adds
+    // `js-reveal` to this element before React hydrates, so the server HTML and
+    // the client DOM differ here by design. Scoped to this element's own
+    // attributes, so a real mismatch anywhere inside the tree still reports.
+    <html
+      lang="en"
+      className={`${archivo.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/*
           Runs before first paint, so the hidden state is in place from the

@@ -4,21 +4,68 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Blocker, HireState } from "@/lib/types";
 import { findAdjoiningScope } from "@/lib/agent/cohort";
-import AdjoiningScopeList from "./adjoining-scope";
-import BlockerList, { type HireRef } from "./blocker-list";
 import { fetchHires } from "./client-api";
 import ResolutionCounters from "./resolution-counters";
-import SiteHeader, { NavLink } from "./site-header";
+import SiteHeader from "./site-header";
 import { Label, initials, type SyntheticCorpus } from "./ui";
 
+/**
+ * The manager view.
+ *
+ * Rebuilt around one question, because that is the only one anybody opens this
+ * screen to answer: **is somebody stuck, and does it need me?** The previous
+ * version laid every section out at the same visual weight in one column, so a
+ * blocker waiting on a named person since yesterday looked exactly like a
+ * roster row that needed nothing. A reader could not triage it in the twenty
+ * seconds they actually have between meetings.
+ *
+ * So the order is now strictly by what it costs the reader to ignore:
+ *
+ *   1. Blocked on a human   -> act today. The only thing that gets colour.
+ *   2. Where two ramps touch-> two plans deconflicting themselves. Reassuring.
+ *   3. Attention not spent  -> what the agent absorbed. Evidence.
+ *   4. Who is ramping       -> reference. Quiet, tabular, scannable.
+ *
+ * ON THE PROGRESS COLUMN, WHICH IS A REVERSAL
+ *
+ * This page used to refuse every completion figure, on the grounds that a
+ * surveillance dashboard gets killed by the culture it is sold into. That
+ * argument still holds for time-on-task, for ranking people against each other,
+ * and for anything that outlives the ramp. It does not hold for "4 of 9 tasks,
+ * day 2", because the plan is two days long, the agent wrote it, and a manager
+ * who cannot see whether someone is on day one or day two cannot help them.
+ * The line is: measure the plan, never the person, and keep nothing after the
+ * ramp ends.
+ */
+
+type Ramp = {
+  hire: HireState;
+  day: 1 | 2 | null;
+  done: number;
+  total: number;
+};
+
+function rampOf(hire: HireState): Ramp {
+  const days = hire.plan?.days ?? [];
+  const all = days.flatMap((d) => d.tasks);
+  const statusOf = (id: string) => hire.taskStatus?.[id] ?? "not_started";
+  const done = all.filter((t) => statusOf(t.id) === "done").length;
+
+  // The day they are actually on: the first day still carrying unfinished
+  // work, not elapsed wall-clock time. Someone who finished day one in a
+  // morning is on day two, and someone who has stalled is still on day one.
+  const current = days.find((d) => d.tasks.some((t) => statusOf(t.id) !== "done"));
+  return { hire, day: current?.day ?? null, done, total: all.length };
+}
+
 export default function ManagerView({
-  synthetic,
+  // Accepted and deliberately not rendered here. The synthetic-workspace notice
+  // was cut from this screen on 30 Aug: it is the manager's triage view, not a
+  // page a stranger lands on cold. The disclosure still has to exist somewhere,
+  // and it now lives in what we say about the demo rather than on the page, so
+  // keep saying it out loud whenever this screen is shown to anyone.
+  synthetic: _synthetic,
 }: {
-  /**
-   * Set by the server when a hire on this screen comes from the written demo
-   * corpus. A prop, not a fetch, so the notice is in the server HTML rather
-   * than appearing once the roster lands.
-   */
   synthetic?: SyntheticCorpus;
 } = {}) {
   const [hires, setHires] = useState<HireState[] | null>(null);
@@ -53,147 +100,231 @@ export default function ManagerView({
   }, []);
 
   const list = hires ?? [];
-  const blockers: Blocker[] = list.flatMap((h) => h.blockers ?? []);
-  const people: Record<string, HireRef> = Object.fromEntries(
-    list.map((h) => [h.id, { name: h.name, roleTitle: h.roleTitle }]),
-  );
+  const ramps = list.map(rampOf);
+  const byHire = new Map(list.map((h) => [h.id, h]));
 
-  // Read straight off the plans that are already on screen. No extra fetch, no
-  // model call, and nothing to show unless a planner actually wrote the
-  // sentence — see lib/agent/cohort.ts.
+  const needsHuman = list
+    .flatMap((h) => (h.blockers ?? []).map((b) => ({ blocker: b, hire: h })))
+    .filter(({ blocker }) => blocker.needsHuman && !blocker.resolved);
+
   const adjoining = findAdjoiningScope(list);
+
+  const headline =
+    hires === null
+      ? "Loading the roster"
+      : list.length === 0
+        ? "Nobody is ramping yet"
+        : needsHuman.length === 0
+          ? `${list.length} ${list.length === 1 ? "person" : "people"} ramping, nobody blocked`
+          : `${list.length} ${list.length === 1 ? "person" : "people"} ramping, ${needsHuman.length} ${needsHuman.length === 1 ? "needs" : "need"} you`;
 
   return (
     <div className="min-h-dvh">
       <SiteHeader />
 
-      <main className="mx-auto max-w-[1100px] px-5 py-10 sm:px-8 lg:py-14">
-        {/* ── the design statement ── */}
-        <header className="flex flex-col gap-5 border-b border-line pb-10">
-          {/* Every name below this line was written. Said here, above the
-              fold and next to the names, rather than in a footer. */}
+      <main className="mx-auto max-w-[1100px] px-5 py-8 sm:px-8 lg:py-12">
+        <header className="flex flex-col gap-3 border-b border-line pb-7">
           <Label>Manager view</Label>
-          <h1 className="max-w-[18ch] text-[32px] leading-[1.08] font-semibold tracking-[-0.028em] text-balance sm:text-[40px]">
-            Blockers. Nothing else.
+          <h1 className="max-w-[22ch] text-[30px] leading-[1.1] font-semibold tracking-[-0.028em] text-balance sm:text-[36px]">
+            {headline}
           </h1>
-          <p className="max-w-[70ch] text-[15.5px] leading-[1.65] text-muted">
-            This screen deliberately shows no productivity metrics, no scores,
-            no completion rates, no time-on-task. You hire for ownership, and a
-            surveillance dashboard gets killed by the culture it is sold into.
-            The only thing worth your attention is what somebody is stuck on
-            that the agent genuinely could not resolve.
-          </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-faint">
-            <span className="inline-flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-ok" />
-              live · refreshes every 8s
-            </span>
-            <span className="hidden h-3 w-px bg-line sm:block" />
-            <span>{list.length} {list.length === 1 ? "hire" : "hires"} ramping</span>
-          </div>
+          <span className="inline-flex items-center gap-2 text-[12.5px] text-faint">
+            <span className="h-1.5 w-1.5 rounded-full bg-ok" />
+            live · refreshes every 8s
+          </span>
         </header>
 
-        {/* ── what never reached a person ──
-            Two numbers about the agent, deliberately not about anybody on the
-            roster. See resolution-counters.tsx for why they do not violate the
-            no-metrics rule this page is built on. */}
-        <ResolutionCounters />
+        {/* ── 1. blocked on a human ──────────────────────────────────────────
+            The only section that gets colour, because it is the only one that
+            costs something to miss. */}
+        <section className="pt-8">
+          <Label>Needs a human</Label>
 
-        {/* ── roster ── */}
-        {list.length > 0 && (
-          <section className="border-b border-line py-8">
-            <Label>Ramping now</Label>
-            <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((h) => {
-                const open = (h.blockers ?? []).filter(
-                  (b) => b.needsHuman && !b.resolved,
-                ).length;
-                return (
-                  <li key={h.id}>
-                    <Link
-                      href={`/hire/${h.id}`}
-                      className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 transition-colors hover:border-line-strong"
-                    >
-                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface-2 text-[11px] font-semibold text-muted">
-                        {initials(h.name ?? "?")}
+          {hires === null ? (
+            <div className="skeleton mt-4 h-28 rounded-xl border border-line" />
+          ) : needsHuman.length === 0 ? (
+            // Emptiness here is the product working. It must not read as a
+            // failed fetch, so it is stated rather than left blank.
+            <p className="mt-4 rounded-xl border border-dashed border-line bg-surface px-5 py-6 text-[14px] text-muted">
+              {list.length === 0
+                ? error
+                  ? "The onboarding service did not return a roster."
+                  : "Start someone onboarding and this screen fills in as they work."
+                : "Nobody is waiting on a person. Everything asked so far was answerable from your own material."}
+            </p>
+          ) : (
+            <ul className="mt-4 flex flex-col gap-3">
+              {needsHuman.map(({ blocker, hire }) => (
+                <li
+                  // Blocker ids are not unique across hires: two people seeded
+                  // from the same fixture carry the same id, which made React
+                  // collapse three real blockers into one row.
+                  key={`${hire.id}:${blocker.id}`}
+                  className="rounded-xl border border-warn/35 bg-warn-soft px-5 py-4"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <span className="flex flex-wrap items-baseline gap-x-2.5">
+                      <Link
+                        href={`/hire/${hire.id}`}
+                        className="text-[15px] font-semibold hover:underline"
+                      >
+                        {hire.name}
+                      </Link>
+                      <span className="text-[13px] text-muted">{hire.roleTitle}</span>
+                    </span>
+                    <span className="text-[12.5px] font-medium text-warn">
+                      {waitedFor(blocker.raisedAt, now)}
+                    </span>
+                  </div>
+
+                  <p className="mt-2 max-w-[80ch] text-[14.5px] leading-[1.55]">
+                    {blocker.summary}
+                  </p>
+
+                  {blocker.suggestedPerson && (
+                    <p className="mt-3 border-t border-warn/25 pt-3 text-[13.5px] text-muted">
+                      Unblock with{" "}
+                      <span className="font-semibold text-ink">
+                        {blocker.suggestedPerson}
                       </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[14px] font-medium">
-                          {h.name}
-                        </span>
-                        <span className="block truncate text-[12px] text-faint">
-                          {h.roleTitle}
-                        </span>
-                      </span>
-                      {open > 0 ? (
-                        <span className="tnum shrink-0 rounded-full bg-warn-soft px-2 py-0.5 text-[11px] font-medium text-warn">
-                          {open}
-                        </span>
-                      ) : (
-                        <span className="shrink-0 text-[11px] text-faint">
-                          clear
+                      {typeof blocker.minutesToUnblock === "number" && (
+                        <span className="text-faint">
+                          {" · "}about {blocker.minutesToUnblock} min of their time
                         </span>
                       )}
-                    </Link>
-                  </li>
-                );
-              })}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* ── 2. where two ramps touch ───────────────────────────────────── */}
+        {adjoining.length > 0 && (
+          <section className="pt-10">
+            <Label>Where two ramps touch</Label>
+            <p className="mt-2 text-[13.5px] text-muted">
+              Lines the agent wrote into one person&rsquo;s plan that name another.
+              Nobody typed these, and the two agents never messaged each other.
+            </p>
+            <ul className="mt-4 grid gap-3 lg:grid-cols-2">
+              {adjoining.slice(0, 4).map((a) => (
+                <li
+                  key={a.id}
+                  className="rounded-xl border border-line bg-surface px-5 py-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2 text-[13.5px] font-medium">
+                    <span>{a.hireName}</span>
+                    <span aria-hidden className="text-faint">
+                      &harr;
+                    </span>
+                    <span>{a.otherHireName}</span>
+                  </div>
+                  <blockquote className="mt-2.5 border-l-2 border-line-strong pl-3 text-[13.5px] leading-[1.6] text-muted">
+                    {a.note}
+                  </blockquote>
+                </li>
+              ))}
             </ul>
           </section>
         )}
 
-        {/* ── blockers ── */}
-        <section className="py-10">
-          {hires === null ? (
-            <div className="flex flex-col gap-3">
-              {[0, 1, 2].map((i) => (
-                <div
-                  key={i}
-                  className="skeleton h-24 rounded-xl border border-line"
-                />
-              ))}
-            </div>
-          ) : list.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-line bg-surface px-6 py-16 text-center">
-              <p className="text-[16px] font-medium">Nobody is onboarding yet.</p>
-              <p className="mx-auto mt-2 max-w-[48ch] text-[14px] leading-relaxed text-muted">
-                {error
-                  ? "The onboarding service didn't return a roster. Start the demoole to create one."
-                  : "Start the demo from the landing page and this screen fills in as the hire works."}
-              </p>
-              <Link
-                href="/"
-                className="mt-6 inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[14px] font-medium text-paper hover:opacity-90"
-              >
-                See how it works
-              </Link>
-            </div>
-          ) : (
-            <BlockerList blockers={blockers} people={people} now={now || undefined} />
-          )}
-
-          {/* Below the blockers, never above them: the page's promise is that
-              what needs a human comes first. This needs nobody — it is two
-              plans saying out loud that they run alongside each other. */}
-          {hires !== null && adjoining.length > 0 && (
-            <div className="mt-10">
-              <AdjoiningScopeList items={adjoining} />
-            </div>
-          )}
+        {/* ── 3. attention not spent ─────────────────────────────────────── */}
+        <section className="pt-10">
+          <Label>Attention not spent</Label>
+          <ResolutionCounters />
         </section>
 
-        <footer className="border-t border-line pt-8 pb-4">
-          <p className="max-w-[70ch] text-[13px] leading-[1.65] text-faint">
-            What is missing from this page is the point. There is no ranking of
-            people, no percentage complete, and no score attached to anybody.
-            The one number on the roster is a count of things standing in
-            someone&rsquo;s way, which is a queue to clear and not a mark against
-            them, every other number we could have shown would have measured
-            the person instead, and none of them would make a single person less
-            stuck.
+        {/* ── 4. who is ramping ──────────────────────────────────────────── */}
+        {list.length > 0 && (
+          <section className="pt-10">
+            <Label>Who is ramping</Label>
+            <div className="mt-4 overflow-x-auto rounded-xl border border-line">
+              <table className="w-full min-w-[560px] border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-line bg-surface-2/60">
+                    {["Person", "Role", "Plan", "Tasks"].map((h) => (
+                      <th
+                        key={h}
+                        scope="col"
+                        className="px-4 py-2.5 font-mono text-[11px] font-normal uppercase tracking-[0.08em] text-muted"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {ramps.map(({ hire, day, done, total }) => (
+                    <tr
+                      key={hire.id}
+                      className="border-b border-line last:border-0 hover:bg-surface-2/40"
+                    >
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/hire/${hire.id}`}
+                          className="flex items-center gap-2.5 font-medium hover:underline"
+                        >
+                          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-surface-2 text-[10.5px] font-semibold text-muted">
+                            {initials(hire.name ?? "?")}
+                          </span>
+                          <span className="truncate text-[14px]">{hire.name}</span>
+                        </Link>
+                      </td>
+                      <td className="px-4 py-3 text-[13.5px] text-muted">
+                        {hire.roleTitle}
+                      </td>
+                      <td className="px-4 py-3 text-[13.5px] text-muted">
+                        {day ? `Day ${day}` : "Complete"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="flex items-center gap-2.5">
+                          <span
+                            className="h-1.5 w-[90px] shrink-0 overflow-hidden rounded-full bg-surface-2"
+                            role="presentation"
+                          >
+                            <span
+                              className="block h-full rounded-full bg-ink"
+                              style={{
+                                width: `${total ? Math.round((done / total) * 100) : 0}%`,
+                              }}
+                            />
+                          </span>
+                          <span className="tnum text-[12.5px] text-faint">
+                            {done}/{total}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        <footer className="mt-12 border-t border-line pt-7 pb-4">
+          <p className="max-w-[74ch] text-[13px] leading-[1.65] text-faint">
+            There is no ranking here, no time-on-task, and no score attached to
+            anybody. Progress is counted against the two-day plan the agent
+            wrote, and it stops existing when the ramp does. Everything else we
+            could have measured would have measured the person instead, and none
+            of it would make anybody less stuck.
           </p>
         </footer>
       </main>
     </div>
   );
+}
+
+/** "Waiting since yesterday" reads better than a timestamp nobody converts. */
+function waitedFor(raisedAt: string, now: number): string {
+  if (!now) return "waiting";
+  const mins = Math.max(0, Math.round((now - new Date(raisedAt).getTime()) / 60000));
+  if (mins < 60) return `waiting ${mins} min`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `waiting ${hours}h`;
+  const days = Math.round(hours / 24);
+  return days === 1 ? "waiting since yesterday" : `waiting ${days} days`;
 }

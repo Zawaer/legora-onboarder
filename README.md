@@ -1,8 +1,13 @@
-# Onboarder
+# VANAV
 
-**Onboards new hires into roles that have never existed before.**
+**Onboards people into roles that have never existed at a company before.**
 
-Built at the SYE Hackathon, Stockholm, 28–30 August 2026.
+It reads a company's own Slack, docs and tickets, works out what the job
+actually is, and hands the new hire a two-day plan of real work on day one.
+It runs as a Slack agent, where they already are.
+
+Live at **[vanav.io](https://vanav.io)**. Built at the SYE Hackathon,
+Stockholm, 28–30 August 2026.
 
 ---
 
