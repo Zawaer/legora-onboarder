@@ -8,6 +8,7 @@
  */
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { isKvConfigured, kvAppend } from "@/lib/kv";
 import { isNotifyConfigured, notify, notifyUrl } from "@/lib/notify";
 
 export type Signup = {
@@ -51,6 +52,21 @@ async function toWebhook(signup: Signup): Promise<boolean> {
   );
 }
 
+/**
+ * Postgres, via the kv store.
+ *
+ * The webhook put every signup in Slack, which is where the team looks but not
+ * something you can query, dedupe or export — the first four days of signups
+ * exist only as chat messages. Disk is ephemeral on Vercel. Neither is a list.
+ *
+ * Uses the same `store:` key convention as lib/store.ts, so a signup lands
+ * beside the letters of intent rather than in a table of its own.
+ */
+async function toStore(signup: Signup): Promise<boolean> {
+  if (!isKvConfigured()) return false;
+  return kvAppend("store:waitlist", signup);
+}
+
 /** Local development, where the disk is real and durable. */
 async function toDisk(signup: Signup): Promise<boolean> {
   try {
@@ -74,14 +90,18 @@ async function toDisk(signup: Signup): Promise<boolean> {
  * the visitor rather than thanking them for an address we did not keep.
  */
 export async function recordSignup(signup: Signup): Promise<boolean> {
-  const [webhook, disk] = await Promise.all([toWebhook(signup), toDisk(signup)]);
+  const [store, webhook, disk] = await Promise.all([
+    toStore(signup),
+    toWebhook(signup),
+    toDisk(signup),
+  ]);
 
   // Logged either way. On Vercel this is the last line of defence: the address
   // is at least readable in the deployment logs for as long as they are kept.
   console.log(
     `[waitlist] ${signup.email}${signup.company ? ` · ${signup.company}` : ""} ` +
-      `· webhook=${webhook} disk=${disk}`,
+      `· store=${store} webhook=${webhook} disk=${disk}`,
   );
 
-  return webhook || disk;
+  return store || webhook || disk;
 }
