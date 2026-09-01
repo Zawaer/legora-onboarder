@@ -285,3 +285,60 @@ cross-company pattern in how documentation rots. Not from the model.
 Being replaceable in principle and being replaced in practice are different, and
 the distance between them is execution. Linear, Notion and Slack were all
 buildable by a good team in a year.
+
+
+## 14. Slack is the only surface. Sources go behind an abstraction.
+
+*Decided 2 September 2026.*
+
+### The tension we should be aware of
+
+Teams holds ~37% of enterprise messaging (360M MAU) against Slack's ~13% (79M).
+Slack's strength is concentrated where we no longer say our market is: **~52%
+share in organisations under 500 people, and dominance among tech startups.**
+Teams wins everywhere else, because it is bundled with M365 and nobody has to
+buy it.
+
+§11 moved our market from hyper-growth tech companies to ordinary knowledge-work
+companies with documentation drift. In Finland that profile is overwhelmingly
+Microsoft. **Only Apukuski has actually told us they are on Slack** — they wrote
+it into their blocker. The other three never mentioned it.
+
+So the market correction may have quietly broken our platform assumption. We do
+not know yet, and the four replies going out 2 September ask directly.
+
+### The decision
+
+**Slack only, for now.** Zero completed pilots is the wrong moment to build a
+second surface.
+
+**Teams is a deliberate decision, not a drift.** Treat it as a quarter of work —
+Azure Bot Service registration, app packaging, manifest, admin consent,
+distribution through the org's app catalogue. Build it when a paying customer
+requires it, never speculatively.
+
+**Note what it costs positioning.** Our wedge against Beam is "installed in
+thirty seconds, no procurement." A Teams app usually needs tenant admin
+approval, which is a small procurement step. Still far faster than a ten-day
+discovery workshop, but the frictionless line gets softer. Know this before
+building the pitch on it.
+
+### Sources go behind an abstraction — build this now
+
+Adding a knowledge source must be a day's work, not a rewrite. Make that true
+*before* there are three hardcoded ingestion paths; it is cheap now and
+expensive later.
+
+Same rule as `competitors.md`'s test for bespoke work: `ingestGitHubRepo(url)`,
+never `syncApukuskiBrain()`.
+
+**Order:** GitHub first — Apukuski asked, and it unblocks a pilot. After that,
+add whichever source a real customer names. Where documentation actually lives
+splits by segment: Confluence in Jira-centric enterprises, Notion in startups,
+**SharePoint in Microsoft shops** (200M+ users, invisible in market-share tables
+because it is bundled). If our customers turn out to be Teams companies, the
+connector we need is SharePoint, not Confluence.
+
+Atlassian stops selling new Confluence Data Center subscriptions in March 2026,
+so self-hosted Confluence is closing and everything moves to Cloud — which has a
+proper API. That makes a Confluence connector easier, not harder.
