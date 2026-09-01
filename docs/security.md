@@ -17,7 +17,77 @@ Wojtek Szkutnik, who went through SOC 2 recently, on 1 September:
 This is a paperwork exercise, not an engineering project. Estimated **2–3 weeks
 and low thousands of euros** to clear three blocked pilots.
 
-## 2. Do the cheap things first, in this order
+## 2. The checklist
+
+Committed in writing to Jussi on 2 September: *"Lähetän täyden kuvauksen
+tietojenkäsittelystä tällä viikolla."* That is items 1–3 below, roughly one
+focused day. Item 0 has to come first — see §2.1.
+
+### Already done
+
+- [x] Row level security on Supabase — 5 tables, 8 policies
+- [x] Customer data stored in Postgres in Stockholm
+- [x] Privacy page exists — but see item 3, it is the wrong document
+
+### This week — unblocks three pilots
+
+- [ ] **0. Move inference to Bedrock, EU region** — ~1 day. Must come before the
+      write-up. See §2.1 for why this is a legal blocker, not a preference.
+- [ ] **1. Data processing description** — ~4 h. The core artifact everything
+      else points at:
+      - what we ingest (Slack messages from selected channels, connected docs,
+        employee names and emails)
+      - where it is stored (Supabase Postgres, Stockholm)
+      - where it is processed (see item 0)
+      - who on our side can access it, how, and under what circumstances
+      - retention period, and what triggers deletion
+      - what we do not do: no training, no secondary use, no sharing
+- [ ] **2. Sub-processor list** — ~1 h. Vercel, Supabase, Anthropic, AWS, Slack,
+      Stripe, Resend. Each one: what it does, where it runs.
+- [ ] **3. Rewrite the privacy page** — ~2 h. `app/privacy/page.tsx` today says
+      *"Short, because we collect very little"* and is written for website
+      visitors. That is the opposite posture to "we are about to ingest your
+      entire Slack." Different data, different risk, different document.
+
+### Next — when a specific deal needs it
+
+- [ ] **4. Deletion, actually implemented** — ~4 h. We will claim it in item 1,
+      so it has to exist. There is currently no deletion path for a customer's
+      ingested data. Verify before writing the sentence.
+- [ ] **5. DPA** — ~4 h from a template, not from scratch. GDPR Art. 28: subject
+      matter, duration, nature and purpose, data categories, sub-processor
+      terms. We are the processor, the customer is the controller. Promised to
+      Fermion and needed by Netprofile; Apukuski was not promised it.
+- [ ] **6. Zero data retention** — confirm terms with Anthropic and AWS and
+      configure. Mostly a question to ask, not work to do.
+- [ ] **7. Security overview page** — ~2 h. Encryption at rest and in transit,
+      access control, RLS, an incident contact. This is our Trust Center; Beam's
+      is the template (`competitors.md`).
+- [ ] **8. Pen test** — ~€3–10k, 1–2 weeks. Only once Juha says which of the
+      three options in §6 his process actually requires.
+
+**Totals:** what Jussi was promised, ~1 day. With item 0, ~2 days. Everything
+above, ~3–4 days. These are the highest-leverage days available — they convert
+three conditional LOIs into pilots. The Oy, the Sprint Grant and the AWS credits
+can all wait a week. This cannot, because it is now in writing.
+
+## 2.1 Why Bedrock EU comes first
+
+**We call the Anthropic API today, from a US company.** Under GDPR that is a
+third-country transfer, and it needs a legal basis — standard contractual
+clauses, a transfer impact assessment, the rest of it. We have not executed any
+of that.
+
+Writing an honest data-flow document forces us to state it. So item 1 either
+says *"processed in the EU"* or *"transferred to the United States under
+contractual clauses we have not yet put in place."* One of those closes pilots.
+
+Moving inference to Bedrock in an EU region removes the transfer entirely — data
+stays in the EEA and there is nothing to justify. That is why it is a blocker
+for the write-up rather than an optimisation. Region rationale and the 10%
+premium: `model-costs.md` §2.
+
+## 3. Do the cheap things first, in this order
 
 **Tier 0 — documentation. Days, €0.** Necessary regardless of what any reviewer
 asks for, because it is what every review examines:
@@ -34,7 +104,7 @@ wrote about ourselves does not, by definition.
 
 **Tier 2 — certification. Do not start yet.** See §3.
 
-## 3. Do we need SOC 2? Probably not. Possibly ISO 27001, later.
+## 4. Do we need SOC 2? Probably not. Possibly ISO 27001, later.
 
 **SOC 2 is a US framework** (AICPA) demanded by US enterprise procurement. Our
 customers are Finnish and Swedish, where **ISO 27001** is the natively demanded
@@ -61,7 +131,7 @@ actually wants.**
 that set the roadmap. They are the most demanding of our prospects and the least
 likely to be first. Build the security page for Netprofile and Fermion.
 
-## 4. Hosting: multi-tenant SaaS, EU-hosted. Not on customer servers.
+## 5. Hosting: multi-tenant SaaS, EU-hosted. Not on customer servers.
 
 Raised repeatedly, including by Toivo's father. Settled:
 
@@ -87,7 +157,12 @@ Offer **bring-your-own-cloud** later as a priced premium tier — deployed into
 the customer's own AWS account, inference through their own Bedrock. That is
 the genuinely strong version of the on-prem idea, for when someone pays for it.
 
-## 5. What to say
+## 6. What to say
+
+> ⚠️ **Not true yet.** This is what we can say *once §2 item 0 is done.* Today
+> inference goes to the Anthropic API in the US. Do not say any of the second
+> sentence until Bedrock EU is live — a claim a reviewer can disprove costs more
+> than the pilot is worth.
 
 > Vanav runs EU-hosted. Model inference runs on Amazon Bedrock in an EU region
 > under AWS's terms, with zero data retention — your content is not stored after
@@ -98,7 +173,7 @@ This answers Jussi's GDPR condition, most of Satu's data-security question, and
 a large part of whatever Juha's reviewer asks. Costs a configuration choice and
 some paperwork, not a rearchitecture. Region rationale: `model-costs.md` §2.
 
-## 6. Still open
+## 7. Still open
 
 - Zero-retention terms, and whether they apply on Bedrock or need arranging
   separately.
