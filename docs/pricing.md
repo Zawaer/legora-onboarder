@@ -50,10 +50,46 @@ the number that is exploding at our customers. Same logic as why our market
 isn't "companies that onboard people" — it's companies whose org chart changes
 faster than their documentation can.
 
-The long-term model is almost certainly **per hire onboarded** (~€200–500,
-depending on seniority). Say that out loud in the pitch: it shows you have
-thought past the weekend, and it is the model that grows with the customer
-rather than capping out.
+## The long-term model: platform fee plus per hire
+
+*Revised 2 September 2026. This section previously said the long-term model was
+almost certainly per hire onboarded (~€200–500). That was written under the
+hyper-growth hypothesis, and it does not survive the customers we actually
+signed — see `DECISIONS.md` §11.*
+
+**Per-hire pricing is not one-off revenue.** It is usage-based recurring, the
+same category as Stripe per transaction. If the customer keeps hiring, the
+revenue keeps coming.
+
+**But pure per-hire is the wrong shape for our customers.** €350 a hire makes
+sense at fifty hires a week. None of our four LOIs hire at volume:
+
+| | Per-hire (€350) | Subscription (4 900 SEK/mo) |
+| --- | --- | --- |
+| Netprofile-sized: 5 hires/yr | ~€1 750/yr | ~€5 300/yr |
+| Legora-sized: 500 hires/yr | ~€175 000/yr | ~€5 300/yr |
+
+Per-hire alone would cut revenue by roughly two thirds at the companies that
+actually signed.
+
+**And it is wrong on the product.** The brain runs continuously — ingesting,
+staying current, flagging documents that have rotted — whether or not anyone was
+hired that month. Netprofile signed specifically for that half. Pure per-hire
+gives it away free and stops billing during a hiring freeze while we keep
+serving them.
+
+**So: keep the monthly fee as the floor and add per hire on top.** Not a
+rewrite — a component above the existing 4 900 SEK/month, not a replacement for
+it. Predictable revenue from a Netprofile, upside from a Legora. Usage revenue
+is also lumpy on its own; a floor is what makes a hiring freeze survivable.
+
+Gross margin supports either: inference costs roughly €10–30 for an entire pilot
+(`model-costs.md` §5).
+
+**Ask all four which they prefer.** *"Would you rather pay a flat monthly fee, or
+per person onboarded?"* alongside *"what does onboarding one person cost you
+today, in hours of other people's time?"* That is the measurable data we do not
+have.
 
 ## Before you sell anything for real
 
