@@ -31,7 +31,7 @@ his own IT partner reviewing us, a pen test from our side, or a formal
 certification (`security.md` §4). Offering all three lets him pick the cheapest
 that satisfies him rather than reaching for the most formal-sounding.
 
-**Outbound — Toivo, 2 September 2026:** subject *"Vanav — tietoturva-arviointi"*
+**Outbound — Toivo, 2 September 2026:** subject *"Vanav - seuraavat askeleet"*
 
 > Hei Juha,
 >
@@ -110,7 +110,7 @@ The GitHub brain is not a bespoke ask — it is a documentation connector, and
 (`DECISIONS.md` §14). Ask what is in it: how many files, what structure, how
 often it changes.
 
-**Outbound — Toivo, 2 September 2026:** subject *"Vanav — AI Brain -integraatio"*
+**Outbound — Toivo, 2 September 2026:** subject *"Vanav - seuraavat askeleet"*
 
 > Hei Jussi,
 >
@@ -151,7 +151,7 @@ Pharma, so real regulatory process and the slowest cycle of the four. Best logo,
 longest game. The job of the first email is to turn a vague blocker into a
 written checklist: *"what specifically would you need to see?"*
 
-**Outbound — Toivo, 2 September 2026:** subject *"Vanav — mitä tarvitsisitte nähdä"*
+**Outbound — Toivo, 2 September 2026:** subject *"Vanav - seuraavat askeleet"*
 
 > Hei Satu,
 >
