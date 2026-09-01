@@ -31,8 +31,34 @@ his own IT partner reviewing us, a pen test from our side, or a formal
 certification (`security.md` §4). Offering all three lets him pick the cheapest
 that satisfies him rather than reaching for the most formal-sounding.
 
-**Outbound:** Toivo, 2 Sept — the three-option question plus a scoped-pilot
-offer.
+**Outbound — Toivo, 2 September 2026:**
+
+> Hei Juha,
+>
+> Kiitos aiekirjeestä ja siitä, että kerroit suoraan mitä tarvitsette.
+>
+> Mainitsit, että tarvitsette riippumattoman, kolmannen osapuolen arvion siitä
+> miten dataa käsitellään ja miten tietoturva on varmistettu. Mikä seuraavista
+> olisi teille sopivin?
+>
+> - Oma IT-kumppaninne arvioi tuotteemme turvallisuutta ja tietojenkäsittelyä
+> - Teetämme riippumattoman penetraatiotestin ja toimitamme raportin teille
+> - Tarvitsette virallisen sertifioinnin (esim. ISO 27001)
+>
+> Tai sopisiko paremmin pienimuotoinen ja rajattu pilotti, jossa
+> luottamukselliset tiedot jätetään pois? Näin päästäisiin nopeasti alkuun ja
+> samalla kartoitettaisiin teidän tarkat tarpeet.
+>
+> Jos on helpompi jutella, niin sopisiko 30 minuutin puhelu tällä viikolla?
+> Tulemme mielellämme myös Netprofilen toimistolle, jos se teille sopii.
+>
+> Terveisin,
+> Toivo Kallio
+> vanav.io
+> +358 40 185 8122
+
+**Waiting on:** which of the three he picks. That answer sets the compliance
+budget and timeline — `security.md` §2 item 8.
 
 ## Tonava Group — Virtanen JP, Chairman of the Board
 `jp@tonava.fi` · signed 2026-08-29 18:14:05 UTC · `ccf174e8-6eb4-4590-9331-538126438808`
@@ -84,8 +110,33 @@ The GitHub brain is not a bespoke ask — it is a documentation connector, and
 (`DECISIONS.md` §14). Ask what is in it: how many files, what structure, how
 often it changes.
 
-**Outbound:** Toivo, 2 Sept. **Commits us in writing to a data-handling
-write-up this week** — `security.md` §2, items 0–3.
+**Outbound — Toivo, 2 September 2026:**
+
+> Hei Jussi,
+>
+> Kiitos aiekirjeestä ja siitä, että kerroit suoraan mitä tarvitsette.
+>
+> Vastauksena:
+>
+> - Vanav elää Slackissa Slack bottina, eli integraatio on helppoa.
+> - Data säilytetään Ruotsissa, ja kielimallin ajo tulee siirtymään EU:n sisälle
+>   eikä mitään dataanne käytetä koskaan ulkoisten kielimallien kouluttamiseen.
+> - Apukuski AI Brainiin integraatio onnistuu. Millainen sen rakenne siis on?
+>   Kuinka usein se muuttuu ja kuka sitä päivittää?
+>
+> Jos on helpompi jutella, niin sopisiko 30 minuutin puhelu tällä viikolla?
+>
+> Terveisin,
+> Toivo Kallio
+> vanav.io
+> +358 40 185 8122
+
+**Note — no document was promised.** An earlier draft committed to sending a
+full data-handling write-up this week; that sentence was cut before sending. The
+email asserts our data practices without offering anything to show, and his
+blocker says "GDPR compliant". Expect him to ask for something in writing.
+
+**Waiting on:** the Brain's structure, change frequency, and owner.
 
 ## Fermion Oy — Satu Vartiainen, VP, Quality Management
 `satu.vartiainen@fermion.fi` · signed 2026-08-29 18:02:33 UTC · `82099862-26f6-45fc-a8ca-c1ab5fbf473f`
@@ -100,7 +151,36 @@ Pharma, so real regulatory process and the slowest cycle of the four. Best logo,
 longest game. The job of the first email is to turn a vague blocker into a
 written checklist: *"what specifically would you need to see?"*
 
-**Outbound:** Toivo, 2 Sept.
+**Outbound — Toivo, 2 September 2026:**
+
+> Hei Satu,
+>
+> Kiitos aiekirjeestä.
+>
+> Mitä teidän tarvitsisi konkreettisesti nähdä ennen kuin voisitte arvioida tätä
+> kunnolla? Karkea lista riittää hyvin.
+>
+> Oletan että tietoturvadokumentaatio on listalla, ja työstämme sitä
+> parhaillaan: data tallennetaan Ruotsissa ja kielimallin ajo tulee tapahtumaan
+> EU-alueella. Mitään dataanne ei käytetä ulkoisten kielimallien koulutukseen.
+>
+> Auttaisi myös tietää minkä työkalujen rinnalla tämän pitäisi toimia. Onko
+> Fermion Teamsissa, Slackissa vai muualla?
+>
+> Jos on helpompi jutella, niin sopisiko 30 minuutin puhelu tällä tai ensi
+> viikolla? Voimme myös palata asiaan myöhemmin, kun täytämme teidän
+> kriteerinne kunnolla.
+>
+> Terveisin,
+> Toivo Kallio
+> vanav.io
+> +358 40 185 8122
+
+**Deliberately did not name a certification.** She wrote "sufficient maturity",
+which is vaguer and probably cheaper than ISO 27001. Naming it ourselves would
+have put the most expensive option in her mouth. Let her set the bar.
+
+**Waiting on:** her written list, and whether Fermion is on Teams or Slack.
 
 ---
 

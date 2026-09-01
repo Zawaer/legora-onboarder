@@ -19,9 +19,11 @@ and low thousands of euros** to clear three blocked pilots.
 
 ## 2. The checklist
 
-Committed in writing to Jussi on 2 September: *"Lähetän täyden kuvauksen
-tietojenkäsittelystä tällä viikolla."* That is items 1–3 below, roughly one
-focused day. Item 0 has to come first — see §2.1.
+**No deadline was promised.** The draft to Jussi committed to sending a full
+data-handling write-up this week; that sentence was cut before sending. So items
+1–3 are not owed to anyone by a date — but the email asserts our data practices
+without offering anything to show, and his blocker says "GDPR compliant". Expect
+him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
 
 ### Already done
 
