@@ -98,9 +98,20 @@ product does on nobody's behalf — a webhook writing a record, the Slack bot
 queueing a draft. It is server-only and guarded against being imported into
 client code (`lib/supabase.ts`).
 
-`PENDING` — a written internal access policy: who on our side may use that key,
-under what circumstances, and how that is logged. Today the honest answer is
-"the founders, for support and debugging". Say so if asked; do not imply more.
+**Who holds it.** One person — the technical founder. It exists in the
+deployment environment, which no one else on the team can access, and in one
+local development environment. No other member of the team has it.
+
+**What it is used for.** Three things: investigating a fault a customer has
+reported, executing a deletion request, and running database migrations. It is
+not used to read customer content for any other reason.
+
+**What we do not have.** Automated audit logging of service-role queries. At our
+size, access is limited by there being one person who can perform it. We will
+add logging before that stops being true.
+
+**Rotation.** The key is rotated when anyone with access leaves, and immediately
+if we have reason to believe it has been exposed.
 
 ## 5. Retention and deletion
 
