@@ -43,7 +43,7 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
       claiming anything: that it answers, and that
       `getLastUsage().cacheReadTokens` is still non-zero — a silently broken
       cache costs 10x and the only symptom is a slower demo. See §2.1.
-- [ ] **1. Data processing description** — ~4 h. The core artifact everything
+- [x] **1. Data processing description** — `docs/data-processing.md`. — ~4 h. The core artifact everything
       else points at:
       - what we ingest (Slack messages from selected channels, connected docs,
         employee names and emails)
@@ -52,7 +52,7 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
       - who on our side can access it, how, and under what circumstances
       - retention period, and what triggers deletion
       - what we do not do: no training, no secondary use, no sharing
-- [ ] **2. Sub-processor list** — ~1 h. Vercel, Supabase, Anthropic, AWS, Slack,
+- [x] **2. Sub-processor list** — `docs/data-processing.md` §3. — ~1 h. Vercel, Supabase, Anthropic, AWS, Slack,
       Stripe, Resend. Each one: what it does, where it runs.
 - [x] **3. Rewrite the privacy page** — `app/privacy/page.tsx`. Now covers
       customer content, the Slack scope position, where data is processed, and
