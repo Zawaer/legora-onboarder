@@ -38,13 +38,16 @@ export default function SiteHeader({
         <nav className="ml-auto hidden items-center gap-0.5 sm:flex">
           {right ?? (
             <>
-              {/* The demo link points at the hire page, not the manager
-                  dashboard. A cold visitor has no idea who Rebecca Hartley is
-                  or why a roster matters; the hire page explains itself in one
-                  screen, and it is the link we send prospects anyway. The
-                  manager view is still the buyer's screen and still live, it
-                  just is not what a stranger should meet first. */}
-              <NavLink href="/hire/demo-legal-engineer">Demo</NavLink>
+              {/* No Demo link here on purpose. It used to point at
+                  /hire/demo-legal-engineer, which is a "who's who" roster of
+                  ten people with thirty cited contributions — that is the
+                  corpus we ingested, not what a new hire gets out of it. A
+                  stranger meeting it first sees raw material and no outcome.
+                  The route still resolves, and StartDemo in the hero is the
+                  better first contact because it shows a derivation happening.
+                  Re-add a Demo link when it points at the ramp plan and a
+                  cited answer — the demo that actually sells (docs/pitch.md
+                  §2). */}
               <NavLink href="/loi">Letter of intent</NavLink>
             </>
           )}
