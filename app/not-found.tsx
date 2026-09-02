@@ -19,7 +19,11 @@ export const metadata: Metadata = {
  *
  * No numeral, no illustration, no joke. A 404 is a small administrative fact,
  * and dressing it up is the tell of a demo. It is set in the same measures and
- * rules as /pricing so it reads as the same site rather than a fallback.
+ * rules as the rest of the site so it reads as the same site rather than a
+ * fallback.
+ *
+ * The ways out mirror the nav. /pricing is on neither, and now lands here
+ * itself: the page is parked in app/_pricing and no longer routed.
  */
 
 const WAYS_OUT = [
@@ -34,9 +38,9 @@ const WAYS_OUT = [
     why: "What each new hire is stuck on, who can unblock them, and how many minutes it costs.",
   },
   {
-    href: "/pricing",
-    label: "Pricing",
-    why: "Priced per hire onboarded, with the arithmetic behind the number printed in full.",
+    href: "/loi",
+    label: "Letter of intent",
+    why: "What the companies trialling VANAV have signed, in their own words.",
   },
 ];
 

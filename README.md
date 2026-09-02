@@ -205,7 +205,6 @@ npm run dev
 | `/manager/brief` | The note that goes out 48 hours before a start date |
 | `/pitch` | Traction evidence. Not linked from the public nav |
 | `/app` | The customer's admin: company profile, uploaded material, and the draft review queue where a human releases anything the agent wants to say |
-| `/pricing` | Per hire, not per seat, with the ROI model shown rather than asserted |
 | `/loi` | Letter of intent, signed on a phone in ninety seconds |
 
 ## It is not hardcoded for one company

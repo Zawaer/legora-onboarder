@@ -201,9 +201,6 @@ export default async function Home() {
             <Link href="/loi" className="text-muted hover:text-ink">
               Letter of intent
             </Link>
-            <Link href="/pricing" className="text-muted hover:text-ink">
-              Pricing
-            </Link>
             <Link href="/privacy" className="text-muted hover:text-ink">
               Privacy
             </Link>

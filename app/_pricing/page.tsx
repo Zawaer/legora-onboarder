@@ -11,7 +11,14 @@ export const metadata = {
 };
 
 /**
- * The pricing page.
+ * The pricing page. PARKED — not routed, not reachable.
+ *
+ * It lives in app/_pricing rather than app/pricing: the leading underscore is
+ * a Next private folder, so no URL resolves here and /pricing returns the 404.
+ * The page is kept whole because the argument in it is worth more than the
+ * half hour it would take to rebuild, and it is one `git mv` from being live
+ * again. If it is restored, restore it into the nav and footer too, or it will
+ * be a page nobody can find.
  *
  * Deliberately separate from /pay, which is the Stripe checkout inherited from
  * an earlier product and still on the old palette. Rewiring a working payment

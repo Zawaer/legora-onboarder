@@ -18,19 +18,23 @@ export default function SiteHeader({
         <Link href="/" className="shrink-0">
           <Wordmark />
         </Link>
-        {/* The nav. Pricing, traction and the letter of intent used to live
-            only in the footer, which meant the price of the product was
-            reachable from one small link at the very bottom of a long page.
-            They are navigation, so they sit in the navigation.
+        {/* The nav. The demo and the letter of intent are the two surfaces a
+            stranger should be able to reach without being told about them, so
+            they sit in the navigation rather than at the bottom of a long page.
 
             /pitch is deliberately NOT here. It is the traction evidence board
             and it reads zeros to anyone who is not a judge, which is exactly
             the wrong thing to show a prospect who followed a link from an
             email. The page still exists; it is handed out directly.
 
-            Hidden below sm and left in the footer there instead: four links
-            plus a CTA do not fit on a phone, and a hamburger for five items is
-            more machinery than the problem deserves. */}
+            /pricing is gone rather than merely unlinked: the URL 404s and the
+            page is parked in app/_pricing. A price shown before the product
+            has earned the question is answering something nobody asked, and a
+            stale number left reachable is worse than no number at all.
+
+            Hidden below sm: two links plus a CTA still crowd a phone, and a
+            hamburger for three items is more machinery than the problem
+            deserves. */}
         <nav className="ml-auto hidden items-center gap-0.5 sm:flex">
           {right ?? (
             <>
@@ -41,7 +45,6 @@ export default function SiteHeader({
                   manager view is still the buyer's screen and still live, it
                   just is not what a stranger should meet first. */}
               <NavLink href="/hire/demo-legal-engineer">Demo</NavLink>
-              <NavLink href="/pricing">Pricing</NavLink>
               <NavLink href="/loi">Letter of intent</NavLink>
             </>
           )}
