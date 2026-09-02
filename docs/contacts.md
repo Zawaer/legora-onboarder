@@ -336,7 +336,10 @@ why "a general onboarding tool" is the trap rather than the fix.
   Tonava.
 - **Log every outbound here, the day it goes out.** On 2 September the technical
   founder nearly sent JP a duplicate of an email Viia had sent four days
-  earlier, because nobody had written it down.
+  earlier, because nobody had written it down. Checked the same night: Nia and
+  Maire had written to nobody, so the three replies sent that day were the only
+  outbound to Netprofile, Apukuski and Fermion. Viia's 29 August email to JP was
+  the only one that had gone out before.
 - **Log what each contact is blocked on, and update it when it changes.** A
   blocker nobody wrote down is a pilot nobody closes.
 - **Ask on every call**, and write the numbers here:
