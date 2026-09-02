@@ -184,6 +184,27 @@ export async function getIngestedCompany(slug: string): Promise<Company | undefi
   return (await readAll()).get(slug)?.company;
 }
 
+/**
+ * Remove one company's ingested corpus, everywhere this module keeps it.
+ *
+ * Part of erasure (lib/erasure.ts). This is the store that actually holds a
+ * customer's content — the Slack export or documents they handed over — so a
+ * deletion that misses it has deleted nothing that matters.
+ *
+ * Clears the in-process memory map too. Without that, an instance that had the
+ * corpus cached would keep serving it for its own lifetime and could write it
+ * back on the next save, silently undoing the deletion.
+ */
+export async function deleteIngestedCompany(slug: string): Promise<boolean> {
+  return serialise(async () => {
+    const map = await readAll();
+    const existed = map.delete(slug);
+    memory.delete(slug);
+    if (existed) await writeAll(map);
+    return existed;
+  });
+}
+
 export async function listIngestedCompanies(): Promise<IngestedCompany[]> {
   return [...(await readAll()).values()].sort((a, b) => b.ingestedAt.localeCompare(a.ingestedAt));
 }

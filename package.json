@@ -9,7 +9,8 @@
     "slack": "node scripts/slack-bot.mjs",
     "slack:test": "node lib/slack/harness.mjs",
     "bake": "node --import ./lib/slack/hook.mjs scripts/bake-derivation.mjs",
-    "bake:hire": "node --import ./lib/slack/hook.mjs scripts/bake-hire.mjs"
+    "bake:hire": "node --import ./lib/slack/hook.mjs scripts/bake-hire.mjs",
+    "erase": "node scripts/erase-company.mjs"
   },
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.33.3",
