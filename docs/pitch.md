@@ -118,15 +118,19 @@ so a stale decision is visibly stale rather than silently repeated. One of our
 LOI signers wants exactly this: the tool flagging outdated onboarding material.
 
 **"Why that price?"**
-> ⚠️ **This said "1,600 a month", which matches nothing in `pricing.md`** (2 500
-> SEK one-off pilot, 4 900 SEK/month). Fix the number before saying it out loud.
+Do not quote a number from memory — pricing is off the site (`f90fe7c`) and the
+shape changed to a platform fee plus per hire (`DECISIONS.md` §12). Say what
+the price is *based on*, and get theirs first.
 
-It comes out of the ROI model on the pricing page, not a feeling: a new hire at
-a company like Legora costs roughly €460 a day fully loaded, so cutting ramp
-from two weeks to two days saves about €3,700 per hire. The pilot is
-deliberately cheap because the first real workspace is worth more to us than the
-margin. Move the conversation to the per-hire frame, where our number looks
-small — never to per-seat haggling.
+It comes from an ROI model, not a feeling: a new hire costs roughly €460 a day
+fully loaded, so cutting ramp from two weeks to two days saves about €3,700 per
+hire. The pilot is deliberately cheap because the first real workspace is worth
+more to us than the margin.
+
+Move the conversation to the per-hire frame, where our number looks small —
+never to per-seat haggling. And ask the question we still do not have an answer
+to: *what does onboarding one person cost you today, in hours of other
+people's time?*
 
 **"What stops Slack or OpenAI building this?"**
 Nothing technical, and do not claim otherwise — any good team could build the
