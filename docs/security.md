@@ -69,7 +69,7 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
       members/drafts/materials cascade from. A documented operator-run process
       satisfies Art. 17; a self-serve button would add an authenticated
       destructive endpoint we do not need yet.
-- [ ] **5. DPA** — ~4 h from a template, not from scratch. GDPR Art. 28: subject
+- [x] **5. DPA** — drafted in `docs/dpa.md`. Not signable yet: needs legal review, needs the Oy as counterparty, and Annex III is wrong until Bedrock EU is on. Original note follows. — ~4 h from a template, not from scratch. GDPR Art. 28: subject
       matter, duration, nature and purpose, data categories, sub-processor
       terms. We are the processor, the customer is the controller. Promised to
       Fermion and needed by Netprofile; Apukuski was not promised it.
