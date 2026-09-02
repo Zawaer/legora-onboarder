@@ -54,10 +54,12 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
       - what we do not do: no training, no secondary use, no sharing
 - [ ] **2. Sub-processor list** — ~1 h. Vercel, Supabase, Anthropic, AWS, Slack,
       Stripe, Resend. Each one: what it does, where it runs.
-- [ ] **3. Rewrite the privacy page** — ~2 h. `app/privacy/page.tsx` today says
-      *"Short, because we collect very little"* and is written for website
-      visitors. That is the opposite posture to "we are about to ingest your
-      entire Slack." Different data, different risk, different document.
+- [x] **3. Rewrite the privacy page** — `app/privacy/page.tsx`. Now covers
+      customer content, the Slack scope position, where data is processed, and
+      real deletion — alongside the original visitor sections. It also no
+      longer claims we run no analytics, which stopped being true the day
+      Vercel Analytics was added and was live on a public page that invited
+      readers to verify it in `package.json`.
 
 ### Next — when a specific deal needs it
 
