@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Reveal from "@/components/reveal";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 /**
  * Archivo for what is read, IBM Plex Mono for what is measured.
@@ -26,7 +28,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "VANAV · onboarding for the job no one has written down yet",
   description:
-    "VANAV derives a brand-new role from a company's real Slack, docs and tickets, then drives the new hire through their first two days of real work, escalating to a human only when it genuinely cannot unblock them.",
+    "Some roles were never written down; the rest quietly stopped being true. VANAV derives the real role from a company's own Slack, docs and tickets, drives the new hire through their first two days of real work, and flags the onboarding material that has gone out of date.",
 };
 
 export const viewport: Viewport = {
@@ -72,6 +74,23 @@ export default function RootLayout({
       <body className="min-h-dvh antialiased">
         {children}
         <Reveal />
+        {/*
+          Vercel Analytics, deliberately not Google Analytics.
+
+          We tell customers in writing that we are careful about where their
+          data goes — Apukuski and Fermion both have data handling in their
+          blocker (docs/contacts.md). Several EU supervisory authorities have
+          found Google Analytics' transfers unlawful, so shipping GA while
+          making that claim is the first contradiction a security reviewer
+          would find. Analytics choice is part of the compliance story, not
+          separate from it.
+
+          This is cookieless and needs no consent banner. Vercel is already a
+          sub-processor as our host; it belongs on the list either way
+          (docs/security.md §2 item 2).
+        */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -55,13 +55,12 @@ export default async function Home() {
               Onboarding for the job no one has written down yet
             </h1>
             <p className="max-w-[58ch] text-[17px] leading-[1.6] text-muted sm:text-[18.5px]">
-              When you hire someone into a role that doesn&rsquo;t exist yet,
-              you decide what that role actually is. VANAV doesn&rsquo;t guess
-              it for you. What VANAV does: it reads your company&rsquo;s Slack,
-              docs and tickets, and builds onboarding for the exact role
-              you&rsquo;ve already defined. The new hire gets a link with their
-              name and role on it, and is doing real work within the hour, not
-              reading a stale wiki.
+              Some roles were never written down. The rest were written down
+              and then quietly stopped being true. VANAV reads your
+              company&rsquo;s Slack, docs and tickets, builds onboarding for the
+              exact role you&rsquo;ve already defined, and flags the documents
+              that have gone out of date. The new hire gets a link with their
+              name and role on it, and is doing real work within the hour.
             </p>
 
             <div className="flex flex-wrap items-center gap-3">
