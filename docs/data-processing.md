@@ -36,15 +36,26 @@ The Vanav Slack app requests five scopes and no more
 | `commands` | receive `/onboard` |
 | `app_mentions:read` | see messages that explicitly `@Vanav` |
 
-**The app cannot read your channels.** It has no `channels:history`,
-`groups:history`, `files:read` or `users:read`. It sees the new hire's own
-conversation with the bot, and messages where somebody deliberately mentions it.
-A colleague's private message is not visible to us, and no scope we hold would
-allow it.
+Today the app has no `channels:history`, so it reads nothing beyond the new
+hire's own DM and explicit mentions.
 
-This is the strongest single fact in this document and it is worth stating
-plainly to a reviewer, because "an AI bot in our Slack" is normally assumed to
-mean the opposite.
+> ⚠️ **Do not build the pitch on that.** A corpus that arrives by upload is a
+> snapshot, and a snapshot goes stale the moment it lands — which is the exact
+> problem we sell against. Detecting that documentation has drifted requires
+> reading the channels as they change, so `channels:history` for selected
+> channels is on the roadmap. Telling a reviewer "we cannot read your channels"
+> and then asking for that scope in six weeks reads as a bait-and-switch, and it
+> would cost more than the reassurance is worth.
+
+**The durable claim, which is true now and stays true after scopes widen:**
+
+> Vanav reads only the channels you explicitly invite it into. A Slack bot sees
+> history for channels it is a member of — not your whole workspace. It is never
+> in a private channel unless someone adds it, it never sees direct messages
+> between employees, and removing it from a channel ends its access immediately.
+
+That is customer-controlled access rather than a promise about a manifest we
+intend to change, and it is the version to put in front of a reviewer.
 
 ## 2. Where it goes, and where it is processed
 
