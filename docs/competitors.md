@@ -73,10 +73,12 @@ out of date.
 
 Swedish, onboarding material and learning. Used at Oura alongside Glean.
 
-## What a real user of both actually said
+## What users of both actually said
 
-Ohto Pentikäinen (Oura), and Touko via Maire, 2 September 2026 — the most
-valuable competitive input we have, and it came from two LinkedIn DMs.
+Ohto Pentikäinen (Oura), and **Touko Ursin, ex-Oura software intern**, via Maire,
+2 September 2026. The most useful competitive input we have, and it came from
+two LinkedIn DMs — which is the argument for having forty more conversations,
+not for treating these two as settled.
 
 **The Q&A half works.** Touko: *"silt voi just kysyy firman sisäisii kysymyksii
 ja saa niihin aika hyvin vastauksii."* Ohto on both tools: *"toimii mulle
@@ -96,8 +98,27 @@ terminal because the channel is all we have.
 
 **The gap, in one line:** they push tasks *at* people. We derive real work from
 what the company actually does, and escalate to a human when we cannot help.
-A named user of the market leader has confirmed the gap is real. This is the
-"something we know that competitors don't" the SYE judge asked for.
+
+**Two caveats, because one intern is not a market.**
+
+*He was an intern.* Compliance modules and watch-this-video are standard intern
+onboarding. A senior hire into a novel role may experience the same tool
+completely differently, so this is a verdict on intern onboarding at one
+company, not on Sana or Glean generally.
+
+*And the person annoyed by courses is not the person who buys the software.* HR
+and People teams often buy Sana **because** it assigns and tracks modules —
+auditable completion is the feature, not the bug, especially somewhere like
+Fermion where quality management has to prove people were trained. Touko's
+annoyance may be his buyer's requirement.
+
+That is a genuine tension in our positioning, and it is the same question the
+team raised after SYE: who is actually paying, and what do they want? If the
+buyer wants tracking and the user wants to be left alone, we have to pick.
+
+**Ask on every call:** *who owns onboarding at your company — HR, the hiring
+manager, or the team?* The answer decides whether "we do not assign courses" is
+a selling point or a gap.
 
 ## Also building this — early stage
 
