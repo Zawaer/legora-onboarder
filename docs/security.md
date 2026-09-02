@@ -33,8 +33,16 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
 
 ### This week — unblocks three pilots
 
-- [ ] **0. Move inference to Bedrock, EU region** — ~1 day. Must come before the
-      write-up. See §2.1 for why this is a legal blocker, not a preference.
+- [x] **0a. Code path built** — `lib/anthropic.ts`. Set `AWS_BEDROCK_REGION`
+      and every model call goes to Bedrock in that region; unset and nothing
+      changes. Model ids get the `anthropic.` prefix automatically.
+- [ ] **0b. Actually switch it on** — **not done, and this is the part that
+      makes the claim true.** Needs an AWS account, model access enabled for
+      Anthropic models *in that region* (a per-region opt-in in the Bedrock
+      console), and credentials in Vercel. Then verify two things before
+      claiming anything: that it answers, and that
+      `getLastUsage().cacheReadTokens` is still non-zero — a silently broken
+      cache costs 10x and the only symptom is a slower demo. See §2.1.
 - [ ] **1. Data processing description** — ~4 h. The core artifact everything
       else points at:
       - what we ingest (Slack messages from selected channels, connected docs,

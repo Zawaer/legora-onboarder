@@ -11,8 +11,39 @@
  */
 
 import Anthropic from "@anthropic-ai/sdk";
+import { AnthropicBedrockMantle } from "@anthropic-ai/bedrock-sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod/v4";
+
+/**
+ * WHERE INFERENCE RUNS, AND WHY IT MATTERS
+ *
+ * Set `AWS_BEDROCK_REGION` to an EU region and every model call goes to Amazon
+ * Bedrock in that region instead of the Anthropic API. Leave it unset and
+ * nothing changes.
+ *
+ * This is not a cost optimisation. Calling the Anthropic API means a transfer
+ * to a US company, which under GDPR needs standard contractual clauses we have
+ * not executed. Three of our four LOIs are blocked on data handling, and two
+ * of the replies sent on 2 September say in writing that inference is moving
+ * into the EU (docs/contacts.md). Bedrock in an EU region removes the transfer
+ * entirely — the data stays in the EEA and there is nothing to justify.
+ *
+ * Full reasoning: docs/security.md §2.1. Pricing: docs/model-costs.md §2 —
+ * EU regional endpoints carry a 10% premium over global, which is the cheapest
+ * thing we will ever buy.
+ *
+ * Verify before claiming it: check the model actually answers from the chosen
+ * region, and that `getLastUsage().cacheReadTokens` is still non-zero. A
+ * silently broken cache costs 10x and the only symptom is a slower demo.
+ */
+export function bedrockRegion(): string | null {
+  return process.env.AWS_BEDROCK_REGION?.trim() || null;
+}
+
+export function isBedrockConfigured(): boolean {
+  return bedrockRegion() !== null;
+}
 
 /**
  * Exact model id. No date suffix — a suffixed id is a different (and usually
@@ -30,13 +61,15 @@ export const MODEL = "claude-opus-5" as const;
  */
 export const FAST_MODEL = "claude-haiku-4-5" as const;
 
-/** Thrown before any network call when the developer has not set a key. */
+/** Thrown before any network call when the developer has not set credentials. */
 export class MissingApiKeyError extends Error {
   constructor() {
     super(
-      "ANTHROPIC_API_KEY is not set. Copy .env.example to .env.local and add your key. " +
-        "This app derives roles from a live model — there is no offline fallback, " +
-        "because faking the output would defeat the entire point of the product.",
+      "No model credentials. Either set ANTHROPIC_API_KEY, or set " +
+        "AWS_BEDROCK_REGION plus AWS credentials to run inference in the EU. " +
+        "Copy .env.example to .env.local. This app derives roles from a live " +
+        "model — there is no offline fallback, because faking the output would " +
+        "defeat the entire point of the product.",
     );
     this.name = "MissingApiKeyError";
   }
@@ -53,7 +86,9 @@ export class UnparseableModelOutputError extends Error {
   }
 }
 
-let cached: Anthropic | null = null;
+type ModelClient = Anthropic | AnthropicBedrockMantle;
+
+let cached: ModelClient | null = null;
 let lastUsage: GenerationUsage | null = null;
 
 /**
@@ -65,12 +100,31 @@ export function getLastUsage(): GenerationUsage | null {
   return lastUsage;
 }
 
-export function getClient(): Anthropic {
+export function getClient(): ModelClient {
+  const region = bedrockRegion();
+  if (region) {
+    // Credentials resolve through the standard AWS chain — AWS_BEARER_TOKEN_BEDROCK,
+    // then AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY, then the default provider
+    // chain — so we do not check for a specific variable here and get a clear
+    // AuthenticationError from the API instead of guessing wrong locally.
+    cached ??= new AnthropicBedrockMantle({ awsRegion: region });
+    return cached;
+  }
   if (!process.env.ANTHROPIC_API_KEY) throw new MissingApiKeyError();
   // The SDK is stateless per-request; one client per process keeps the
   // connection pool warm across the two or three calls a derivation makes.
   cached ??= new Anthropic();
   return cached;
+}
+
+/**
+ * Bedrock model ids carry an `anthropic.` prefix; the first-party API rejects
+ * it. Applied at the call site so MODEL and FAST_MODEL stay the canonical ids
+ * everywhere else and nothing downstream has to know where inference runs.
+ */
+function resolveModel(model: string): string {
+  if (!isBedrockConfigured()) return model;
+  return model.startsWith("anthropic.") ? model : `anthropic.${model}`;
 }
 
 export type GenerateOptions<S extends z.ZodType> = {
@@ -146,7 +200,7 @@ export async function generate<S extends z.ZodType>({
   messages.push(...history, { role: "user", content: user });
 
   const stream = client.messages.stream({
-    model,
+    model: resolveModel(model),
     max_tokens: maxTokens,
     system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
     messages,
@@ -191,7 +245,11 @@ export function toApiError(err: unknown): { status: number; message: string } {
   if (err instanceof Anthropic.AuthenticationError) {
     return {
       status: 500,
-      message: "ANTHROPIC_API_KEY was rejected by the API. Check the key in .env.local.",
+      message: isBedrockConfigured()
+        ? `AWS credentials were rejected by Bedrock in ${bedrockRegion()}. Check the ` +
+          "credentials, and that this account has model access enabled for Anthropic " +
+          "models in that region — access is a per-region opt-in in the Bedrock console."
+        : "ANTHROPIC_API_KEY was rejected by the API. Check the key in .env.local.",
     };
   }
   if (err instanceof Anthropic.RateLimitError) {
