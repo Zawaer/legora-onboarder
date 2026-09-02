@@ -106,10 +106,18 @@ under what circumstances, and how that is logged. Today the honest answer is
 
 Content is kept for as long as the company is a customer.
 
-`PENDING` — **deletion is not implemented.** There is no route today that
-removes a company's ingested corpus on request, and GDPR requires one. This is
-`security.md` §2 item 4, and it must be built before this document is sent,
-because the sentence promising it would otherwise be false.
+**Deletion on request is implemented.** On request we remove, in one operation:
+the corpus you gave us, any files you uploaded, and your account record —
+members, drafts and material references cascade from it. We aim to complete a
+request within 30 days, and in practice within a few working days.
+
+It is an operator-run procedure rather than a button in the product
+(`lib/erasure.ts`, `npm run erase`). That is deliberate at our size: a
+documented, auditable process rather than a destructive endpoint exposed to the
+internet.
+
+One honest limit: a running server instance may hold a corpus in memory until
+it recycles. We redeploy after an erasure when immediacy matters.
 
 Letters of intent and waitlist signups are retained as business records.
 

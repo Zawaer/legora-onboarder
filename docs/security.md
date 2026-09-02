@@ -61,9 +61,12 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
 
 ### Next — when a specific deal needs it
 
-- [ ] **4. Deletion, actually implemented** — ~4 h. We will claim it in item 1,
-      so it has to exist. There is currently no deletion path for a customer's
-      ingested data. Verify before writing the sentence.
+- [x] **4. Deletion, actually implemented** — `lib/erasure.ts` and
+      `npm run erase -- <slug>` (dry run by default; `--yes` executes). Removes
+      the kv corpus, the Supabase Storage objects, and the `companies` row that
+      members/drafts/materials cascade from. A documented operator-run process
+      satisfies Art. 17; a self-serve button would add an authenticated
+      destructive endpoint we do not need yet.
 - [ ] **5. DPA** — ~4 h from a template, not from scratch. GDPR Art. 28: subject
       matter, duration, nature and purpose, data categories, sub-processor
       terms. We are the processor, the customer is the controller. Promised to
