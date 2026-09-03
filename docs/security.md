@@ -69,10 +69,12 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
       resolutions — durable in kv as of 3 Sept), the Supabase Storage objects,
       and the `companies` row that members/drafts/materials cascade from.
       **Persistence verified 3 Sept:** `POST /api/hire` on local dev (same
-      Supabase) → identical id read back from `store:hires` → removed. Known
-      property: `readAll` merges local `data/*.json` into the kv-backed map, so
-      the first write from a dev machine uplifts local dev rows into production
-      kv. That is how five hackathon `lexhav` test hires reached `store:hires`. A documented operator-run process
+      Supabase) → identical id read back from `store:hires` → removed. **Fixed
+      same day (`1c15f15`):** `readAll` used to merge local `data/*.json` into
+      the kv-backed map, so a dev machine's first write uplifted its local rows
+      into production — five hackathon `lexhav` test hires reached
+      `store:hires` that way and were erased. Now kv is the record whenever
+      configured; disk is read only when it is not. A documented operator-run process
       satisfies Art. 17; a self-serve button would add an authenticated
       destructive endpoint we do not need yet.
 - [x] **5. DPA** — drafted in `docs/dpa.md`. Not signable yet: needs legal review, needs the Oy as counterparty, and Annex III is wrong until Bedrock EU is on. Original note follows. — ~4 h from a template, not from scratch. GDPR Art. 28: subject
