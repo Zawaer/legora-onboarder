@@ -67,7 +67,10 @@ async function readAll(): Promise<Map<string, HireState>> {
     const rows = (await kvGet<HireState[]>(KV_KEY)) ?? [];
     for (const h of rows) if (h && typeof h.id === "string") map.set(h.id, h);
     for (const [id, hire] of memory) map.set(id, hire);
-    if (rows.length) return map;
+    // kv is the record whenever it is configured. Falling through to disk when
+    // kv was merely empty is how a dev machine's data/hires.json got uplifted
+    // into production on the first write (3 Sept). Disk is for no-kv dev only.
+    return map;
   }
 
   if (!diskWritable) {

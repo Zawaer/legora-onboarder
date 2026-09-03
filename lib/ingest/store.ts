@@ -78,7 +78,11 @@ async function readAll(): Promise<Map<string, IngestedCompany>> {
     );
     // Anything written this instance but not yet flushed still counts.
     for (const [slug, row] of memory) if (!map.has(slug)) map.set(slug, row);
-    if (map.size) return map;
+    // kv is the record when configured. This used to fall through to disk when
+    // kv was empty so "a local file can be lifted straight into the store" —
+    // which also lifts a teammate's local test corpus into production on their
+    // first write. Lift deliberately with a script instead.
+    return map;
   }
   if (!diskWritable) return memory;
   try {

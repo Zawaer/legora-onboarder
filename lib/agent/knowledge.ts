@@ -174,7 +174,7 @@ async function readAll(): Promise<Map<string, ElicitationRecord>> {
       rows.filter((r) => r && typeof r.id === "string").map((r) => [r.id, r] as const),
     );
     for (const [id, row] of memory) if (!map.has(id)) map.set(id, row);
-    if (map.size) return map;
+    return map; // kv is the record when configured — see lib/agent/hires.ts
   }
   if (!diskWritable) return memory;
   try {

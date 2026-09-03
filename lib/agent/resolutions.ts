@@ -76,7 +76,9 @@ async function readAll(): Promise<ResolutionRecord[]> {
   if (isKvConfigured()) {
     const rows = (await kvGet<unknown[]>(KV_KEY)) ?? [];
     const kept = rows.filter(isRecord);
-    if (kept.length) return kept;
+    // kv is the record when configured; unflushed writes on this instance too.
+    for (const m of memory) if (!kept.some((r) => r.questionId === m.questionId && r.resolvedBy === m.resolvedBy)) kept.push(m);
+    return kept;
   }
   if (!diskWritable) return [...memory];
 

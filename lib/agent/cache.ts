@@ -113,7 +113,7 @@ async function readAll(): Promise<Map<string, CachedDerivation>> {
     const rows = (await kvGet<CachedDerivation[]>(KV_KEY)) ?? [];
     for (const d of rows) if (d && typeof d.key === "string") map.set(d.key, d);
     for (const [key, entry] of memory) map.set(key, entry);
-    if (rows.length) return map;
+    return map; // kv is the record when configured — see lib/agent/hires.ts
   }
 
   if (!diskWritable) {
