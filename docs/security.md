@@ -65,8 +65,9 @@ him to ask. Roughly one focused day, and item 0 has to come first — see §2.1.
 
 - [x] **4. Deletion, actually implemented** — `lib/erasure.ts` and
       `npm run erase -- <slug>` (dry run by default; `--yes` executes). Removes
-      the kv corpus, the Supabase Storage objects, and the `companies` row that
-      members/drafts/materials cascade from. A documented operator-run process
+      the kv corpus, the four agent stores (hires, derivations, knowledge,
+      resolutions — durable in kv as of 3 Sept), the Supabase Storage objects,
+      and the `companies` row that members/drafts/materials cascade from. A documented operator-run process
       satisfies Art. 17; a self-serve button would add an authenticated
       destructive endpoint we do not need yet.
 - [x] **5. DPA** — drafted in `docs/dpa.md`. Not signable yet: needs legal review, needs the Oy as counterparty, and Annex III is wrong until Bedrock EU is on. Original note follows. — ~4 h from a template, not from scratch. GDPR Art. 28: subject

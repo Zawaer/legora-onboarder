@@ -100,10 +100,21 @@ function serialise<T>(work: () => Promise<T>): Promise<T> {
  *
  * Refresh with `npm run bake -- <derive-response.json>`.
  */
+import { isKvConfigured, kvGet, kvSet } from "@/lib/kv";
 import { BAKED_DERIVATIONS as BAKED } from "@/lib/seed/derivations";
+
+/** Durable store key — see the note on KV_KEY in lib/agent/hires.ts. */
+const KV_KEY = "store:derivations";
 
 async function readAll(): Promise<Map<string, CachedDerivation>> {
   const map = new Map<string, CachedDerivation>(BAKED.map((d) => [d.key, d]));
+
+  if (isKvConfigured()) {
+    const rows = (await kvGet<CachedDerivation[]>(KV_KEY)) ?? [];
+    for (const d of rows) if (d && typeof d.key === "string") map.set(d.key, d);
+    for (const [key, entry] of memory) map.set(key, entry);
+    if (rows.length) return map;
+  }
 
   if (!diskWritable) {
     for (const [key, entry] of memory) map.set(key, entry);
@@ -166,6 +177,7 @@ export async function writeDerivation(
     const map = await readAll();
     map.set(entry.key, entry);
     memory.set(entry.key, entry);
+    await persist(map);
     if (diskWritable) {
       try {
         await fs.mkdir(path.dirname(FILE), { recursive: true });
@@ -193,4 +205,38 @@ export async function listDerivations(): Promise<
       derivedAt,
       corpusHash,
     }));
+}
+
+/** Durable write. Fixtures ship in the bundle, so only real derivations go up. */
+async function persist(map: Map<string, CachedDerivation>): Promise<void> {
+  if (!isKvConfigured()) return;
+  const baked = new Set(BAKED.map((d) => d.key));
+  await kvSet(KV_KEY, [...map.values()].filter((d) => !baked.has(d.key)));
+}
+
+/** Erasure (lib/erasure.ts). Same reasoning as purgeCompany in lib/agent/hires.ts. */
+export async function purgeCompany(companySlug: string): Promise<number> {
+  return serialise(async () => {
+    const map = await readAll();
+    let n = 0;
+    for (const [key, d] of map) {
+      if (d.companySlug === companySlug) {
+        map.delete(key);
+        memory.delete(key);
+        n++;
+      }
+    }
+    if (n) {
+      await persist(map);
+      if (diskWritable) {
+        try {
+          await fs.mkdir(path.dirname(FILE), { recursive: true });
+          await fs.writeFile(FILE, JSON.stringify([...map.values()], null, 2), "utf8");
+        } catch {
+          diskWritable = false;
+        }
+      }
+    }
+    return n;
+  });
 }

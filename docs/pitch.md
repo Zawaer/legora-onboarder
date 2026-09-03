@@ -108,9 +108,10 @@ companies past that.
 **"Where does this actually run?"**
 The web app is deployed, vanav.io is live now. Slack runs in Socket Mode from a
 laptop, which is why there is no public URL to expose. The account layer, the
-review queue and the LOIs are in Postgres in Stockholm with row level security.
-The hire store is still JSON, which is the one honest gap, and it moves to the
-Postgres we already run.
+review queue, the LOIs, and the hire, derivation, knowledge and resolution
+stores are all in Postgres in Stockholm with row level security. *(The hire
+store was JSON until 3 September 2026 — if an old recording says otherwise,
+that is why.)*
 
 **"What if the company's Slack is wrong or out of date?"**
 Then we say so with a date on it. Every citation carries who said it and when,

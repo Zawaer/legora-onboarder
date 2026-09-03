@@ -54,6 +54,19 @@ console.log(
     : "  corpus:  none stored",
 );
 
+// ── 1b. the agent stores, in kv ──────────────────────────────────────────────
+// What was *derived* from the corpus: the hire's plan and conversation, what
+// colleagues were asked, what was resolved. Deleting the corpus and keeping
+// these keeps the customer's people and their words in a different shape.
+const AGENT_KEYS = ["store:hires", "store:derivations", "store:knowledge", "store:resolutions"];
+const agentRows = {};
+for (const key of AGENT_KEYS) {
+  const { data } = await db.from("kv").select("value").eq("key", key).maybeSingle();
+  const all = Array.isArray(data?.value) ? data.value : [];
+  agentRows[key] = { all, mine: all.filter((r) => r?.companySlug === slug) };
+  console.log(`  ${key.replace("store:", "").padEnd(12)} ${agentRows[key].mine.length} row(s) for this company`);
+}
+
 // ── 2. the account row, and what cascades from it ────────────────────────────
 const { data: company } = await db.from("companies").select("id, name").eq("slug", slug).maybeSingle();
 let files = [];
@@ -82,6 +95,16 @@ if (match) {
     .from("kv")
     .upsert({ key: KV_KEY, value: kept, updated_at: new Date().toISOString() }, { onConflict: "key" });
   console.log(error ? `  corpus:  FAILED — ${error.message}` : "  corpus:  deleted");
+}
+
+for (const key of AGENT_KEYS) {
+  const { all, mine } = agentRows[key];
+  if (!mine.length) continue;
+  const kept = all.filter((r) => r?.companySlug !== slug);
+  const { error } = await db
+    .from("kv")
+    .upsert({ key, value: kept, updated_at: new Date().toISOString() }, { onConflict: "key" });
+  console.log(error ? `  ${key}: FAILED — ${error.message}` : `  ${key}: ${mine.length} deleted`);
 }
 
 if (company) {

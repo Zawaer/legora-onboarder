@@ -37,6 +37,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { QuestionClass, ResolutionRecord } from "@/lib/web/contract";
+import { isKvConfigured, kvGet, kvSet } from "@/lib/kv";
 
 const FILE =
   process.env.RESOLUTIONS_PATH ?? path.join(process.cwd(), "data", "resolutions.json");
@@ -68,7 +69,15 @@ function isRecord(v: unknown): v is ResolutionRecord {
   return typeof r.questionId === "string" && typeof r.resolvedBy === "string";
 }
 
+/** Durable store key — see the note on KV_KEY in lib/agent/hires.ts. */
+const KV_KEY = "store:resolutions";
+
 async function readAll(): Promise<ResolutionRecord[]> {
+  if (isKvConfigured()) {
+    const rows = (await kvGet<unknown[]>(KV_KEY)) ?? [];
+    const kept = rows.filter(isRecord);
+    if (kept.length) return kept;
+  }
   if (!diskWritable) return [...memory];
 
   try {
@@ -85,6 +94,7 @@ async function readAll(): Promise<ResolutionRecord[]> {
 async function writeAll(records: ResolutionRecord[]): Promise<void> {
   memory.length = 0;
   memory.push(...records);
+  if (isKvConfigured()) await kvSet(KV_KEY, records);
   if (!diskWritable) return;
   try {
     await fs.mkdir(path.dirname(FILE), { recursive: true });
@@ -192,4 +202,15 @@ export function summarise(records: ResolutionRecord[]): ResolutionStats {
 
 export async function resolutionStats(query: ResolutionQuery = {}): Promise<ResolutionStats> {
   return summarise(await listResolutions(query));
+}
+
+/** Erasure (lib/erasure.ts). Same reasoning as purgeCompany in lib/agent/hires.ts. */
+export async function purgeCompany(companySlug: string): Promise<number> {
+  return serialise(async () => {
+    const all = await readAll();
+    const kept = all.filter((r) => r.companySlug !== companySlug);
+    const n = all.length - kept.length;
+    if (n) await writeAll(kept);
+    return n;
+  });
 }

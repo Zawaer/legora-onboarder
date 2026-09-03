@@ -53,6 +53,7 @@ import type { Artifact, Company, Evidence } from "@/lib/types";
 import { groundEvidence } from "@/lib/agent/ground";
 import { CAPTURED_CHANNEL } from "@/lib/agent/elicit";
 import type { Anchor, ExpertPick, Probe, TeachbackDraft } from "@/lib/agent/elicit";
+import { isKvConfigured, kvGet, kvSet } from "@/lib/kv";
 
 /**
  * A file of its own, alongside `hires.json` and `companies.json` rather than
@@ -62,6 +63,8 @@ import type { Anchor, ExpertPick, Probe, TeachbackDraft } from "@/lib/agent/elic
  * who triggered it and the derivation cache.
  */
 const FILE = process.env.KNOWLEDGE_PATH ?? path.join(process.cwd(), "data", "knowledge.json");
+/** Durable store key — see the note on KV_KEY in lib/agent/hires.ts. */
+const KV_KEY = "store:knowledge";
 
 /* ═════════════════════════════════════════════════════════════════ types ══ */
 
@@ -165,6 +168,14 @@ function serialise<T>(work: () => Promise<T>): Promise<T> {
 }
 
 async function readAll(): Promise<Map<string, ElicitationRecord>> {
+  if (isKvConfigured()) {
+    const rows = (await kvGet<ElicitationRecord[]>(KV_KEY)) ?? [];
+    const map = new Map(
+      rows.filter((r) => r && typeof r.id === "string").map((r) => [r.id, r] as const),
+    );
+    for (const [id, row] of memory) if (!map.has(id)) map.set(id, row);
+    if (map.size) return map;
+  }
   if (!diskWritable) return memory;
   try {
     const raw = await fs.readFile(FILE, "utf8");
@@ -184,6 +195,7 @@ async function readAll(): Promise<Map<string, ElicitationRecord>> {
 
 async function writeAll(map: Map<string, ElicitationRecord>): Promise<void> {
   for (const [id, row] of map) memory.set(id, row);
+  if (isKvConfigured()) await kvSet(KV_KEY, [...map.values()]);
   if (!diskWritable) return;
   try {
     await fs.mkdir(path.dirname(FILE), { recursive: true });
@@ -456,4 +468,21 @@ export async function citationProof(
 
   const kept = groundEvidence([candidate], company);
   return { grounded: kept.length === 1, evidence: kept[0] ?? null, artifact };
+}
+
+/** Erasure (lib/erasure.ts). Same reasoning as purgeCompany in lib/agent/hires.ts. */
+export async function purgeCompany(companySlug: string): Promise<number> {
+  return serialise(async () => {
+    const map = await readAll();
+    let n = 0;
+    for (const [id, r] of map) {
+      if (r.companySlug === companySlug) {
+        map.delete(id);
+        memory.delete(id);
+        n++;
+      }
+    }
+    if (n) await writeAll(map);
+    return n;
+  });
 }

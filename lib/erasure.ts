@@ -27,14 +27,19 @@
  *   4. In-process memory — cleared by deleteIngestedCompany, or an instance
  *      that had the corpus cached keeps serving it and can write it back.
  *
- * Derivations, hires, knowledge and resolutions are per-instance disk state
- * that never persists on serverless, so there is nothing durable to erase; they
- * disappear with the instance. If any of those ever gain a kv backing, they
- * must be added here on the same commit.
+ *   5. The four agent stores — hires, derivations, knowledge (elicitations)
+ *      and resolutions. These were per-instance disk state that never
+ *      persisted on serverless. They now have a kv backing, so they are
+ *      durable, so they are in scope here. Each module exports its own
+ *      purgeCompany so the in-memory map is cleared too.
  *
  * Server-only.
  */
 
+import { purgeCompany as purgeDerivations } from "@/lib/agent/cache";
+import { purgeCompany as purgeHires } from "@/lib/agent/hires";
+import { purgeCompany as purgeKnowledge } from "@/lib/agent/knowledge";
+import { purgeCompany as purgeResolutions } from "@/lib/agent/resolutions";
 import { deleteIngestedCompany } from "@/lib/ingest/store";
 import { isSupabaseConfigured, serviceClient } from "@/lib/supabase";
 
@@ -42,6 +47,8 @@ export type ErasureReport = {
   slug: string;
   companyId: string | null;
   corpusDeleted: boolean;
+  /** Rows removed from the agent stores, by store. */
+  agentRows: { hires: number; derivations: number; knowledge: number; resolutions: number };
   filesDeleted: number;
   rowDeleted: boolean;
   /** Non-fatal problems. A partial erasure is a failure — read these. */
@@ -55,6 +62,7 @@ export async function eraseCompany(slug: string): Promise<ErasureReport> {
     slug,
     companyId: null,
     corpusDeleted: false,
+    agentRows: { hires: 0, derivations: 0, knowledge: 0, resolutions: 0 },
     filesDeleted: 0,
     rowDeleted: false,
     warnings: [],
@@ -67,6 +75,24 @@ export async function eraseCompany(slug: string): Promise<ErasureReport> {
     report.corpusDeleted = await deleteIngestedCompany(slug);
   } catch (err) {
     report.warnings.push(`corpus: ${(err as Error).message}`);
+  }
+
+  // The agent stores hold what was *derived* from the corpus — the hire's
+  // plan, their conversation, what colleagues were asked, what was resolved.
+  // Deleting the corpus and keeping these would keep the customer's people
+  // and their words in a different shape.
+  const stores = [
+    ["hires", purgeHires],
+    ["derivations", purgeDerivations],
+    ["knowledge", purgeKnowledge],
+    ["resolutions", purgeResolutions],
+  ] as const;
+  for (const [name, purge] of stores) {
+    try {
+      report.agentRows[name] = await purge(slug);
+    } catch (err) {
+      report.warnings.push(`${name}: ${(err as Error).message}`);
+    }
   }
 
   if (!isSupabaseConfigured()) {

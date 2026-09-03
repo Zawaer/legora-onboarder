@@ -49,10 +49,26 @@ function serialise<T>(work: () => Promise<T>): Promise<T> {
  * Lowest priority of the three sources, so a real hire always wins and this can
  * never shadow someone's actual data. Same pattern as `lib/seed/derivations.ts`.
  */
+import { isKvConfigured, kvGet, kvSet } from "@/lib/kv";
 import { BAKED_HIRES } from "@/lib/seed/hires";
+
+/**
+ * Durable store key. On Vercel the disk below is per-instance and gone on
+ * recycle, which for a pilot means a new hire's ramp plan and conversation
+ * state vanish mid-week. Postgres via kv is the record there; disk stays for
+ * local development. Same shape as lib/ingest/store.ts.
+ */
+const KV_KEY = "store:hires";
 
 async function readAll(): Promise<Map<string, HireState>> {
   const map = new Map<string, HireState>(BAKED_HIRES.map((h) => [h.id, h]));
+
+  if (isKvConfigured()) {
+    const rows = (await kvGet<HireState[]>(KV_KEY)) ?? [];
+    for (const h of rows) if (h && typeof h.id === "string") map.set(h.id, h);
+    for (const [id, hire] of memory) map.set(id, hire);
+    if (rows.length) return map;
+  }
 
   if (!diskWritable) {
     for (const [id, hire] of memory) map.set(id, hire);
@@ -103,6 +119,9 @@ function dropShadowedBakes(map: Map<string, HireState>): Map<string, HireState> 
 
 async function writeAll(map: Map<string, HireState>): Promise<void> {
   for (const [id, hire] of map) memory.set(id, hire);
+  // Baked demo hires are shipped in the bundle; only real rows go to the store.
+  const baked = new Set(BAKED_HIRES.map((h) => h.id));
+  if (isKvConfigured()) await kvSet(KV_KEY, [...map.values()].filter((h) => !baked.has(h.id)));
   if (!diskWritable) return;
   try {
     await fs.mkdir(path.dirname(FILE), { recursive: true });
@@ -151,5 +170,27 @@ export async function updateHire(
     map.set(id, next);
     await writeAll(map);
     return next;
+  });
+}
+
+/**
+ * Erasure (lib/erasure.ts): drop every hire belonging to one company, from the
+ * durable store, the disk file and this instance's memory. Without the memory
+ * clear a warm instance would serve — and on the next save write back — data a
+ * customer asked us to delete.
+ */
+export async function purgeCompany(companySlug: string): Promise<number> {
+  return serialise(async () => {
+    const map = await readAll();
+    let n = 0;
+    for (const [id, hire] of map) {
+      if (hire.companySlug === companySlug) {
+        map.delete(id);
+        memory.delete(id);
+        n++;
+      }
+    }
+    if (n) await writeAll(map);
+    return n;
   });
 }
