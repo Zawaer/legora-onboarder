@@ -21,6 +21,7 @@
  */
 
 import { NextResponse } from "next/server";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { z } from "zod/v4";
 import { loadCompany } from "@/lib/agent/knowledge";
 import { deriveRoleWithGrounding } from "@/lib/agent/derive";
@@ -67,7 +68,18 @@ export async function GET() {
   return NextResponse.json({ derivations: await listDerivations() }, { status: 200 });
 }
 
+/**
+ * Per-IP ceiling. A derivation is several Opus calls over a ~15k-token corpus —
+ * the most expensive thing this app does — and this route needs no login. Until
+ * this line existed, anyone with the URL could run the model bill up
+ * indefinitely. Five a minute is generous for a human and useless for a loop.
+ */
+const POST_LIMIT = 5;
+
 export async function POST(request: Request) {
+  const limited = rateLimit(`derive:${clientIp(request)}`, { limit: POST_LIMIT });
+  if (!limited.ok) return tooMany(limited.retryAfter);
+
   let body: unknown;
   try {
     body = await request.json();
@@ -253,4 +265,11 @@ export async function POST(request: Request) {
     console.error("[derive]", err);
     return NextResponse.json({ error: message }, { status });
   }
+}
+
+function tooMany(retryAfter: number): Response {
+  return NextResponse.json(
+    { error: "Too many derivations. Give it a minute — each one is several model calls over the whole corpus." },
+    { status: 429, headers: { "cache-control": "no-store, max-age=0", "retry-after": String(retryAfter) } },
+  );
 }

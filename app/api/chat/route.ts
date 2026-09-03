@@ -9,6 +9,7 @@
  */
 
 import { NextResponse } from "next/server";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { z } from "zod/v4";
 import { randomUUID } from "node:crypto";
 import { loadCompany } from "@/lib/agent/knowledge";
@@ -34,7 +35,18 @@ const Body = z.object({
   text: z.string().min(1).max(4000),
 });
 
+/**
+ * Per-IP ceiling. Every turn is a model call with the corpus as cached prefix,
+ * and this route needs no login. Keyed by IP rather than hireId so an attacker
+ * cannot reset the budget by rotating ids. Twenty a minute is more than a
+ * person types; a script hits it in seconds.
+ */
+const POST_LIMIT = 20;
+
 export async function POST(request: Request) {
+  const limited = rateLimit(`chat:${clientIp(request)}`, { limit: POST_LIMIT });
+  if (!limited.ok) return tooMany(limited.retryAfter);
+
   let body: unknown;
   try {
     body = await request.json();
@@ -166,4 +178,11 @@ export async function POST(request: Request) {
     console.error("[chat]", err);
     return NextResponse.json({ error: message }, { status });
   }
+}
+
+function tooMany(retryAfter: number): Response {
+  return NextResponse.json(
+    { error: "Slow down a little — that is more messages a minute than a person sends." },
+    { status: 429, headers: { "cache-control": "no-store, max-age=0", "retry-after": String(retryAfter) } },
+  );
 }
